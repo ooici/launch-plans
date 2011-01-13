@@ -3,6 +3,8 @@ Edit the "provisioner/cei_environment" file (add the correct credentials).
 Then run:
 
 $ cp chefsolo.sh provisioner/run.sh
-$ tar cvf provisioner.tar.gz provisioner/
+$ tar cvzf provisioner.tar.gz provisioner/
 
-Then proceed with launching "main.conf"
+Then proceed with launching "main.conf" per the documentation.
+
+(it itself needs credentials: CLOUDBOOT_IAAS_ACCESS_KEY and CLOUDBOOT_IAAS_SECRET_KEY).
