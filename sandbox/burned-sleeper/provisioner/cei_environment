@@ -1,0 +1,6 @@
+export NIMBUS_KEY="ABC"
+export NIMBUS_SECRET="123"
+
+export AWS_ACCESS_KEY_ID="ABC"
+export AWS_SECRET_ACCESS_KEY="123"
+

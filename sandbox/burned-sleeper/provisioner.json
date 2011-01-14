@@ -1,0 +1,20 @@
+{
+  "capabilitycontainer":{
+    "broker":"${broker_ip_address}",
+    "bootscript":"res/scripts/newcc.py",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"5",
+    "pip_package_repo":"${pip_package_repo}",
+    "git_repo_dirname":"${git_repo_dirname}",
+    "git_lcaarch_repo":"${git_lcaarch_repo}",
+    "git_lcaarch_branch":"${git_lcaarch_branch}",
+    "git_lcaarch_commit":"${git_lcaarch_commit}",
+    "log_level":"${ion_log_level}"
+  },
+  "username":"cc",
+  "services":{
+    "dtrs":"{'name':'dtrs','module':'ion.services.cei.dtrs','class':'DeployableTypeRegistryService'}",
+    "provisioner":"{'name':'provisioner','module':'ion.services.cei.provisioner','class':'ProvisionerService'}"
+  },
+  "recipes":["burned_ubuntu64"]
+}
