@@ -65,7 +65,7 @@ fi
 
 echo "Running chef-solo"
 
-sudo chef-solo -l debug -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
+sudo chef-solo -l info -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
