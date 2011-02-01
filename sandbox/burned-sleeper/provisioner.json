@@ -14,7 +14,9 @@
   "username":"cc",
   "services":{
     "dtrs":"{'name':'dtrs','module':'ion.services.cei.dtrs','class':'DeployableTypeRegistryService'}",
-    "provisioner":"{'name':'provisioner','module':'ion.services.cei.provisioner.provisioner_service','class':'ProvisionerService'}"
+    "provisioner":"{'name':'provisioner','module':'ion.services.cei.provisioner.provisioner_service','class':'ProvisionerService'}",
+    "killer":"{'name':'provisioner','module':'ion.services.cei.provisioner.killer','class':'SystemKiller'}"
   },
+  "do_not_start":["killer"],
   "recipes":["burned_ubuntu64"]
 }
