@@ -1,0 +1,20 @@
+{
+  "capabilitycontainer":{
+    "broker":"${broker_ip_address}",
+    "bootscript":"res/scripts/newcc.py",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"5",
+    "pip_package_repo":"${pip_package_repo}",
+    "git_repo_dirname":"${git_repo_dirname}",
+    "git_lcaarch_repo":"${git_lcaarch_repo}",
+    "git_lcaarch_branch":"${git_lcaarch_branch}",
+    "git_lcaarch_commit":"${git_lcaarch_commit}",
+    "log_level":"${ion_log_level}"
+  },
+  "username":"cc",
+  "services":{
+    "anf_sensor_aggregator":"{'name':'sensor_aggregator','module':'ion.services.cei.sensor_aggregator','class':'SensorAggregatorService'}",
+    "anf_epu_controller":"{'name':'epu_controller','module':'ion.services.cei.epu_controller','class':'EPUControllerService', 'spawnargs':{'queue_name_work':'cei_work_queue', 'engine_class':'ion.services.cei.decisionengine.impls.NpreservingEngine', 'engine_conf':{'preserve_n':'${anf_preserve_n}', 'force_site':'${anf_iaas_site}', 'epuworker_type':'sqlstream_worker', 'provisioner_vars':{'agent_args':${default_agent_args}, 'exchange_scope':'${exchange_scope}', 'epuworker_image_id':'${anf_worker_id}', 'broker_ip_address':'${broker_ip_address}',     'pip_package_repo':'${agent_pip_package_repo}', 'git_repo_dirname':'${agent_git_repo_dirname}', 'git_lcaarch_repo':'${agent_git_lcaarch_repo}', 'git_lcaarch_branch':'${agent_git_lcaarch_branch}', 'git_lcaarch_commit':'${agent_git_lcaarch_commit}', 'ion_log_level':'${agent_ion_log_level}', 'binary_retrieve_id':'${binary_retrieve_id}', 'binary_retrieve_secret':'${binary_retrieve_secret}', 'binary_retrieve_command':'${binary_retrieve_command}'} } }}"
+  },
+  "recipes":["burned_ubuntu64"]
+}

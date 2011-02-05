@@ -1,0 +1,23 @@
+{
+  "capabilitycontainer":{
+    "broker":"${broker_ip_address}",
+    "bootscript":"res/scripts/newcc.py",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"5",
+    "pip_package_repo":"${pip_package_repo}",
+    "git_repo_dirname":"${git_repo_dirname}",
+    "git_lcaarch_repo":"${git_lcaarch_repo}",
+    "git_lcaarch_branch":"${git_lcaarch_branch}",
+    "git_lcaarch_commit":"${git_lcaarch_commit}",
+    "log_level":"${ion_log_level}"
+  },
+  "username":"cc",
+  "services":{
+    "dtrs":"{'name':'dtrs','module':'ion.services.cei.dtrs','class':'DeployableTypeRegistryService'}",
+    "provisioner":"{'name':'provisioner','module':'ion.services.cei.provisioner.provisioner_service','class':'ProvisionerService'}",
+    "killer":"{'name':'provisioner','module':'ion.services.cei.provisioner.killer','class':'SystemKiller'}",
+    "attribute_store":"{'name':'attribute_store','module':'ion.services.coi.attributestore', 'class':'AttributeStoreService'}"
+  },
+  "do_not_start":["killer"],
+  "recipes":["burned_ubuntu64"]
+}
