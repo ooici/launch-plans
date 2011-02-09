@@ -1,6 +1,6 @@
 {
   "capabilitycontainer":{
-    "broker":"127.0.0.1",
+    "broker":"${broker_ip_address}",
     "bootscript":"res/scripts/newcc.py",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
@@ -13,7 +13,7 @@
   },
   "username":"cc",
   "services":{
-    "anf_appcontroller":"{'name':'anf_appcontroller','module':'ion.services.cei.queuestat','class':'QueueStatService', 'spawnargs' : {'interval_seconds' : 3.0}}"
+    "anf_appcontroller":"{'name':'anf_appcontroller','module':'anf.app_controller_service','class':'AppControllerService'}"
   },
-  "recipes":["rabbitmq", "rabbitmq_cookie", "burned_ubuntu64"]
+  "recipes":["burned_ubuntu64_anf"]
 }
