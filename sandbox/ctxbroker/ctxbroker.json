@@ -1,0 +1,11 @@
+{
+  "nimbus":{
+    "users":{
+      "provisioner":{
+        "access_id":"vSgIQoIZG5UsqA4CTh2mY",
+        "secret":"UKc1k59PkXyH3eLcED2yDXFHA6etSLanvC7uUgpZ7M"
+      }
+    }
+  },
+  "recipes":["nimbus::broker"]
+}
