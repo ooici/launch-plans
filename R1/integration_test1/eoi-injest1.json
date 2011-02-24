@@ -1,0 +1,24 @@
+{
+    "ionintegration": {
+        "bootscript": "res/scripts/newcc.py", 
+        "broker": "${broker_ip_address}", 
+        "broker_heartbeat": "5", 
+        "git_ion_integration_branch": "develop", 
+        "git_ion_integration_commit": "HEAD", 
+        "git_ion_integration_repo": "git://github.com/ooici/ion-integration.git", 
+        "git_repo_dirname": "ion-integration", 
+        "log_level": "${ion_log_level}", 
+        "sysname": "${exchange_scope}"
+    }, 
+    "recipes": [
+        "setuptools", 
+        "user", 
+        "ionintegration"
+    ], 
+    "services": {
+        "1": "{'name':'ds1','module':'ion.services.coi.datastore','class':'DataStoreService', 'spawnargs':{'servicename':'datastore'}}", 
+        "2": "{'name':'resource_registry1', 'module':'ion.services.coi.resource_registry_beta.resource_registry', 'class':'ResourceRegistryService', 'spawnargs':{'datastore_service':'datastore'}}", 
+        "3": "{'name':'eoi_ingest1','module':'ion.services.dm.ingestion.eoi_ingester','class':'EOIIngestionService'}"
+    }, 
+    "username": "cc"
+}

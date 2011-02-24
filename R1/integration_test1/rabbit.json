@@ -1,0 +1,24 @@
+{
+    "ionintegration": {
+        "bootscript": "res/scripts/newcc.py", 
+        "broker": "127.0.0.1", 
+        "broker_heartbeat": "5", 
+        "git_ion_integration_branch": "develop", 
+        "git_ion_integration_commit": "HEAD", 
+        "git_ion_integration_repo": "git://github.com/ooici/ion-integration.git", 
+        "git_repo_dirname": "ion-integration", 
+        "log_level": "${ion_log_level}", 
+        "sysname": "${exchange_scope}"
+    }, 
+    "recipes": [
+        "rabbitmq", 
+        "rabbitmq_cookie", 
+        "setuptools", 
+        "user", 
+        "ionintegration"
+    ], 
+    "services": {
+        "queuestat": "{'name':'queuestat','module':'ion.services.cei.queuestat','class':'QueueStatService', 'spawnargs' : {'interval_seconds' : 3.0}}"
+    }, 
+    "username": "cc"
+}
