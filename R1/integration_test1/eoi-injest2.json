@@ -11,9 +11,10 @@
         "sysname": "${exchange_scope}"
     }, 
     "recipes": [
-        "setuptools", 
-        "user", 
-        "ionintegration"
+        "apt",
+        "jdk6",
+        "ant",
+        "burned_ubuntu64_int"
     ], 
     "services": {
     }, 

@@ -11,9 +11,7 @@
         "sysname": "${exchange_scope}"
     }, 
     "recipes": [
-        "setuptools", 
-        "user", 
-        "ionintegration"
+        "burned_ubuntu64_int"
     ], 
     "services": {
         "1": "{'name':'ds1','module':'ion.services.coi.datastore','class':'DataStoreService', 'spawnargs':{'servicename':'datastore'}}", 

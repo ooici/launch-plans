@@ -13,9 +13,7 @@
     "recipes": [
         "rabbitmq", 
         "rabbitmq_cookie", 
-        "setuptools", 
-        "user", 
-        "ionintegration"
+        "burned_ubuntu64_int"
     ], 
     "services": {
         "queuestat": "{'name':'queuestat','module':'ion.services.cei.queuestat','class':'QueueStatService', 'spawnargs' : {'interval_seconds' : 3.0}}"
