@@ -1,0 +1,19 @@
+{
+  "capabilitycontainer":{
+    "broker":"127.0.0.1",
+    "bootscript":"res/scripts/newcc.py",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"5",
+    "pip_package_repo":"${pip_package_repo}",
+    "git_repo_dirname":"${git_repo_dirname}",
+    "git_lcaarch_repo":"${git_lcaarch_repo}",
+    "git_lcaarch_branch":"${git_lcaarch_branch}",
+    "git_lcaarch_commit":"${git_lcaarch_commit}",
+    "log_level":"${ion_log_level}"
+  },
+  "username":"cc",
+  "services":{
+    "queuestat":"{'name':'queuestat','module':'ion.services.cei.queuestat','class':'QueueStatService', 'spawnargs' : {'interval_seconds' : 3.0}}"
+  },
+  "recipes":["rabbitmq", "rabbitmq_cookie", "burned_ubuntu64"]
+}
