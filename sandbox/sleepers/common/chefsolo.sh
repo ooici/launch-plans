@@ -1,7 +1,16 @@
 #!/bin/bash
 
+# git version: cookbooks come from git
+# Set the repository here
+
+GIT_URL="https://github.com/ooici/dt-data.git"
+GIT_REF="origin/HEAD"
+CHEF_LOGLEVEL="info"
+
+# ========================================================================
+
 if [ ! -d /opt ]; then 
-  sudo mkdir /opt; 
+  sudo mkdir /opt
   if [ $? -ne 0 ]; then
       exit 1
   fi
@@ -13,13 +22,13 @@ if [ -d /opt/dt-data ]; then
       exit 1
   fi
 else
-  (cd /opt && sudo git clone https://github.com/ooici/dt-data.git)
+  (cd /opt && sudo git clone $GIT_URL )
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
-(cd /opt/dt-data && sudo git reset --hard origin/HEAD)
+(cd /opt/dt-data && sudo git reset --hard $GIT_REF )
 if [ $? -ne 0 ]; then
   exit 1
 fi
