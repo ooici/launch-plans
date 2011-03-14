@@ -1,4 +1,13 @@
 {
+  "services":{
+    "queuestat":"res/apps/epu-queuestat.app"
+  },
+  "local_app_confs":{
+  },
+  "universal_app_confs":{
+    "broker_host_list":"127.0.0.1",
+    "sysname":"${exchange_scope}"
+  },
   "pythoncc":{
     "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",
@@ -6,7 +15,7 @@
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
-    "retrieve_method":"archive",
+    "retrieve_method":"${epu_retrieve_method}",
     "archive_url":"${package_repo}/${epu_archive_name}",
     "git_repo":"${epu_git_repo}",
     "git_branch":"${epu_git_branch}",
@@ -20,8 +29,5 @@
     "run_method":"sh"
   },
   "username":"cc",
-  "services":{
-    "queuestat":"{'name':'queuestat','module':'epu.ionproc.queuestat','class':'QueueStatService', 'spawnargs' : {'interval_seconds' : 3.0}}"
-  },
   "recipes":["rabbitmq", "rabbitmq_cookie", "burned_ubuntu64_separated"]
 }

@@ -1,21 +1,30 @@
 {
-  "capabilitycontainer":{
+  "services":{
+    "sleeper_epu_controller":"res/apps/epu-controller.app",
+    "sleeper_epu_sa":"res/apps/epu-sensor-aggregator.app"
+  },
+  "local_app_confs":{
+  },
+  "pythoncc":{
     "broker":"${broker_ip_address}",
-    "bootscript":"res/scripts/newcc.py",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
-    "pip_package_repo":"${pip_package_repo}",
-    "git_repo_dirname":"${git_repo_dirname}",
-    "git_lcaarch_repo":"${git_lcaarch_repo}",
-    "git_lcaarch_branch":"${git_lcaarch_branch}",
-    "git_lcaarch_commit":"${git_lcaarch_commit}",
     "log_level":"${ion_log_level}"
   },
-  "username":"cc",
-  "services":{
-    "sleeper_sensor_aggregator":"{'name':'sensor_aggregator','module':'ion.services.cei.sensor_aggregator','class':'SensorAggregatorService'}",
-    "sleeper_epu_controller":"{'name':'epu_controller','module':'ion.services.cei.epu_controller','class':'EPUControllerService', 'spawnargs':{'queue_name_work':'cei_work_queue', 'engine_class':'ion.services.cei.decisionengine.impls.NpreservingEngine', 'engine_conf':{'preserve_n':'${sleeper_preserve_n}', 'force_site':'${sleeper_iaas_site}', 'provisioner_vars':{'exchange_scope':'${exchange_scope}', 'epuworker_image_id':'${sleeper_worker_id}', 'broker_ip_address':'${broker_ip_address}',     'pip_package_repo':'${pip_package_repo}', 'git_repo_dirname':'${git_repo_dirname}', 'git_lcaarch_repo':'${git_lcaarch_repo}', 'git_lcaarch_branch':'${git_lcaarch_branch}', 'git_lcaarch_commit':'${git_lcaarch_commit}', 'ion_log_level':'${ion_log_level}'} } }}",
-    "sleeper_work_producer":"{'name':'sleeper_work_producer','module':'ion.services.cei.sleeper.epu_work_producer','class':'EPUWorkProducer', 'spawnargs':{'queue_name_work':'cei_work_queue'}}"
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${package_repo}/${epu_archive_name}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
   },
-  "recipes":["burned_ubuntu64"]
+  "appinstall":{
+    "install_method":"py_venv_setup",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"sh"
+  },
+  "username":"cc",
+  "recipes":["burned_ubuntu64_separated"]
 }

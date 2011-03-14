@@ -1,22 +1,35 @@
 {
-  "capabilitycontainer":{
+  "services":{
+    "dtrs":"res/apps/epu-dtrs.app",
+    "provisioner":"res/apps/epu-provisioner.app"
+  },
+  "local_app_confs":{
+  },
+  "universal_app_confs":{
+    "broker_host_list":"127.0.0.1",
+    "sysname":"${exchange_scope}"
+  },
+  "pythoncc":{
     "broker":"${broker_ip_address}",
-    "bootscript":"res/scripts/newcc.py",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
-    "pip_package_repo":"${pip_package_repo}",
-    "git_repo_dirname":"${git_repo_dirname}",
-    "git_lcaarch_repo":"${git_lcaarch_repo}",
-    "git_lcaarch_branch":"${git_lcaarch_branch}",
-    "git_lcaarch_commit":"${git_lcaarch_commit}",
     "log_level":"${ion_log_level}"
   },
-  "username":"cc",
-  "services":{
-    "dtrs":"{'name':'dtrs','module':'ion.services.cei.dtrs','class':'DeployableTypeRegistryService'}",
-    "provisioner":"{'name':'provisioner','module':'ion.services.cei.provisioner.provisioner_service','class':'ProvisionerService'}",
-    "killer":"{'name':'provisioner','module':'ion.services.cei.provisioner.killer','class':'SystemKiller'}"
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${package_repo}/${epu_archive_name}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
   },
+  "appinstall":{
+    "install_method":"py_venv_setup",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"sh"
+  },
+  "username":"cc",
   "do_not_start":["killer"],
-  "recipes":["burned_ubuntu64"]
+  "recipes":["burned_ubuntu64_separated"]
 }
