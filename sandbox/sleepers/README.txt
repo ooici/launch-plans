@@ -13,17 +13,27 @@ differently, there is usually a way to make it happen.
 
 I. Quick guide for the impatient:
 
-Edit the "level*/provisioner/cei_environment" file: add the correct credentials.
+Export the following environment variables into your shell:
 
-Then in that subdirectory run:
+    # Credentials for Nimbus
+    # The provisioner uses for the context broker in some situations
+    # The provisioner uses to start worker nodes on Nimbus in some situations
+    export NIMBUS_KEY=`cat ~/.secrets/NIMBUS_KEY`
+    export NIMBUS_SECRET=`cat ~/.secrets/NIMBUS_SECRET`
+    
+    # Credentials for EC2
+    # The provisioner uses to start worker nodes on EC2 in some situations
+    export AWS_ACCESS_KEY_ID=`cat ~/.secrets/AWS_ACCESS_KEY_ID`
+    export AWS_SECRET_ACCESS_KEY=`cat ~/.secrets/AWS_SECRET_ACCESS_KEY`
+    
+    # Credentials for cloudinit.d itself
+    # cloudinit.d uses to start the base nodes
+    export CLOUDBOOT_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
+    export CLOUDBOOT_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
 
-$ cp ../common/chefsolo.sh provisioner/run.sh
-$ tar cvzf provisioner.tar.gz provisioner/
+Run:
 
-Edit main.conf with the literal credentials for CLOUDBOOT_IAAS_ACCESS_KEY
-and CLOUDBOOT_IAAS_SECRET_KEY.  Or add those as environment variables in
-the terminal where you run cloudinit.d.  By default "main.conf" is set up
-to look for those environment variables (note the "env." prefix).
+   (todo)
 
 ==============================================================================
 

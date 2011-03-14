@@ -47,17 +47,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-if [ -f provisioner/cei_environment ]; then
-    sudo mv provisioner/cei_environment /opt/cei_environment
-    if [ $? -ne 0 ]; then
-      exit 1
-    fi
-    chmod 400 /opt/cei_environment
-    if [ $? -ne 0 ]; then
-      exit 1
-    fi
-fi
-    
 cat >> chefconf.rb << "EOF"
 cookbook_path "/opt/dt-data/cookbooks"
 log_level :info
