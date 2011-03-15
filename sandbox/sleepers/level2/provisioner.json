@@ -8,7 +8,8 @@
         "nimbus_key":"${nimbus_key}",
         "nimbus_secret":"${nimbus_secret}",
         "ec2_key":"${ec2_key}",
-        "ec2_secret":"${ec2_secret}"
+        "ec2_secret":"${ec2_secret}",
+        "query_period":5
     }
   },
   "universal_app_confs":{
