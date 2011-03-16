@@ -61,11 +61,25 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Running chef-solo"
 
+cat >> rerun-chef.sh << "EOF"
+#!/bin/bash
 sudo chef-solo -l info -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
+exit $?
+EOF
+
+chmod +x rerun-chef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
+sudo mv rerun-chef.sh /opt/rerun-chef.sh
+if [ $? -ne 0 ]; then
+  exit 1
+fi
 
+echo "Running chef-solo"
+sudo /opt/rerun-chef.sh
+if [ $? -ne 0 ]; then
+  exit 1
+fi
