@@ -1,6 +1,8 @@
 {
   "services":{
-    "queuestat":"res/apps/epu-queuestat.app"
+    "queuestat":{
+        "service_config":"res/apps/epu-queuestat.app"
+    }
   },
   "local_app_confs":{
     "epu.ionproc.queuestat":{

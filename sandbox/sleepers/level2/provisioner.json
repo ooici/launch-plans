@@ -1,7 +1,14 @@
 {
   "services":{
-    "dtrs":"res/apps/epu-dtrs.app",
-    "provisioner":"res/apps/epu-provisioner.app"
+    "dtrs":{
+        "service_config":"res/apps/epu-dtrs.app"
+    },
+    "provisioner":{
+        "service_config":"res/apps/epu-provisioner.app"
+    },
+    "killer":{
+        "service_config":"res/apps/epu-killer.app"
+    }
   },
   "local_app_confs":{
     "epu.ionproc.provisioner":{
