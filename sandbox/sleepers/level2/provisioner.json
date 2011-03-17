@@ -7,7 +7,8 @@
         "service_config":"res/apps/epu-provisioner.app"
     },
     "killer":{
-        "service_config":"res/apps/epu-killer.app"
+        "service_config":"res/apps/epu-killer.app",
+        "autostart":false
     }
   },
   "local_app_confs":{
@@ -44,6 +45,5 @@
     "run_method":"sh"
   },
   "username":"cc",
-  "do_not_start":["killer"],
   "recipes":["burned_ubuntu64_separated"]
 }
