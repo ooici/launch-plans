@@ -10,39 +10,39 @@ CHEF_LOGLEVEL="info"
 # ========================================================================
 
 if [ ! -d /opt ]; then 
-  sudo mkdir /opt
+  mkdir /opt
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
 if [ -d /opt/dt-data ]; then
-  (cd /opt/dt-data && sudo git fetch)
+  (cd /opt/dt-data && git fetch)
   if [ $? -ne 0 ]; then
       exit 1
   fi
 else
-  (cd /opt && sudo git clone $GIT_URL )
+  (cd /opt && git clone $GIT_URL )
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
-(cd /opt/dt-data && sudo git reset --hard $GIT_REF )
+(cd /opt/dt-data && git reset --hard $GIT_REF )
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Retrieved the dt-data repository, HEAD is currently:"
-(cd /opt/dt-data && sudo git rev-parse HEAD)
+(cd /opt/dt-data && git rev-parse HEAD)
 echo ""
 
-sudo mkdir -p /opt/dt-data/run
+mkdir -p /opt/dt-data/run
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-sudo mv bootconf.json /opt/dt-data/run/chefroles.json
+mv bootconf.json /opt/dt-data/run/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -56,15 +56,18 @@ Chef::Log::Formatter.show_time = false
 
 EOF
 
-sudo mv chefconf.rb /opt/dt-data/run/chefconf.rb
+mv chefconf.rb /opt/dt-data/run/chefconf.rb
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-
 cat >> rerun-chef.sh << "EOF"
 #!/bin/bash
-sudo chef-solo -l info -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
+CHEFLEVEL="info"
+if [ "X" != "X$1" ]; then
+  CHEFLEVEL=$1
+fi
+chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
 exit $?
 EOF
 
@@ -73,13 +76,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-sudo mv rerun-chef.sh /opt/rerun-chef.sh
+mv rerun-chef.sh /opt/rerun-chef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-sudo /opt/rerun-chef.sh
+/opt/rerun-chef.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi

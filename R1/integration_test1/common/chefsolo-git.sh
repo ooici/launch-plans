@@ -6,19 +6,6 @@
 GIT_URL="https://github.com/ooici/dt-data.git"
 GIT_REF="origin/HEAD"
 
-# This will go away after the new AMI is made
-ERLANG_BASE=/usr/lib64/erlang
-rm -rf $ERLANG_BASE/erts-5.8.1/
-rm -rf $ERLANG_BASE/lib/mnesia-4.4.15/
-rm -rf $ERLANG_BASE/lib/inets-5.5 
-rm -rf $ERLANG_BASE/lib/kernel-2.14.1/
-rm -rf $ERLANG_BASE/lib/stdlib-1.17.1
-rm -rf $ERLANG_BASE/lib/megaco-3.15
-rm -rf $ERLANG_BASE/lib/snmp-4.18
-rm -rf $ERLANG_BASE/lib/orber-3.6.17
-rm -rf $ERLANG_BASE/lib/gs-1.5.13
-
-
 # ========================================================================
 
 if [ ! -d /opt ]; then 
@@ -95,7 +82,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Running chef-solo"
-/opt/rerun-chef.sh
+/opt/rerun-chef.sh #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi

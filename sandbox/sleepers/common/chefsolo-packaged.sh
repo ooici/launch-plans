@@ -4,32 +4,31 @@
 # Set the URL here.
 
 COOKBOOKS_URL="http://..."
-CHEF_LOGLEVEL="info"
 
 # ========================================================================
 
 if [ ! -d /opt ]; then 
-  sudo mkdir /opt
+  mkdir /opt
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
 if [ ! -d /opt/chef ]; then 
-  sudo mkdir /opt/chef
+  mkdir /opt/chef
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
 if [ ! -d /opt/chef/tmp ]; then 
-  sudo mkdir /opt/chef/tmp 
+  mkdir /opt/chef/tmp 
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
-sudo mv bootconf.json /opt/chef/chefroles.json
+mv bootconf.json /opt/chef/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -42,16 +41,34 @@ file_cache_path "/opt/chef/tmp"
 Chef::Log::Formatter.show_time = false
 EOF
 
-sudo mv chefconf.rb /opt/chef/chefconf.rb
+mv chefconf.rb /opt/chef/chefconf.rb
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+cat >> rerun-chef.sh << "EOF"
+#!/bin/bash
+CHEFLEVEL="info"
+if [ "X" != "X$1" ]; then
+  CHEFLEVEL=$1
+fi
+chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
+exit $?
+EOF
+
+chmod +x rerun-chef.sh
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+mv rerun-chef.sh /opt/rerun-chef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-
-sudo chef-solo -l $CHEF_LOGLEVEL -c /opt/chef/chefconf.rb -j /opt/chef/chefroles.json -r $COOKBOOKS_URL
+/opt/rerun-chef.sh #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi
-
 

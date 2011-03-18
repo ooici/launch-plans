@@ -67,7 +67,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Running chef-solo"
-/opt/rerun-chef.sh
+/opt/rerun-chef.sh #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi
