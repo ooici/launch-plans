@@ -31,8 +31,9 @@
     "package_repo":"${package_repo}"
   },
   "apprun":{
-    "run_method":"sh"
+    "run_method":"supervised"
   },
   "username":"cc",
-  "recipes":["rabbitmq", "rabbitmq_cookie", "burned_ubuntu64_separated"]
+  "groupname":"users",
+  "recipes":["rabbitmq", "rabbitmq_cookie", "r1app"]
 }

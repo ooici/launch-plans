@@ -42,8 +42,9 @@
     "package_repo":"${package_repo}"
   },
   "apprun":{
-    "run_method":"sh"
+    "run_method":"supervised"
   },
   "username":"cc",
-  "recipes":["burned_ubuntu64_separated"]
+  "groupname":"users",
+  "recipes":["r1app"]
 }
