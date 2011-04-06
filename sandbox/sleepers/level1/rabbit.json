@@ -1,4 +1,10 @@
 {
+  "cassandra":{
+    "authenticator":"org.apache.cassandra.auth.SimpleAuthenticator",
+    "users":{"${cassandra_username}":"${cassandra_password}"},
+    "rpc_address":"0.0.0.0"
+  },
+
   "services":{
     "queuestat":{
         "service_config":"res/apps/epu-queuestat.app"
@@ -35,5 +41,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["rabbitmq", "rabbitmq_cookie", "r1app"]
+  "recipes":["rabbitmq", "rabbitmq_cookie", "cassandra", "r1app"]
 }
