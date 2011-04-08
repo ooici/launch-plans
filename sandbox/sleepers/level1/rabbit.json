@@ -1,13 +1,17 @@
 {
-  "services":{
-    "queuestat":{
-        "service_config":"res/apps/epu-queuestat.app"
+  "ioncontainers": {
+    "queuestat-container": {
+      "queuestat": {
+        "name": "epu-queuestat", 
+        "args": { }, 
+        "config": {
+          "epu.ionproc.queuestat":{"interval_seconds": "3.0"}
+        },
+        "version": "0.1"
+      }
     }
   },
   "local_app_confs":{
-    "epu.ionproc.queuestat":{
-      "interval_seconds":"3.0"
-    }
   },
   "universal_app_confs":{
     "broker_host_list":"127.0.0.1",
@@ -35,5 +39,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["rabbitmq", "rabbitmq_cookie", "r1app"]
+  "recipes":["rabbitmq", "rabbitmq_cookie", "r1app::r1c3"]
 }
