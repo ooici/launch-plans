@@ -3,23 +3,25 @@
 # We will have to make something that can automically determine a list of EPU
 # controllers to wait for in each level.  For now, hardcoding the name here.
 
-CONTROLLER="epu_controller_eoi_ingest"
+CONTROLLER="epu_controller_sleeper1"
+CONTROLLER2="epu_controller_sleeper2"
 
 APP_DIR="/home/cc/app"
-VENV_PYTHON="/home/cc/app-venv/bin/python"
+
+OOICI_CONN="/home/ubuntu/ooici-conn.properties"
+VENV_PYTHON="sudo /home/cc/app-venv/bin/python"
 
 import os
 import subprocess
 import sys
 
-ooiciconn = os.path.join(APP_DIR, "ooici-conn.properties")
-if not os.path.exists(ooiciconn):
-    raise Exception("Could not find file: %s" % ooiciconn)
+if not os.path.exists(OOICI_CONN):
+    raise Exception("Could not find file: %s" % OOICI_CONN)
 
 exchange = None
 server = None
 
-f = open(ooiciconn, 'r')
+f = open(OOICI_CONN, 'r')
 for line in f.readlines():
     if line.rfind("=") >= 1:
         (key, value) = line.split("=")
@@ -39,4 +41,14 @@ retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STD
 
 if retcode:
     print "Problem waiting for EPU controller stable state for '%s'" % CONTROLLER
+    sys.exit(retcode)
+
+run = [VENV_PYTHON, "./scripts/epu-state-wait", exchange, server, CONTROLLER2]
+runcmd = ' '.join(run)
+print runcmd
+retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT)
+
+if retcode:
+    print "Problem waiting for EPU controller stable state for '%s'" % CONTROLLER2
+
 sys.exit(retcode)

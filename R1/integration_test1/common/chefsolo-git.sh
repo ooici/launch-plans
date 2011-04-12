@@ -4,44 +4,56 @@
 # Set the repository here
 
 GIT_URL="git://github.com/ooici/dt-data.git"
-GIT_REF="origin/HEAD"
+GIT_BRANCH="master"
+CHEF_LOGLEVEL="info"
 
 # ========================================================================
 
+CMDPREFIX=""
+if [ `id -u` -ne 0 ]; then
+  CMDPREFIX="sudo "
+fi
+
 if [ ! -d /opt ]; then 
-  mkdir /opt
+  $CMDPREFIX mkdir /opt
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
 if [ -d /opt/dt-data ]; then
-  (cd /opt/dt-data && git fetch)
+  (cd /opt/dt-data && $CMDPREFIX git fetch)
   if [ $? -ne 0 ]; then
       exit 1
   fi
 else
-  (cd /opt && git clone $GIT_URL )
+  (cd /opt && $CMDPREFIX git clone $GIT_URL )
   if [ $? -ne 0 ]; then
       exit 1
   fi
 fi
 
-(cd /opt/dt-data && git reset --hard $GIT_REF )
+(cd /opt/dt-data && $CMDPREFIX git checkout $GIT_BRANCH )
 if [ $? -ne 0 ]; then
   exit 1
 fi
+
+(cd /opt/dt-data && $CMDPREFIX git pull )
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
 
 echo "Retrieved the dt-data repository, HEAD is currently:"
-(cd /opt/dt-data && git rev-parse HEAD)
+(cd /opt/dt-data && $CMDPREFIX git rev-parse HEAD)
 echo ""
 
-mkdir -p /opt/dt-data/run
+$CMDPREFIX mkdir -p /opt/dt-data/run
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-mv bootconf.json /opt/dt-data/run/chefroles.json
+$CMDPREFIX mv bootconf.json /opt/dt-data/run/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -55,11 +67,10 @@ Chef::Log::Formatter.show_time = false
 
 EOF
 
-mv chefconf.rb /opt/dt-data/run/chefconf.rb
+$CMDPREFIX mv chefconf.rb /opt/dt-data/run/chefconf.rb
 if [ $? -ne 0 ]; then
   exit 1
 fi
-
 
 cat >> rerun-chef.sh << "EOF"
 #!/bin/bash
@@ -76,13 +87,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-mv rerun-chef.sh /opt/rerun-chef.sh
+$CMDPREFIX mv rerun-chef.sh /opt/rerun-chef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-/opt/rerun-chef.sh #debug
+$CMDPREFIX /opt/rerun-chef.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi

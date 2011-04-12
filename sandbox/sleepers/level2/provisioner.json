@@ -17,7 +17,10 @@
         "nimbus_secret":"${nimbus_secret}",
         "ec2_key":"${ec2_key}",
         "ec2_secret":"${ec2_secret}",
-        "query_period":5
+        "query_period":5,
+        "cassandra_hostname":"${cassandra_hostname}",
+        "cassandra_username":"${cassandra_username}",
+        "cassandra_password":"${cassandra_password}"
     }
   },
   "universal_app_confs":{
@@ -42,8 +45,9 @@
     "package_repo":"${package_repo}"
   },
   "apprun":{
-    "run_method":"sh"
+    "run_method":"supervised"
   },
   "username":"cc",
-  "recipes":["burned_ubuntu64_separated"]
+  "groupname":"users",
+  "recipes":["r1app"]
 }
