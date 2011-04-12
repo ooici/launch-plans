@@ -16,7 +16,7 @@
     "archive_url":"not-using",
     "git_repo":"https://github.com/ooici/ion-integration.git",
     "git_branch":"develop",
-    "git_commit":"HEAD"
+    "git_commit":"0ce39bbed8298b03660737353ddf02de87e734dc"
   },
   "appinstall":{
     "install_method":"py_venv_buildout",
