@@ -3,7 +3,7 @@
 # We will have to make something that can automically determine a list of EPU
 # controllers to wait for in each level.  For now, hardcoding the name here.
 
-CONTROLLER="epu_controller_eoi_ingest"
+CONTROLLER="dataservices_epu_controller"
 
 APP_DIR="/home/cc/app"
 VENV_PYTHON="/home/cc/app-venv/bin/python"

@@ -1,0 +1,10 @@
+{
+  "cassandra":{
+    "authenticator":"org.apache.cassandra.auth.SimpleAuthenticator",
+    "users":{"${cassandra_username}":"${cassandra_password}"},
+    "rpc_address":"0.0.0.0"
+  },
+  "username":"cc",
+  "groupname":"users",
+  "recipes":["cassandra"]
+}
