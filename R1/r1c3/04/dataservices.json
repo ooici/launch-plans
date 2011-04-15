@@ -19,6 +19,9 @@
     "sysname":"${exchange_scope}"
   },
   "local_app_confs":{
+    "ion.test.iontest":{
+      "broker_host": "${broker_ip_address}"
+    }
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",
