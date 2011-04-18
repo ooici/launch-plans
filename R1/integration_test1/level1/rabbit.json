@@ -1,17 +1,26 @@
 {
-  "services":{
-    "queuestat":{
-        "service_config":"res/apps/epu-queuestat.app"
-    }
+  "ioncontainers": {
+    "queuestat-container": [
+      {
+        "name": "epu-queuestat", 
+        "args": { }, 
+        "config": {
+          "epu.ionproc.queuestat":{"interval_seconds": "15.0"}
+        },
+        "version": "0.1"
+      }
+    ]
   },
   "local_app_confs":{
-    "epu.ionproc.queuestat":{
-      "interval_seconds":"15.0"
-    }
   },
   "universal_app_confs":{
     "broker_host_list":"127.0.0.1",
     "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"127.0.0.1",
@@ -35,5 +44,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["rabbitmq", "user", "rabbitmq_cookie", "r1app"]
+  "recipes":["rabbitmq", "user", "rabbitmq_cookie", "r1app::r1c3"]
 }

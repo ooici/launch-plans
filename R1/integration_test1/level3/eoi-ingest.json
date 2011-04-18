@@ -1,8 +1,19 @@
 {
-  "services":{
-    "${epu_controller_eoi_ingest}":{
-        "service_config":"res/apps/epu-controller.app",
-        "ION_CONFIGURATION_SECTION":"${epu_controller_eoi_ingest}"
+  "ioncontainers":{
+    "eoi-ingestion-epu-container": {
+      "epucontainer": {
+        "name": "epu-controller",
+        "args": { },
+        "version": "0.1",
+        "config": {
+          "epu.ionproc.epu_controller":{ 
+            "servicename":"${epu_controller_eoi_ingest}",
+            "queue_name_work":"${queue1_name_work}",
+            "engine_class":"epu.decisionengine.impls.NpreservingEngine",
+            "engine_conf":"{\"preserve_n\":\"${preserve_n}\", \"force_site\":\"${worker_iaas_site}\", \"epuworker_type\":\"${worker_deployable_type}\", \"provisioner_vars\":{\"exchange_scope\":\"${exchange_scope}\", \"epuworker_image_id\":\"${worker_id}\", \"queue_name_work\":\"${queue1_name_work}\", \"broker_ip_address\":\"${broker_ip_address}\", \"retrieve_method\":\"${integration_retrieve_method}\", \"archive_url\":\"${package_repo}/${integration_archive_name}\",        \"package_repo\":\"${package_repo}\", \"git_repo\":\"${integration_git_repo}\", \"git_branch\":\"${integration_git_branch}\", \"git_commit\":\"${integration_git_commit}\", \"ion_log_level\":\"${ion_log_level}\"} }"
+          }
+        }
+      }
     }
   },
   "universal_app_confs":{
@@ -10,12 +21,11 @@
     "sysname":"${exchange_scope}"
   },
   "local_app_confs":{
-    "${epu_controller_eoi_ingest}":{
-        "servicename":"${epu_controller_eoi_ingest}",
-        "queue_name_work":"${queue1_name_work}",
-        "engine_class":"epu.decisionengine.impls.NpreservingEngine",
-        "engine_conf":"{\"preserve_n\":\"${preserve_n}\", \"force_site\":\"${worker_iaas_site}\", \"epuworker_type\":\"${worker_deployable_type}\", \"provisioner_vars\":{\"exchange_scope\":\"${exchange_scope}\", \"epuworker_image_id\":\"${worker_id}\", \"queue_name_work\":\"${queue1_name_work}\", \"broker_ip_address\":\"${broker_ip_address}\", \"retrieve_method\":\"${integration_retrieve_method}\", \"archive_url\":\"${package_repo}/${integration_archive_name}\",        \"package_repo\":\"${package_repo}\", \"git_repo\":\"${integration_git_repo}\", \"git_branch\":\"${integration_git_branch}\", \"git_commit\":\"${integration_git_commit}\", \"ion_log_level\":\"${ion_log_level}\"} }"
-    }
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",
@@ -39,5 +49,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["user", "r1app"]
+  "recipes":["user", "r1app::r1c3"]
 }

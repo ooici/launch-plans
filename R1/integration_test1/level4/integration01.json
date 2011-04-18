@@ -1,5 +1,5 @@
 {
-  "services":{ },
+  "ioncontainers":{ },
   "local_app_confs":{ },
   "universal_app_confs":{
     "broker_host_list":"${broker_ip_address}",
@@ -10,6 +10,11 @@
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
     "log_level":"${ion_log_level}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "appretrieve":{
     "retrieve_method":"git",
@@ -27,5 +32,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["user", "r1app"]
+  "recipes":["user", "r1app::r1c3"]
 }
