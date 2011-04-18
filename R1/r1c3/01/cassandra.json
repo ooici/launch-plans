@@ -15,6 +15,9 @@
   },
   "universal_app_confs":{
   },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv"
+  },
   "pythoncc":{
     "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",

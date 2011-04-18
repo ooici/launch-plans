@@ -1,7 +1,7 @@
 {
   "ioncontainers": {
-    "queuestat-container": {
-      "queuestat": {
+    "queuestat-container": [
+      {
         "name": "epu-queuestat", 
         "args": { }, 
         "config": {
@@ -9,13 +9,18 @@
         },
         "version": "0.1"
       }
-    }
+    ]
   },
   "local_app_confs":{
   },
   "universal_app_confs":{
     "broker_host_list":"127.0.0.1",
     "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"127.0.0.1",
