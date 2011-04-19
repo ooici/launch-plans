@@ -6,11 +6,19 @@
         "args": { }, 
         "config": {
           "epu.ionproc.provisioner":{
-            "nimbus_key":"${nimbus_key}",
-            "nimbus_secret":"${nimbus_secret}",
-            "ec2_key":"${ec2_key}",
-            "ec2_secret":"${ec2_secret}",
             "query_period":5,
+            "context_uri":"https://nimbus.ci.uchicago.edu:8888/ContextBroker/ctx/",
+            "context_key":"${nimbus_key}",
+            "context_secret":"${nimbus_secret}",
+            "sites":{
+              "ec2-west":{
+                "driver_class":"libcloud.drivers.ec2.EC2USWestNodeDriver",
+                "driver_kwargs":{
+                  "key":"${ec2_key}",
+                  "secret":"${ec2_secret}"
+                }
+              }
+            },
             "cassandra_hostname":"${cassandra_hostname}",
             "cassandra_username":"${cassandra_username}",
             "cassandra_password":"${cassandra_password}"
