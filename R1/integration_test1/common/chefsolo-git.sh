@@ -78,6 +78,8 @@ CHEFLEVEL="info"
 if [ "X" != "X$1" ]; then
   CHEFLEVEL=$1
 fi
+
+rm -fr /home/cc/app /home/cc/app-venv /home/cc/appmonitor
 chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
 exit $?
 EOF

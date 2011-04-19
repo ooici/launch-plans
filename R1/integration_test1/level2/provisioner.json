@@ -1,28 +1,40 @@
 {
-  "services":{
-    "dtrs":{
-        "service_config":"res/apps/epu-dtrs.app"
+  "ioncontainers":{
+    "provisioner-container": {
+      "provisioner": {
+        "name": "epu-provisioner",
+        "args": { },
+        "config": {
+          "epu.ionproc.provisioner":{
+            "nimbus_key":"${nimbus_key}",
+            "nimbus_secret":"${nimbus_secret}",
+            "ec2_key":"${ec2_key}",
+            "ec2_secret":"${ec2_secret}",
+            "query_period":5
+          }
+        },
+        "version": "0.1"
+      }
     },
-    "provisioner":{
-        "service_config":"res/apps/epu-provisioner.app"
-    },
-    "killer":{
-        "service_config":"res/apps/epu-killer.app",
-        "autostart":false
+    "dtrs-container": {
+      "dtrs": {
+        "name": "epu-dtrs",
+        "args": { },
+        "config": { },
+        "version": "0.1"
+      }
     }
   },
   "local_app_confs":{
-    "epu.ionproc.provisioner":{
-        "nimbus_key":"${nimbus_key}",
-        "nimbus_secret":"${nimbus_secret}",
-        "ec2_key":"${ec2_key}",
-        "ec2_secret":"${ec2_secret}",
-        "query_period":5
-    }
   },
   "universal_app_confs":{
     "broker_host_list":"${broker_ip_address}",
     "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",
@@ -46,5 +58,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["user", "r1app"]
+  "recipes":["user", "r1app::r1c3"]
 }
