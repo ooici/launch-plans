@@ -1,31 +1,41 @@
 {
-  "services":{
-    "dtrs":{
-        "service_config":"res/apps/epu-dtrs.app"
-    },
-    "provisioner":{
-        "service_config":"res/apps/epu-provisioner.app"
-    },
-    "killer":{
-        "service_config":"res/apps/epu-killer.app",
-        "autostart":false
-    }
+  "ioncontainers":{
+    "provisioner-container": [
+      {
+        "name": "epu-provisioner", 
+        "args": { }, 
+        "config": {
+          "epu.ionproc.provisioner":{
+            "nimbus_key":"${nimbus_key}",
+            "nimbus_secret":"${nimbus_secret}",
+            "ec2_key":"${ec2_key}",
+            "ec2_secret":"${ec2_secret}",
+            "query_period":5,
+            "cassandra_hostname":"${cassandra_hostname}",
+            "cassandra_username":"${cassandra_username}",
+            "cassandra_password":"${cassandra_password}"
+          }
+        },
+        "version": "0.1"
+      }
+    ],
+    "dtrs-container": [
+      {
+        "name": "epu-dtrs", 
+        "args": { }, 
+        "config": { },
+        "version": "0.1"
+      }
+    ]
   },
   "local_app_confs":{
-    "epu.ionproc.provisioner":{
-        "nimbus_key":"${nimbus_key}",
-        "nimbus_secret":"${nimbus_secret}",
-        "ec2_key":"${ec2_key}",
-        "ec2_secret":"${ec2_secret}",
-        "query_period":5,
-        "cassandra_hostname":"${cassandra_hostname}",
-        "cassandra_username":"${cassandra_username}",
-        "cassandra_password":"${cassandra_password}"
-    }
   },
   "universal_app_confs":{
     "broker_host_list":"${broker_ip_address}",
     "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv"
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",

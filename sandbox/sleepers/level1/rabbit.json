@@ -4,20 +4,26 @@
     "users":{"${cassandra_username}":"${cassandra_password}"},
     "rpc_address":"0.0.0.0"
   },
-
-  "services":{
-    "queuestat":{
-        "service_config":"res/apps/epu-queuestat.app"
-    }
+  "ioncontainers": {
+    "queuestat-container": [
+      {
+        "name": "epu-queuestat", 
+        "args": { }, 
+        "config": {
+          "epu.ionproc.queuestat":{"interval_seconds": "3.0"}
+        },
+        "version": "0.1"
+      }
+    ]
   },
   "local_app_confs":{
-    "epu.ionproc.queuestat":{
-      "interval_seconds":"3.0"
-    }
   },
   "universal_app_confs":{
     "broker_host_list":"127.0.0.1",
     "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv"
   },
   "pythoncc":{
     "broker":"127.0.0.1",

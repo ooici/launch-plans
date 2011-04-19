@@ -1,0 +1,44 @@
+{
+  "cassandra":{
+    "authenticator":"org.apache.cassandra.auth.SimpleAuthenticator",
+    "users":{"${cassandra_username}":"${cassandra_password}"},
+    "rpc_address":"0.0.0.0"
+  },
+  "ioncontainers": { },
+  "local_app_confs":{
+    "ion.core.data.cassandra_schema_script":{
+      "cassandra_username":"${cassandra_username}",
+      "cassandra_password":"${cassandra_password}",
+      "sysname":"${exchange_scope}",
+      "error_if_existing":true
+    }
+  },
+  "universal_app_confs":{
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv"
+  },
+  "pythoncc":{
+    "broker":"127.0.0.1",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"5",
+    "log_level":"${ion_log_level}"
+  },
+  "appretrieve":{
+    "retrieve_method":"${integration_retrieve_method}",
+    "archive_url":"${package_repo}/${integration_archive_name}",
+    "git_repo":"${integration_git_repo}",
+    "git_branch":"${integration_git_branch}",
+    "git_commit":"${integration_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_buildout",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"supervised"
+  },
+  "username":"cc",
+  "groupname":"users",
+  "recipes":["cassandra", "r1app"]
+}

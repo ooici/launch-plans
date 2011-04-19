@@ -1,34 +1,20 @@
 {
-  "ioncontainers":{
-    "provisioner-container": {
-      "provisioner": {
-        "name": "epu-provisioner",
-        "args": { },
+  "ioncontainers": {
+    "queuestat-container": [
+      {
+        "name": "epu-queuestat", 
+        "args": { }, 
         "config": {
-          "epu.ionproc.provisioner":{
-            "nimbus_key":"${nimbus_key}",
-            "nimbus_secret":"${nimbus_secret}",
-            "ec2_key":"${ec2_key}",
-            "ec2_secret":"${ec2_secret}",
-            "query_period":5
-          }
+          "epu.ionproc.queuestat":{"interval_seconds": "15.0"}
         },
         "version": "0.1"
       }
-    },
-    "dtrs-container": {
-      "dtrs": {
-        "name": "epu-dtrs",
-        "args": { },
-        "config": { },
-        "version": "0.1"
-      }
-    }
+    ]
   },
   "local_app_confs":{
   },
   "universal_app_confs":{
-    "broker_host_list":"${broker_ip_address}",
+    "broker_host_list":"127.0.0.1",
     "sysname":"${exchange_scope}"
   },
   "virtualenv": {
@@ -37,7 +23,7 @@
     "python" : "python2.5"
   },
   "pythoncc":{
-    "broker":"${broker_ip_address}",
+    "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
     "log_level":"${ion_log_level}"
@@ -54,9 +40,9 @@
     "package_repo":"${package_repo}"
   },
   "apprun":{
-    "run_method":"sh"
+    "run_method":"supervised"
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["user", "r1app::r1c3"]
+  "recipes":["rabbitmq", "user", "rabbitmq_cookie", "r1app"]
 }
