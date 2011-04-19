@@ -17,6 +17,11 @@
     "broker_host_list":"127.0.0.1",
     "sysname":"${exchange_scope}"
   },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
+  },
   "pythoncc":{
     "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",
@@ -39,5 +44,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["rabbitmq", "rabbitmq_cookie", "r1app::r1c3"]
+  "recipes":["rabbitmq", "rabbitmq_cookie", "r1app"]
 }

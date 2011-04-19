@@ -65,6 +65,11 @@
   },
   "local_app_confs":{
   },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
+  },
   "pythoncc":{
     "broker":"${broker_ip_address}",
     "sysname":"${exchange_scope}",
@@ -87,5 +92,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["r1app::r1c3"]
+  "recipes":["r1app"]
 }
