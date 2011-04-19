@@ -40,5 +40,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["cassandra", "r1app::r1c3"]
+  "recipes":["cassandra", "r1app"]
 }

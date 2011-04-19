@@ -44,5 +44,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["rabbitmq", "user", "rabbitmq_cookie", "r1app::r1c3"]
+  "recipes":["rabbitmq", "user", "rabbitmq_cookie", "r1app"]
 }
