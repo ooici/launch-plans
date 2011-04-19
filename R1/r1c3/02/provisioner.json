@@ -1,7 +1,7 @@
 {
   "ioncontainers":{
-    "provisioner-container": {
-      "provisioner": {
+    "provisioner-container": [
+      {
         "name": "epu-provisioner", 
         "args": { }, 
         "config": {
@@ -18,21 +18,26 @@
         },
         "version": "0.1"
       }
-    },
-    "dtrs-container": {
-      "dtrs": {
+    ],
+    "dtrs-container": [
+      {
         "name": "epu-dtrs", 
         "args": { }, 
         "config": { },
         "version": "0.1"
       }
-    }
+    ]
   },
   "local_app_confs":{
   },
   "universal_app_confs":{
     "broker_host_list":"${broker_ip_address}",
     "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",

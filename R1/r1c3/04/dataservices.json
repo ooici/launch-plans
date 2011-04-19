@@ -1,7 +1,7 @@
 {
   "ioncontainers":{
-    "dataservices-epu-container": {
-      "epucontroller": {
+    "dataservices-epu-container": [
+      {
         "name": "epu-controller", 
         "args": { }, 
         "version": "0.1",
@@ -12,7 +12,7 @@
           }
         }
       }
-    }
+    ]
   },
   "universal_app_confs":{
     "broker_host_list":"${broker_ip_address}",
@@ -22,6 +22,11 @@
     "ion.test.iontest":{
       "broker_host": "${broker_ip_address}"
     }
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",
