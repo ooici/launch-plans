@@ -7,8 +7,31 @@
         "version": "0.1",
         "config": {
           "epu.ionproc.epu_controller":{
-            "servicename":"${epu_controller_data}", 
-            "engine_class":"epu.decisionengine.impls.NpreservingEngine", "queue_name_work":"notused",            "engine_conf":"{\"preserve_n\":\"${preserve_n}\", \"force_site\":\"${worker_iaas_site}\",  \"epuworker_type\":\"${worker_deployable_type}\", \"provisioner_vars\":{\"exchange_scope\":\"${exchange_scope}\", \"epuworker_image_id\":\"${worker_id}\",  \"broker_ip_address\":\"${broker_ip_address}\", \"cassandra_hostname\":\"${cassandra_hostname}\", \"cassandra_username\":\"${cassandra_username}\", \"cassandra_password\":\"${cassandra_password}\", \"datastore_doinit\":\"True\", \"retrieve_method\":\"${integration_retrieve_method}\", \"archive_url\":\"${package_repo}/${integration_archive_name}\",        \"package_repo\":\"${package_repo}\", \"git_repo\":\"${integration_git_repo}\", \"git_branch\":\"${integration_git_branch}\", \"git_commit\":\"${integration_git_commit}\", \"ion_log_level\":\"${ion_log_level}\"} }"
+            "servicename":"${epu_controller_servicename}", 
+            "engine_class":"epu.decisionengine.impls.NpreservingEngine",
+            "queue_name_work":"notused",
+            "engine_conf": {
+              "preserve_n":"${preserve_n}",
+              "force_site":"${worker_iaas_site}", 
+              "epuworker_type":"${worker_deployable_type}",
+              "monitor_health":"True",
+              "provisioner_vars": {
+                "exchange_scope":"${exchange_scope}",
+                "epuworker_image_id":"${worker_id}", 
+                "broker_ip_address":"${broker_ip_address}",
+                "cassandra_hostname":"${cassandra_hostname}",
+                "cassandra_username":"${cassandra_username}",
+                "cassandra_password":"${cassandra_password}",
+                "datastore_doinit":"True",
+                "retrieve_method":"${integration_retrieve_method}",
+                "archive_url":"${package_repo}/${integration_archive_name}", 
+                "package_repo":"${package_repo}",
+                "git_repo":"${integration_git_repo}",
+                "git_branch":"${integration_git_branch}",
+                "git_commit":"${integration_git_commit}",
+                "ion_log_level":"${ion_log_level}"
+              }
+            }
           }
         }
       }
