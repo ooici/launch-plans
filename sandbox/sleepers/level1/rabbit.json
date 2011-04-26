@@ -4,6 +4,15 @@
     "users":{"${cassandra_username}":"${cassandra_password}"},
     "rpc_address":"0.0.0.0"
   },
+  "rabbitmq":{
+    "vhosts":["/"],
+    "users":{
+      "${rabbitmq_username}":{
+        "password":"${rabbitmq_password}",
+        "permissions":{"/":{"conf":".*", "write":".*", "read":".*"}}
+      }
+    }
+  },
   "ioncontainers": {
     "queuestat-container": [
       {
@@ -29,6 +38,8 @@
     "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{

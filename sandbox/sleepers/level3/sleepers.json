@@ -47,6 +47,8 @@
                 "epuworker_image_id":"${worker_id}",
                 "queue_name_work":"${queue1_name_work}",
                 "broker_ip_address":"${broker_ip_address}",
+                "broker_username":"${rabbitmq_username}",
+                "broker_password":"${rabbitmq_password}",
                 "retrieve_method":"${epu_retrieve_method}",
                 "archive_url":"${package_repo}/${epu_archive_name}",
                 "package_repo":"${package_repo}",
@@ -79,6 +81,8 @@
                 "epuworker_image_id":"${worker_id}",
                 "queue_name_work":"${queue2_name_work}",
                 "broker_ip_address":"${broker_ip_address}",
+                "broker_username":"${rabbitmq_username}",
+                "broker_password":"${rabbitmq_password}",
                 "retrieve_method":"${epu_retrieve_method}",
                 "archive_url":"${package_repo}/${epu_archive_name}",
                 "package_repo":"${package_repo}",
@@ -106,6 +110,8 @@
     "broker":"${broker_ip_address}",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
