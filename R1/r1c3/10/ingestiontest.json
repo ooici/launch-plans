@@ -1,11 +1,52 @@
 {
   "ioncontainers":{
+    "eoiagent-container1": [
+      {
+        "name": "eoiagent", 
+        "args": { }, 
+        "config": { },
+        "version": "0.1"
+      }
+    ],
+    "eoiagent-container2": [
+      {
+        "name": "eoiagent", 
+        "args": { }, 
+        "config": { },
+        "version": "0.1"
+      }
+    ],
+    "eoiagent-container3": [
+      {
+        "name": "eoiagent", 
+        "args": { }, 
+        "config": { },
+        "version": "0.1"
+      }
+    ],
+    "eoiagent-container4": [
+      {
+        "name": "eoiagent", 
+        "args": { }, 
+        "config": {},
+        "version": "0.1"
+      }
+    ]
   },
   "universal_app_confs":{
     "broker_host_list":"${broker_ip_address}",
     "sysname":"${exchange_scope}"
   },
   "local_app_confs":{
+    "ion.test.iontest":{
+      "broker_host": "${broker_ip_address}",
+      "broker_port": 5672,
+      "broker_vhost": "/",
+      "broker_heartbeat":0
+    },
+    "ion.integration.eoi.agent.java_agent_wrapper":{
+      "dataset_agent_jar_path":"/home/cc/app/lib/eoi-agents-0.3.1.jar"
+    } 
   },
   "virtualenv": {
     "path" : "/home/cc/app-venv",
@@ -19,18 +60,20 @@
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
-    "retrieve_method":"${epu_retrieve_method}",
-    "archive_url":"${package_repo}/${epu_archive_name}",
-    "git_repo":"${epu_git_repo}",
-    "git_branch":"${epu_git_branch}",
-    "git_commit":"${epu_git_commit}"
+    "retrieve_method":"git",
+    "archive_url":"notused",
+    "git_repo":"https://github.com/ooici/ion-integration.git",
+    "git_branch":"r1c3_int2",
+    "git_commit":"HEAD"
   },
   "appinstall":{
-    "install_method":"py_venv_setup",
-    "package_repo":"${package_repo}"
+    "install_method":"javapy_venv_buildout_ant",
+    "package_repo":"http://ooici.net/releases",
+    "ant_target":"-lib /home/cc/app get-eoi-agents",
+    "super_cache":"http://ooici.net/releases/supercache.tar.gz"
   },
   "apprun":{
-    "run_method":"supervised"
+    "run_method":"sh"
   },
   "username":"cc",
   "groupname":"users",

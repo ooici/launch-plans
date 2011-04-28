@@ -1,10 +1,6 @@
 {
-  "cassandra":{
-    "authenticator":"org.apache.cassandra.auth.SimpleAuthenticator",
-    "users":{"${cassandra_username}":"${cassandra_password}"},
-    "rpc_address":"0.0.0.0"
+  "ioncontainers": {
   },
-  "ioncontainers": { },
   "local_app_confs":{
     "ion.core.data.cassandra_schema_script":{
       "cassandra_username":"${cassandra_username}",
@@ -14,7 +10,7 @@
     },
     "ion.core.data.storage_configuration_utility":{
       "storage provider":{
-        "host":"localhost",
+        "host":"${cassandra_hostname}",
         "port":9160
       },
       "persistent archive":{
@@ -26,7 +22,9 @@
   "universal_app_confs":{
   },
   "virtualenv": {
-    "path" : "/home/cc/app-venv"
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"127.0.0.1",
@@ -51,5 +49,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["cassandra", "r1app"]
+  "recipes":["user", "r1app"]
 }

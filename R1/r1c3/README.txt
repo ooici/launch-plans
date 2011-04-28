@@ -16,8 +16,8 @@ I. Quick guide for the impatient:
 Export the following environment variables into your shell:
 
     # Credentials for Nimbus
-    # The provisioner uses for the context broker in some situations
-    # The provisioner uses to start worker nodes on Nimbus in some situations
+    export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY`
+    export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET`
     export NIMBUS_KEY=`cat ~/.secrets/NIMBUS_KEY`
     export NIMBUS_SECRET=`cat ~/.secrets/NIMBUS_SECRET`
     

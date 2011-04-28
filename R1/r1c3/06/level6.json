@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "ingestion-epu-container": [
+    "attributestore-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 
@@ -29,6 +29,7 @@
               } 
             }
           }
+        }
       }
     ]
   },
