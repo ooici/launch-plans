@@ -15,9 +15,11 @@ I. Quick guide for the impatient:
 
 Export the following environment variables into your shell:
 
+Export the following environment variables into your shell:
+
     # Credentials for Nimbus
-    # The provisioner uses for the context broker in some situations
-    # The provisioner uses to start worker nodes on Nimbus in some situations
+    export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY`
+    export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET`
     export NIMBUS_KEY=`cat ~/.secrets/NIMBUS_KEY`
     export NIMBUS_SECRET=`cat ~/.secrets/NIMBUS_SECRET`
     
@@ -30,11 +32,28 @@ Export the following environment variables into your shell:
     # cloudinit.d uses to start the base nodes
     export CLOUDBOOT_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
     export CLOUDBOOT_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
+    
+    # Credentials for Cassandra
+    # You make these up
+    export CASSANDRA_USERNAME="mamacass"
+    export CASSANDRA_PASSWORD=`uuidgen`
+    
+    # If you are running your own Cassandra instance outside the launch
+    # plan, this HAS to change every launch.
+    export EXCHANGE_SCOPE="sysname-`uuidgen`"
 
 Run:
 
-   (todo)
+   RUN_NAME = "my_run_name"
+   if [ -n $EXCHANGE_SCOPE ]; then
+     RUN_NAME=$EXCHANGE_SCOPE
+   fi
+   cloudinitd boot main.conf -v -v -v -l debug -x -n $RUN_NAME
+   
+Inspect:
 
+   epumgmt -a status -n $RUN_NAME
+   
 ==============================================================================
 
 II. For launch plan authors: conventions
