@@ -32,14 +32,26 @@ Export the following environment variables into your shell:
     export CLOUDBOOT_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
     
     # Credentials for Cassandra
-    # You make these up
+    # You make these up if you are using EC2.  You may have this running
+    # already if you are using a Nimbus cloud
     export CASSANDRA_USERNAME="mamacass"
     export CASSANDRA_PASSWORD=`uuidgen`
+    
+    # If you are running your own Cassandra instance outside the launch
+    # plan, this HAS to change every launch.
+    export EXCHANGE_SCOPE="sysname-`uuidgen`"
 
 Run:
 
-   cloudinitd boot main.conf -v -v -v -l debug -x -n your-run-name01
-   (todo...)
+   RUN_NAME = "my_run_name"
+   if [ -n $EXCHANGE_SCOPE ]; then
+     RUN_NAME=$EXCHANGE_SCOPE
+   fi
+   cloudinitd boot main.conf -v -v -v -l debug -x -n $RUN_NAME
+   
+Inspect:
+
+   epumgmt -a status -n $RUN_NAME
 
 ==============================================================================
 
