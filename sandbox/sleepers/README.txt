@@ -38,6 +38,11 @@ Export the following environment variables into your shell:
     export CASSANDRA_USERNAME="mamacass"
     export CASSANDRA_PASSWORD=`uuidgen`
     
+    # Credentials for RabbitMQ
+    # You make these up
+    export RABBITMQ_USERNAME="easterbunny"
+    export RABBITMQ_PASSWORD=`uuidgen`
+    
     # If you are running your own Cassandra instance outside the launch
     # plan, this HAS to change every launch.
     export EXCHANGE_SCOPE="sysname-`uuidgen`"
