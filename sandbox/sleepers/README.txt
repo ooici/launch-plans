@@ -45,7 +45,7 @@ Export the following environment variables into your shell:
     
     # If you are running your own Cassandra instance outside the launch
     # plan, this HAS to change every launch.
-    export EXCHANGE_SCOPE="sysname-`uuidgen`"
+    export EXCHANGE_SCOPE="sysname123"
 
 Run:
 
