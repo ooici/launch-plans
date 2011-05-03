@@ -8,33 +8,14 @@ CONTROLLER2="epu_controller_sleeper2"
 
 APP_DIR="/home/cc/app"
 
-OOICI_CONN="/home/ubuntu/ooici-conn.properties"
+MESSAGING_CONF="/home/ubuntu/messaging.conf"
 VENV_PYTHON="sudo /home/cc/app-venv/bin/python"
 
 import os
 import subprocess
 import sys
 
-if not os.path.exists(OOICI_CONN):
-    raise Exception("Could not find file: %s" % OOICI_CONN)
-
-exchange = None
-server = None
-
-f = open(OOICI_CONN, 'r')
-for line in f.readlines():
-    if line.rfind("=") >= 1:
-        (key, value) = line.split("=")
-        if key == "exchange":
-            exchange = value.strip()
-        elif key == "server":
-            server = value.strip()
-f.close()
-
-if not exchange and not server:
-    raise Exception("Could not find all necessary configurations in order to run epu-state-wait")
-
-run = [VENV_PYTHON, "./scripts/epu-state-wait", exchange, server, CONTROLLER]
+run = [VENV_PYTHON, "./scripts/epu-state-wait", MESSAGING_CONF, CONTROLLER]
 runcmd = ' '.join(run)
 print runcmd
 retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT)
@@ -43,7 +24,7 @@ if retcode:
     print "Problem waiting for EPU controller stable state for '%s'" % CONTROLLER
     sys.exit(retcode)
 
-run = [VENV_PYTHON, "./scripts/epu-state-wait", exchange, server, CONTROLLER2]
+run = [VENV_PYTHON, "./scripts/epu-state-wait", MESSAGING_CONF, CONTROLLER2]
 runcmd = ' '.join(run)
 print runcmd
 retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT)
