@@ -1,12 +1,46 @@
 {
   "ioncontainers":{
-    "provisioner-container": [
+    "provisioner-query-container": [
+      {
+        "name": "epu-provisioner-query",
+        "args" : {},
+        "config": {}
+      }
+    ],
+    "provisioner-container1": [
       {
         "name": "epu-provisioner", 
         "args": { }, 
         "config": {
           "epu.ionproc.provisioner":{
-            "query_period":5,
+            "context_uri":"https://nimbus.ci.uchicago.edu:8888/ContextBroker/ctx/",
+            "context_key":"${ctxbroker_key}",
+            "context_secret":"${ctxbroker_secret}",
+            "sites":{
+              "ec2-west":{
+                "driver_class":"libcloud.drivers.ec2.EC2USWestNodeDriver",
+                "driver_kwargs":{
+                  "key":"${ec2_key}",
+                  "secret":"${ec2_secret}"
+                }
+              }
+            },
+            "cassandra_hostname":"${cassandra_hostname}",
+            "cassandra_username":"${cassandra_username}",
+            "cassandra_password":"${cassandra_password}",
+            "cassandra_keyspace":"${exchange_scope}",
+            "cassandra_port":9160
+          }
+        },
+        "version": "0.1"
+      }
+    ],
+    "provisioner-container2": [
+      {
+        "name": "epu-provisioner", 
+        "args": { }, 
+        "config": {
+          "epu.ionproc.provisioner":{
             "context_uri":"https://nimbus.ci.uchicago.edu:8888/ContextBroker/ctx/",
             "context_key":"${ctxbroker_key}",
             "context_secret":"${ctxbroker_secret}",

@@ -26,6 +26,13 @@
     ]
   },
   "local_app_confs":{
+    "epu.cassandra":{
+      "hostname":"localhost",
+      "port":9160,
+      "username":"${cassandra_username}",
+      "password":"${cassandra_password}",
+      "keyspace":"${exchange_scope}"
+    }
   },
   "universal_app_confs":{
     "broker_host_list":"127.0.0.1",
