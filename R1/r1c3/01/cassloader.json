@@ -30,14 +30,16 @@
     "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
     "retrieve_method":"git",
     "archive_url":"notused",
-    "git_repo":"https://github.com/ooici/ioncore-python.git",
-    "git_branch":"develop",
-    "git_commit":"v0.4.8"
+    "git_repo":"https://github.com/ooici/ion-integration.git",
+    "git_branch":"r1c3_int2",
+    "git_commit":"HEAD"
   },
   "appinstall":{
     "install_method":"py_venv_buildout",
