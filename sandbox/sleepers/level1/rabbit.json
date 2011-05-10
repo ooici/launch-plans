@@ -56,6 +56,14 @@
   "apprun":{
     "run_method":"supervised"
   },
+  "dtdata":{
+    "retrieve_method":"git",
+    "archive_url":"http://ooici.net/releases/dt-data-0.1.tar.gz",
+    "git_repo":"https://github.com/ooici/dt-data.git",
+    "git_branch":"master",
+    "git_commit":"HEAD",
+    "chef_debug_level":"debug"
+  },
   "username":"cc",
   "groupname":"users",
   "recipes":["rabbitmq", "rabbitmq_cookie", "cassandra", "r1app"]

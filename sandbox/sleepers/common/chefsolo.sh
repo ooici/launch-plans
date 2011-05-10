@@ -4,7 +4,7 @@
 # Set the repository here
 
 GIT_URL="git://github.com/ooici/dt-data.git"
-GIT_BRANCH="master"
+GIT_BRANCH="self.packaged"
 CHEF_LOGLEVEL="info"
 
 # ========================================================================
