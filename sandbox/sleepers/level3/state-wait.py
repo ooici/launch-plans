@@ -4,7 +4,7 @@
 # controllers to wait for in each level.  For now, hardcoding the name here.
 
 CONTROLLER="epu_controller_sleeper1"
-CONTROLLER2="epu_controller_sleeper2"
+#CONTROLLER2="epu_controller_sleeper2"
 
 APP_DIR="/home/cc/app"
 
