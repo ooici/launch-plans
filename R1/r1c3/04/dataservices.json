@@ -46,6 +46,13 @@
   "local_app_confs":{
     "ion.test.iontest":{
       "broker_host": "${broker_ip_address}"
+    },
+    "epu.cassandra":{
+      "hostname":"${cassandra_hostname}",
+      "port":9160,
+      "username":"${cassandra_username}",
+      "password":"${cassandra_password}",
+      "keyspace":"${exchange_scope}"
     }
   },
   "virtualenv": {

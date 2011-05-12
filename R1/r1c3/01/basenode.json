@@ -1,31 +1,30 @@
 {
-  "ioncontainers": {
-    "queuestat-container": [
-      {
-        "name": "epu-queuestat", 
-        "args": { }, 
-        "config": {
-          "epu.ionproc.queuestat":{"interval_seconds": "15.0"}
-        },
-        "version": "0.1"
-      }
-    ]
+  "ioncontainers":{
   },
   "local_app_confs":{
+    "epu.cassandra":{
+      "hostname":"${cassandra_hostname}",
+      "port":9160,
+      "username":"${cassandra_username}",
+      "password":"${cassandra_password}",
+      "keyspace":"${exchange_scope}"
+    }
   },
   "universal_app_confs":{
-    "broker_host_list":"127.0.0.1",
+    "broker_host_list":"${broker_ip_address}",
     "sysname":"${exchange_scope}"
   },
   "virtualenv": {
-    "path" : "/home/cc/app-venv",
+    "path" : "/home/basenode/app-venv",
     "virtualenv" : "/opt/python2.5/bin/virtualenv",
     "python" : "python2.5"
   },
   "pythoncc":{
-    "broker":"127.0.0.1",
+    "broker":"${broker_ip_address}",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"5",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
@@ -42,7 +41,7 @@
   "apprun":{
     "run_method":"supervised"
   },
-  "username":"cc",
+  "username":"basenode",
   "groupname":"users",
-  "recipes":["rabbitmq", "user", "rabbitmq_cookie", "r1app"]
+  "recipes":["user", "r1app"]
 }

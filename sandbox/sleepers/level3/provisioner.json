@@ -23,15 +23,6 @@
                   "key":"${ec2_key}",
                   "secret":"${ec2_secret}"
                 }
-              },
-              "nimbus-ucsd" : {
-                "driver_class" : "nimboss.node.NimbusNodeDriver",
-                "driver_kwargs" : {
-                  "key":"${nimbus_key}",
-                  "secret":"${nimbus_secret}",
-                  "host":"nimbus.oceanobservatories.org",
-                  "port":8444
-                }
               }
             },
             "cassandra_hostname":"${cassandra_hostname}",

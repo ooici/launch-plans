@@ -1,20 +1,16 @@
 {
-  "cassandra":{
-    "authenticator":"org.apache.cassandra.auth.SimpleAuthenticator",
-    "users":{"${cassandra_username}":"${cassandra_password}"},
-    "rpc_address":"0.0.0.0"
+  "ioncontainers": {
   },
-  "ioncontainers": { },
   "local_app_confs":{
     "ion.core.data.cassandra_schema_script":{
       "cassandra_username":"${cassandra_username}",
       "cassandra_password":"${cassandra_password}",
       "sysname":"${exchange_scope}",
-      "error_if_existing":true
+      "error_if_existing":false
     },
     "ion.core.data.storage_configuration_utility":{
       "storage provider":{
-        "host":"localhost",
+        "host":"${cassandra_hostname}",
         "port":9160
       },
       "persistent archive":{
@@ -26,7 +22,9 @@
   "universal_app_confs":{
   },
   "virtualenv": {
-    "path" : "/home/cc/app-venv"
+    "path" : "/home/cassload/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
   },
   "pythoncc":{
     "broker":"127.0.0.1",
@@ -39,9 +37,9 @@
   "appretrieve":{
     "retrieve_method":"git",
     "archive_url":"notused",
-    "git_repo":"https://github.com/ooici/ioncore-python.git",
-    "git_branch":"develop",
-    "git_commit":"v0.4.8"
+    "git_repo":"https://github.com/ooici/ion-integration.git",
+    "git_branch":"r1c3_int2",
+    "git_commit":"HEAD"
   },
   "appinstall":{
     "install_method":"py_venv_buildout",
@@ -51,7 +49,7 @@
   "apprun":{
     "run_method":"supervised"
   },
-  "username":"cc",
+  "username":"cassload",
   "groupname":"users",
-  "recipes":["cassandra", "r1app"]
+  "recipes":["user", "r1app"]
 }

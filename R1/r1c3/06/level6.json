@@ -40,6 +40,13 @@
     "sysname":"${exchange_scope}"
   },
   "local_app_confs":{
+    "epu.cassandra":{
+      "hostname":"${cassandra_hostname}",
+      "port":9160,
+      "username":"${cassandra_username}",
+      "password":"${cassandra_password}",
+      "keyspace":"${exchange_scope}"
+    }
   },
   "virtualenv": {
     "path" : "/home/cc/app-venv",
