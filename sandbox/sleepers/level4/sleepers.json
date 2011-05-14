@@ -23,7 +23,7 @@
           "epu.ionproc.epu_controller":{
             "servicename":"${epu_controller1_servicename}",
             "queue_name_work":"${queue1_name_work}",
-            "engine_class":"epu.decisionengine.impls.NpreservingEngine",
+            "engine_class":"epu.decisionengine.impls.TorqueOnDemandEngine",
             "engine_conf" : {
               "preserve_n":"${preserve_n}",
               "force_site":"${worker_iaas_site}",
@@ -32,6 +32,7 @@
                 "exchange_scope":"${exchange_scope}",
                 "epuworker_image_id":"${worker_id}",
                 "queue_name_work":"${queue1_name_work}",
+                "torque_headnode_ip_address":"${broker_ip_address}",
                 "broker_ip_address":"${broker_ip_address}",
                 "broker_username":"${rabbitmq_username}",
                 "broker_password":"${rabbitmq_password}",
@@ -89,5 +90,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["r1app"]
+  "recipes":["apt", "r1app"]
 }

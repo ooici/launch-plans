@@ -17,8 +17,8 @@
             "context_key":"${ctxbroker_key}",
             "context_secret":"${ctxbroker_secret}",
             "sites":{
-              "ec2-west":{
-                "driver_class":"libcloud.drivers.ec2.EC2USWestNodeDriver",
+              "ec2-east":{
+                "driver_class":"libcloud.drivers.ec2.EC2NodeDriver",
                 "driver_kwargs":{
                   "key":"${ec2_key}",
                   "secret":"${ec2_secret}"
@@ -77,5 +77,5 @@
   },
   "username":"cc",
   "groupname":"users",
-  "recipes":["r1app"]
+  "recipes":["apt", "r1app"]
 }
