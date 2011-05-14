@@ -2,7 +2,7 @@
 
 GIT_URL="https://github.com/ooici/dt-data.git"
 GIT_BRANCH="master"
-CHEF_LOGLEVEL="info"
+CHEF_LOGLEVEL="debug"
 
 # ========================================================================
 
@@ -57,7 +57,7 @@ fi
 
 cat >> chefconf.rb << "EOF"
 cookbook_path "/opt/dt-data/cookbooks"
-log_level :info
+log_level :debug
 file_store_path "/opt/dt-data/tmp"
 file_cache_path "/opt/dt-data/tmp"
 Chef::Log::Formatter.show_time = false
@@ -71,7 +71,7 @@ fi
 
 cat >> rerun-controllerschef.sh << "EOF"
 #!/bin/bash
-CHEFLEVEL="info"
+CHEFLEVEL="debug"
 if [ "X" != "X$1" ]; then
   CHEFLEVEL=$1
 fi

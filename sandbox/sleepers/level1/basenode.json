@@ -14,12 +14,12 @@
     }
   },
   "ioncontainers": {
-    "queuestat-container": [
+    "torque-container": [
       {
-        "name": "epu-queuestat", 
+        "name": "epu-torque", 
         "args": { }, 
         "config": {
-          "epu.ionproc.queuestat":{"interval_seconds": "3.0"}
+          "epu.ionproc.torque":{"interval_seconds": "3.0"}
         },
         "version": "0.1"
       }
@@ -73,5 +73,5 @@
   },
   "username":"basenode",
   "groupname":"users",
-  "recipes":["user", "rabbitmq", "rabbitmq_cookie", "cassandra", "r1app"]
+  "recipes":["user", "rabbitmq", "rabbitmq_cookie", "cassandra", "r1app", "apt", "torque::server", "virtualenv", "pbs_python"]
 }
