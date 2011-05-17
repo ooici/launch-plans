@@ -50,7 +50,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv bootconf.json /opt/dt-data/run/epu1chefroles.json
+$CMDPREFIX mv bootconf.json /opt/dt-data/run/provisionerchefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -64,35 +64,35 @@ Chef::Log::Formatter.show_time = false
 
 EOF
 
-$CMDPREFIX mv chefconf.rb /opt/dt-data/run/epu1chefconf.rb
+$CMDPREFIX mv chefconf.rb /opt/dt-data/run/provisionerchefconf.rb
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-cat >> rerun-epu1chef.sh << "EOF"
+cat >> rerun-provisionerchef.sh << "EOF"
 #!/bin/bash
 CHEFLEVEL="info"
 if [ "X" != "X$1" ]; then
   CHEFLEVEL=$1
 fi
-rm -rf /home/epu1/app
-rm -rf /home/epu1/app-venv
-chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/epu1chefconf.rb -j /opt/dt-data/run/epu1chefroles.json
+rm -rf /home/provisioner/app
+rm -rf /home/provisioner/app-venv
+chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/provisionerchefconf.rb -j /opt/dt-data/run/provisionerchefroles.json
 exit $?
 EOF
 
-chmod +x rerun-epu1chef.sh
+chmod +x rerun-provisionerchef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv rerun-epu1chef.sh /opt/rerun-epu1chef.sh
+$CMDPREFIX mv rerun-provisionerchef.sh /opt/rerun-provisionerchef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-$CMDPREFIX /opt/rerun-epu1chef.sh  #debug
+$CMDPREFIX /opt/rerun-provisionerchef.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi

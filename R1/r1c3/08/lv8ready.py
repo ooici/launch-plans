@@ -5,10 +5,10 @@
 
 CONTROLLER="level8_epu_controller"
 
-APP_DIR="/home/cc/app"
+APP_DIR="/home/epu8/app"
 MSG_CONF = APP_DIR + "/messaging.conf"
 
-VENV_PYTHON="/home/cc/app-venv/bin/python"
+VENV_PYTHON= APP_DIR + "/bin/python"
 
 import os
 import subprocess

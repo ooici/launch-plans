@@ -5,11 +5,11 @@
 
 CONTROLLER="dataservices_epu_controller"
 
-APP_DIR="/home/epu1/app"
+APP_DIR="/home/epu4/app"
 MSG_CONF = APP_DIR + "/messaging.conf"
 
-VENV_PYTHON="/home/epu1/app-venv/bin/python"
-VENV_TRIAL="/home/epu1/app-venv/bin/trial"
+VENV_PYTHON="/home/epu4/app/bin/python"
+VENV_TRIAL="/home/epu4/app/bin/trial"
 
 import os
 import subprocess

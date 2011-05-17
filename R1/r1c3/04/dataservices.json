@@ -54,7 +54,7 @@
     }
   },
   "virtualenv": {
-    "path" : "/home/epu1/app-venv",
+    "path" : "/home/epu4/app-venv",
     "virtualenv" : "/opt/python2.5/bin/virtualenv",
     "python" : "python2.5"
   },
@@ -72,13 +72,14 @@
     "git_commit":"${epu_git_commit}"
   },
   "appinstall":{
-    "install_method":"py_venv_setup",
-    "package_repo":"${package_repo}"
+    "install_method":"py_venv_buildout",
+    "package_repo":"${package_repo}",
+    "super_cache":"http://ooici.net/releases/supercache.tar.gz"
   },
   "apprun":{
     "run_method":"supervised"
   },
-  "username":"epu1",
+  "username":"epu4",
   "groupname":"users",
   "recipes":["user", "r1app"]
 }
