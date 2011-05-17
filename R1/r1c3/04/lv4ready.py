@@ -78,7 +78,7 @@ class Bootlevel4LocalReadyTest(ItvTestCase):
         p = Process()
         yield p.spawn()
 
-        for servicename in ['datastore', 'association_service', 'resource_registry_2']:
+        for servicename in ['datastore', 'association_service', 'resource_registry']:
             (content, headers, msg) = yield p.rpc_send(p.get_scoped_name('system', servicename), 'ping', {})
             # if timeout, will just fail the test
 
