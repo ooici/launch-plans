@@ -46,7 +46,7 @@
       "broker_heartbeat":0
     },
     "ion.integration.eoi.agent.java_agent_wrapper":{
-      "dataset_agent_jar_path":"/home/cc/app/lib/eoi-agents-0.3.2.jar"
+      "dataset_agent_jar_path":"/home/cc/app/lib/eoi-agents-0.3.5.jar"
     } 
   },
   "virtualenv": {
