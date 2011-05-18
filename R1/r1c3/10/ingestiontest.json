@@ -40,7 +40,6 @@
   "local_app_confs":{
     "ion.test.iontest":{
       "broker_host": "${broker_ip_address}",
-      "broker_credfile": "/home/cc/app/broker_creds.txt",
       "broker_port": 5672,
       "broker_vhost": "/",
       "broker_heartbeat":0

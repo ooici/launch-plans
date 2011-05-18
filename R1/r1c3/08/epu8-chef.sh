@@ -50,7 +50,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv bootconf.json /opt/dt-data/run/epu4chefroles.json
+$CMDPREFIX mv bootconf.json /opt/dt-data/run/epu8chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -64,35 +64,35 @@ Chef::Log::Formatter.show_time = false
 
 EOF
 
-$CMDPREFIX mv chefconf.rb /opt/dt-data/run/epu4chefconf.rb
+$CMDPREFIX mv chefconf.rb /opt/dt-data/run/epu8chefconf.rb
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-cat >> rerun-epu4chef.sh << "EOF"
+cat >> rerun-epu8chef.sh << "EOF"
 #!/bin/bash
 CHEFLEVEL="info"
 if [ "X" != "X$1" ]; then
   CHEFLEVEL=$1
 fi
-rm -rf /home/epu4/app
-rm -rf /home/epu4/app-venv
-chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/epu4chefconf.rb -j /opt/dt-data/run/epu4chefroles.json
+rm -rf /home/epu8/app
+rm -rf /home/epu8/app-venv
+chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/epu8chefconf.rb -j /opt/dt-data/run/epu8chefroles.json
 exit $?
 EOF
 
-chmod +x rerun-epu4chef.sh
+chmod +x rerun-epu8chef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv rerun-epu4chef.sh /opt/rerun-epu4chef.sh
+$CMDPREFIX mv rerun-epu8chef.sh /opt/rerun-epu8chef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-$CMDPREFIX /opt/rerun-epu4chef.sh  #debug
+$CMDPREFIX /opt/rerun-epu8chef.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi
