@@ -53,7 +53,7 @@
     "sysname":"${exchange_scope}"
   },
   "virtualenv": {
-    "path" : "/home/provisioner/app-venv",
+    "path" : "/home/cc/app-venv",
     "virtualenv" : "/opt/python2.5/bin/virtualenv",
     "python" : "python2.5"
   },
@@ -78,7 +78,7 @@
   "apprun":{
     "run_method":"supervised"
   },
-  "username":"provisioner",
+  "username":"cc",
   "groupname":"users",
   "recipes":["user", "r1app"]
 }
