@@ -44,6 +44,18 @@
         "config": { },
         "version": "0.1"
       }
+    ],
+    "epulist-container": [
+      {
+        "name": "epu-list", 
+        "args": { }, 
+        "config": { 
+          "epu.ionproc.controller_list":{
+            "controller_list_path":""
+          }
+        },
+        "version": "0.1"
+      }
     ]
   },
   "local_app_confs":{
