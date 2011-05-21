@@ -96,3 +96,16 @@ $CMDPREFIX /opt/rerun-provisionerchef.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi
+
+cat >> controller_list.txt << "EOF"
+dataservices_epu_controller
+exchangepreserve_epu_controller
+attributestore_epu_controller
+identityregistry_epu_controller
+level8_epu_controller
+ingestion_epu_controller
+eoiagent_epu_controller
+EOF
+
+$CMDPREFIX chown cc controller_list.txt
+$CMDPREFIX mv controller_list.txt /home/cc/controller_list.txt

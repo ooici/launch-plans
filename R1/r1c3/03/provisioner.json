@@ -51,7 +51,7 @@
         "args": { }, 
         "config": { 
           "epu.ionproc.controller_list":{
-            "controller_list_path":""
+            "controller_list_path":"/home/cc/controller_list.txt"
           }
         },
         "version": "0.1"
