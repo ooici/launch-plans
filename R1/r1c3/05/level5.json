@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "ingestion-epu-container": [
+    "exchangepreserve-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 
