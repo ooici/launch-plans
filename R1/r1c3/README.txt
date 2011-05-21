@@ -31,6 +31,10 @@ Export the following environment variables into your shell:
     export CLOUDBOOT_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
     export CLOUDBOOT_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
     
+    # Credentials for THREDDS
+    export DATASET_PUBKEY=`cat ~/.secrets/dataset-pubkey`
+    export DATASET_PRIVKEY=`cat ~/.secrets/dataset-privkey`
+    
     # Credentials for Cassandra
     # You make these up if you are using EC2.  You may have this running
     # already if you are using a Nimbus cloud
