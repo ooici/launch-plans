@@ -2,7 +2,7 @@
 
 TRIAL_TEST="tests.services.dm.test_ingestion.IntTestIngest.test_ingest"
 
-APP_DIR="/home/cc/app"
+APP_DIR="/home/ingestiontest/app"
 
 import os
 import subprocess
