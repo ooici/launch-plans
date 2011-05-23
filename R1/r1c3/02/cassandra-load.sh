@@ -104,8 +104,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX /home/cassload/app/bin/python /opt/cache/eggs/ioncore-0.4.16-py2.5.egg/ion/core/data/cassandra_schema_script.py
-
+$CMDPREFIX /home/cassload/app/bin/cassandra-setup
 if [ $? -ne 0 ]; then
   exit 1
 fi
