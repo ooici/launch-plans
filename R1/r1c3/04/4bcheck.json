@@ -31,9 +31,9 @@
   "appretrieve":{
     "retrieve_method":"git",
     "archive_url":"notused",
-    "git_repo":"https://github.com/ooici/ion-integration.git",
-    "git_branch":"r1c3_int2",
-    "git_commit":"HEAD"
+    "git_repo":"${integration_git_repo}",
+    "git_branch":"${integration_git_branch}",
+    "git_commit":"${integration_git_commit}"
   },
   "appinstall":{
     "install_method":"py_venv_buildout",
