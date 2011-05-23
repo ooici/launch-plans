@@ -47,7 +47,7 @@
     }
   },
   "virtualenv": {
-    "path" : "/home/epu9/app-venv",
+    "path" : "/home/epu10/app-venv",
     "virtualenv" : "/opt/python2.5/bin/virtualenv",
     "python" : "python2.5"
   },
@@ -72,7 +72,7 @@
   "apprun":{
     "run_method":"supervised"
   },
-  "username":"epu9",
+  "username":"epu10",
   "groupname":"users",
   "recipes":["user", "r1app"]
 }
