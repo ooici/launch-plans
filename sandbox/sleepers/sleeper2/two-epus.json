@@ -42,6 +42,7 @@
               "preserve_n":"${preserve_n}",
               "force_site":"${worker_iaas_site}",
               "epuworker_type":"${worker_deployable_type}",
+              "monitor_health":"True",
               "provisioner_vars" : {
                 "exchange_scope":"${exchange_scope}",
                 "epuworker_image_id":"${worker_id}",
