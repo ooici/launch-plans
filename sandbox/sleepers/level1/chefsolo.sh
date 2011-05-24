@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# git version: cookbooks come from git
-# Set the repository here
-
-GIT_URL="git://github.com/ooici/dt-data.git"
+GIT_URL="https://github.com/ooici/dt-data.git"
 GIT_BRANCH="master"
 CHEF_LOGLEVEL="info"
 
@@ -53,7 +50,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv bootconf.json /opt/dt-data/run/chefroles.json
+$CMDPREFIX mv bootconf.json /opt/dt-data/run/basenodechefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -67,33 +64,35 @@ Chef::Log::Formatter.show_time = false
 
 EOF
 
-$CMDPREFIX mv chefconf.rb /opt/dt-data/run/chefconf.rb
+$CMDPREFIX mv chefconf.rb /opt/dt-data/run/basenodechefconf.rb
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-cat >> rerun-chef.sh << "EOF"
+cat >> rerun-basenodechef.sh << "EOF"
 #!/bin/bash
 CHEFLEVEL="info"
 if [ "X" != "X$1" ]; then
   CHEFLEVEL=$1
 fi
-chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/chefconf.rb -j /opt/dt-data/run/chefroles.json
+rm -rf /home/basenode/app
+rm -rf /home/basenode/app-venv
+chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/basenodechefconf.rb -j /opt/dt-data/run/basenodechefroles.json
 exit $?
 EOF
 
-chmod +x rerun-chef.sh
+chmod +x rerun-basenodechef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv rerun-chef.sh /opt/rerun-chef.sh
+$CMDPREFIX mv rerun-basenodechef.sh /opt/rerun-basenodechef.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-$CMDPREFIX /opt/rerun-chef.sh  #debug
+$CMDPREFIX /opt/rerun-basenodechef.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi

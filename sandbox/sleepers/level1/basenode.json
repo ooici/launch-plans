@@ -39,7 +39,7 @@
     "sysname":"${exchange_scope}"
   },
   "virtualenv": {
-    "path" : "/home/cc/app-venv"
+    "path" : "/home/basenode/app-venv"
   },
   "pythoncc":{
     "broker":"127.0.0.1",
@@ -71,7 +71,7 @@
     "git_commit":"HEAD",
     "chef_debug_level":"debug"
   },
-  "username":"cc",
+  "username":"basenode",
   "groupname":"users",
-  "recipes":["rabbitmq", "rabbitmq_cookie", "cassandra", "r1app"]
+  "recipes":["user", "rabbitmq", "rabbitmq_cookie", "cassandra", "r1app"]
 }

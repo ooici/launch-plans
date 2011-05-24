@@ -112,7 +112,7 @@
     }
   },
   "virtualenv": {
-    "path" : "/home/cc/app-venv"
+    "path" : "/home/controllers/app-venv"
   },
   "pythoncc":{
     "broker":"${broker_ip_address}",
@@ -136,7 +136,7 @@
   "apprun":{
     "run_method":"supervised"
   },
-  "username":"cc",
+  "username":"controllers",
   "groupname":"users",
-  "recipes":["r1app"]
+  "recipes":["user", "r1app"]
 }

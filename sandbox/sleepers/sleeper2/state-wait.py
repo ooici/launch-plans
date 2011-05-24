@@ -6,10 +6,10 @@
 CONTROLLER="epu_controller_sleeper1"
 CONTROLLER2="epu_controller_sleeper2"
 
-APP_DIR="/home/cc/app"
+APP_DIR="/home/controllers/app"
 
 MESSAGING_CONF="/home/ubuntu/messaging.conf"
-VENV_PYTHON="sudo /home/cc/app-venv/bin/python"
+VENV_PYTHON="sudo /home/controllers/app-venv/bin/python"
 
 import os
 import subprocess

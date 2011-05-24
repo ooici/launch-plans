@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd /home/cc/app
-sudo -u cc /home/cc/app/scripts/run_under_env.sh /home/cc/app-venv/bin/activate epu-cassandra-schema
+cd /home/basenode/app
+sudo -u basenode /home/basenode/app/scripts/run_under_env.sh /home/basenode/app-venv/bin/activate epu-cassandra-schema
