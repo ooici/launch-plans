@@ -90,5 +90,5 @@
   },
   "username":"controllers",
   "groupname":"users",
-  "recipes":["user", "r1app", "apt"]
+  "recipes":["user", "apt", "r1app"]
 }

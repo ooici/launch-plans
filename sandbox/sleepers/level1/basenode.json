@@ -73,5 +73,5 @@
   },
   "username":"basenode",
   "groupname":"users",
-  "recipes":["user", "rabbitmq", "rabbitmq_cookie", "cassandra", "r1app", "apt", "torque::server", "virtualenv", "pbs_python"]
+  "recipes":["user", "rabbitmq", "rabbitmq_cookie", "cassandra", "apt", "torque::server", "virtualenv", "pbs_python", "r1app"]
 }
