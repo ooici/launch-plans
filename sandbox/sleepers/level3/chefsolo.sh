@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GIT_URL="https://github.com/ooici/dt-data.git"
+GIT_URL="https://github.com/oldpatricka/dt-data.git"
 GIT_BRANCH="master"
 CHEF_LOGLEVEL="info"
 
