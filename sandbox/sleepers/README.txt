@@ -46,6 +46,10 @@ Export the following environment variables into your shell:
     # If you are running your own Cassandra instance outside the launch
     # plan, this HAS to change every launch.
     export EXCHANGE_SCOPE="sysname123"
+    
+    # If you are using the ANF example:
+    export SQLSTREAM_RETRIEVE_ID="$AWS_ACCESS_KEY_ID"
+    export SQLSTREAM_RETRIEVE_SECRET="$AWS_SECRET_ACCESS_KEY"
 
 Run:
 

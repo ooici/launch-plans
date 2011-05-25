@@ -1,0 +1,83 @@
+{
+  "ioncontainers":{
+    "anf-epu-container": [
+      {
+        "name": "epu-controller", 
+        "args": { }, 
+        "version": "0.1",
+        "config": {
+          "epu.ionproc.epu_controller":{
+            "servicename":"${epu_controller_anf_servicename}",
+            "queue_name_work":"notused",
+            "engine_class":"epu.decisionengine.impls.NpreservingEngine",
+            "engine_conf" : {
+              "preserve_n":"${preserve_n}",
+              "force_site":"${worker_iaas_site}",
+              "epuworker_type":"${worker_deployable_type}",
+              "provisioner_vars" : {
+                "exchange_scope":"${exchange_scope}",
+                "epuworker_image_id":"${worker_id}",
+                "queue_name_work":"notused",
+                "broker_ip_address":"${broker_ip_address}",
+                "broker_username":"${rabbitmq_username}",
+                "broker_password":"${rabbitmq_password}",
+                "retrieve_method":"${anf_agent_retrieve_method}",
+                "archive_url":"notused",
+                "package_repo":"${anf_agent_package_repo}",
+                "git_repo":"${anf_agent_git_repo}",
+                "git_branch":"${anf_agent_git_branch}",
+                "git_commit":"${anf_agent_git_commit}",
+                "ion_log_level":"${anf_agent_ion_log_level}",
+                "agent_args":[ ],
+                "binary_retrieve_id":"${binary_retrieve_id}",
+                "binary_retrieve_secret":"${binary_retrieve_secret}",
+                "binary_retrieve_command":"${binary_retrieve_command}"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "universal_app_confs":{
+    "broker_host_list":"${broker_ip_address}",
+    "sysname":"${exchange_scope}"
+  },
+  "local_app_confs":{
+    "epu.cassandra":{
+      "hostname":"${cassandra_hostname}",
+      "port":9160,
+      "username":"${cassandra_username}",
+      "password":"${cassandra_password}",
+      "keyspace":"${exchange_scope}"
+    }
+  },
+  "virtualenv": {
+    "path" : "/home/anfepu/app-venv"
+  },
+  "pythoncc":{
+    "broker":"${broker_ip_address}",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"5",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
+    "log_level":"${ion_log_level}"
+  },
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${package_repo}/${epu_archive_name}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_setup",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"supervised"
+  },
+  "username":"anfepu",
+  "groupname":"users",
+  "recipes":["user", "r1app"]
+}
