@@ -77,7 +77,8 @@
     "super_cache":"http://ooici.net/releases/supercache.tar.gz"
   },
   "apprun":{
-    "run_method":"supervised"
+    "run_method":"supervised",
+    "autorestart":true
   },
   "username":"epu4",
   "groupname":"users",
