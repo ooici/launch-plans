@@ -30,7 +30,7 @@ if not exchange and not server:
         
 envmap = {"ION_TEST_CASE_SYSNAME": exchange}
 
-run = ["./bin/itv", TRIAL_TEST]
+run = ["./bin/trial", TRIAL_TEST]
 runcmd = ' '.join(run)
 print runcmd
 retcode = subprocess.call(runcmd, shell=True, env=envmap, cwd=APP_DIR, stderr=subprocess.STDOUT)
