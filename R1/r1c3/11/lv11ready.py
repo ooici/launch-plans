@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-TRIAL_TEST="tests.services.dm.test_ingestion.IntTestIngest"
+TRIAL_TEST="itv_tests.services.dm.test_ingestion.IntTestIngest"
 
 APP_DIR="/home/ingestiontest/app"
 
