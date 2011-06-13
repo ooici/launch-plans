@@ -29,7 +29,7 @@
   "pythoncc":{
     "broker":"127.0.0.1",
     "sysname":"${exchange_scope}",
-    "broker_heartbeat":"5",
+    "broker_heartbeat":"${broker_heartbeat}",
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
