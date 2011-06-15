@@ -27,7 +27,7 @@ f.close()
 if not exchange and not server:
     raise Exception("Could not find all necessary configurations in order to run epu-state-wait")
         
-run = [VENV_TRIAL, "tests/boot_level_tests/test_bootlevel4.py"]
+run = [VENV_TRIAL, "itv_tests/boot_level_tests/test_bootlevel4.py"]
 runcmd = ' '.join(run)
 print runcmd
 retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT, env={"ION_TEST_CASE_SYSNAME":exchange})
