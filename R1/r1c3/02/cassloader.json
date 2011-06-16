@@ -8,6 +8,11 @@
       "sysname":"${exchange_scope}",
       "error_if_existing":false
     },
+    "ion.core.data.cassandra_teardown_script":{
+      "cassandra_username":"${cassandra_username}",
+      "cassandra_password":"${cassandra_password}",
+      "sysname":"${exchange_scope}"
+    },
     "ion.core.data.storage_configuration_utility":{
       "storage provider":{
         "host":"${cassandra_hostname}",
