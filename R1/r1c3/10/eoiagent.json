@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "ingestion-epu-container": [
+    "eoiagent-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 
