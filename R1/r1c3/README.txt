@@ -44,6 +44,10 @@ Export the following environment variables into your shell:
     # If you are running your own Cassandra instance outside the launch
     # plan, this HAS to change every launch.
     export EXCHANGE_SCOPE="sysname123"
+    
+    # These are set differently for production vs. integration tests.
+    export BROKER_HOSTNAME="rabbitmq-dev0.oceanobservatories.org"
+    export CASSANDRA_HOSTNAME="cassandra.oceanobservatories.org"
 
 Run:
 
