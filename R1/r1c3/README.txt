@@ -61,6 +61,17 @@ Inspect:
 
    epumgmt -a status -n $RUN_NAME
 
+Decide:
+
+   You probably want to try things with the integration mode turned on
+   first.  This will fail out right away if there's a deployment problem
+   or worker issue.  In other words, it turns off "high availability"
+   mode to make it easier to spot integration problems.  To turn this
+   mode off for "real" runs, run this:
+
+   cp common/devmode-off.conf common/devmode.conf   
+
+
 ==============================================================================
 
 II. For launch plan authors: conventions
