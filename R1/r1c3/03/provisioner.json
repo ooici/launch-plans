@@ -22,7 +22,7 @@
                 "driver_kwargs" : {
                   "key":"${nimbus_key}",
                   "secret":"${nimbus_secret}",
-                  "host":"nimbus.oceanobservatories.org",
+                  "host":"nimbus-dev0.oceanobservatories.org",
                   "port":8444
                 }
               }
