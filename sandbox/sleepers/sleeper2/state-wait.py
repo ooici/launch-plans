@@ -18,18 +18,15 @@ import sys
 run = [VENV_PYTHON, "./scripts/epu-state-wait", MESSAGING_CONF, CONTROLLER]
 runcmd = ' '.join(run)
 print runcmd
-retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT)
 
-if retcode:
-    print "Problem waiting for EPU controller stable state for '%s'" % CONTROLLER
-    sys.exit(retcode)
-
-run = [VENV_PYTHON, "./scripts/epu-state-wait", MESSAGING_CONF, CONTROLLER2]
-runcmd = ' '.join(run)
-print runcmd
-retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT)
-
-if retcode:
-    print "Problem waiting for EPU controller stable state for '%s'" % CONTROLLER2
-
-sys.exit(retcode)
+exitcode = -1
+while exitcode < 0:
+    retcode = subprocess.call(runcmd, shell=True, cwd=APP_DIR, stderr=subprocess.STDOUT)
+    if not retcode:
+        exitcode = 0
+    elif retcode == 123:
+        exitcode = 123
+        print "Problem waiting for EPU controller stable state for '%s'" % CONTROLLER
+    else:
+        print "epu-state-wait exited with %d, running again." % retcode
+sys.exit(exitcode)
