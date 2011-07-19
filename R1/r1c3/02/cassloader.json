@@ -25,7 +25,7 @@
  [{"comment": null, "default_validation_class": "org.apache.cassandra.db.marshal.BytesType", 
   "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
   "name": "notification_alert_service", "column_type": "Standard", "subcomparator_type": null, 
-   "column_metadata":[{"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "user_ooi_id"}, 
+  "column_metadata":[{"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "user_ooi_id"}, 
                       {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "data_src_id"}, 
                       {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "subscription_type"}, 
                       {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "email_alerts_filter"}, 
@@ -49,9 +49,21 @@
                       {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_vertical_max"}, 
                       {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_vertical_positive"}, 
                       {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "download_url"}] 
-}]
-      }
+    },
+	{"comment": null, "default_validation_class": "org.apache.cassandra.db.marshal.BytesType", 
+  	"comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+  	"name": "scheduler", "column_type": "Standard", "subcomparator_type": null, 
+    "column_metadata": [{"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "task_id"}, 
+   					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "desired_origin"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "interval_seconds"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "payload"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "user_id"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "constant"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "start_time"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "end_time"}] 
+ }]
     }
+  }
   },
   "universal_app_confs":{
   },
