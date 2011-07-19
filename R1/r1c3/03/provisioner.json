@@ -18,7 +18,7 @@
             "context_secret":"${ctxbroker_secret}",
             "sites":{
               "nimbus-ucsd" : {
-                "driver_class" : "nimboss.node.NimbusNodeDriver",
+                "driver_class" : "libcloud.compute.drivers.ec2.NimbusNodeDriver",
                 "driver_kwargs" : {
                   "key":"${nimbus_key}",
                   "secret":"${nimbus_secret}",
