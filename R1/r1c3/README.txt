@@ -65,7 +65,18 @@ Decide:
    mode to make it easier to spot integration problems.  To turn this
    mode off for "real" runs, run this:
 
-   cp common/devmode-off.conf common/devmode.conf   
+       cp common/devmode-off.conf common/devmode.conf 
+   
+   There are other "switches" like this.  There is a file that controls
+   what IaaS the provisioner uses (this is different than the IaaS that
+   cloudinit.d is configured with).  Override the default like so:
+   
+       cp common/iaas-old.conf common/iaas.conf
+   
+   And there is a file that controls what THREDDS server to use. Override
+   the default like so:
+   
+       cp common/thredds-test.conf common/thredds.conf
 
 
 ==============================================================================
