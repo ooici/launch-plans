@@ -29,32 +29,8 @@ if [ `id -u` -ne 0 ]; then
   CMDPREFIX="sudo "
 fi
 
-if [ ! -d /opt ]; then 
-  $CMDPREFIX mkdir /opt
-  if [ $? -ne 0 ]; then
-      exit 1
-  fi
-fi
-
-$CMDPREFIX wget -O $DTDATA_ARCHIVE_PATH $DTDATA_ARCHIVE_URL
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-if [ -d $DTDATA_DIR ]; then
-  $CMDPREFIX mv $DTDATA_DIR $DTDATA_DIR.`date +%s`
-  if [ $? -ne 0 ]; then
-      exit 1
-  fi
-fi
-
-$CMDPREFIX mkdir $DTDATA_DIR
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-$CMDPREFIX tar xzf $DTDATA_ARCHIVE_PATH -C $DTDATA_DIR --strip 1
-if [ $? -ne 0 ]; then
+if [ ! -d $DTDATA_DIR ]; then
+  echo "PROBLEM: dt-data directory does not exist: $DTDATA_DIR"
   exit 1
 fi
 
@@ -109,16 +85,3 @@ $CMDPREFIX /opt/rerun-chef-$RUN_NAME.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi
-
-echo "Running cassandra load"
-
-cd /home/$RUN_NAME/app
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-$CMDPREFIX /home/$RUN_NAME/app/scripts/run_under_env.sh /home/$RUN_NAME/app-venv/bin/activate epu-cassandra-schema
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-

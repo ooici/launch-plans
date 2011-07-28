@@ -1,8 +1,26 @@
 #!/bin/bash
 
-GIT_URL="https://github.com/ooici/dt-data.git"
-GIT_BRANCH="master"
+# ========================================================================
+# The run name can differentiate multiple chef runs on same base node
+# ========================================================================
+
+if [ "X" == "X$1" ]; then
+  echo "argument required, the run name"
+  exit 1
+fi
+
+RUN_NAME=$1
+
+# the archive url can be passed in as an optional second argument
+if [ "X$2" == "X" ]; then
+    DTDATA_ARCHIVE_URL="http://ooici.net/releases/dt-data-develop.tar.gz"
+else
+    DTDATA_ARCHIVE_URL=$2
+fi
+
 CHEF_LOGLEVEL="info"
+DTDATA_DIR="/opt/dt-data"
+DTDATA_ARCHIVE_PATH="/opt/dt-data.tar.gz"
 
 # ========================================================================
 
@@ -11,46 +29,17 @@ if [ `id -u` -ne 0 ]; then
   CMDPREFIX="sudo "
 fi
 
-if [ ! -d /opt ]; then 
-  $CMDPREFIX mkdir /opt
-  if [ $? -ne 0 ]; then
-      exit 1
-  fi
+if [ ! -d $DTDATA_DIR ]; then
+  echo "PROBLEM: dt-data directory does not exist: $DTDATA_DIR"
+  exit 1
 fi
 
-if [ -d /opt/dt-data ]; then
-  (cd /opt/dt-data && $CMDPREFIX git fetch)
-  if [ $? -ne 0 ]; then
-      exit 1
-  fi
-else
-  (cd /opt && $CMDPREFIX git clone $GIT_URL )
-  if [ $? -ne 0 ]; then
-      exit 1
-  fi
-fi
-
-(cd /opt/dt-data && $CMDPREFIX git checkout $GIT_BRANCH )
+$CMDPREFIX mkdir -p /opt/dt-data/run/$RUN_NAME
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-(cd /opt/dt-data && $CMDPREFIX git pull )
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-
-echo "Retrieved the dt-data repository, HEAD is currently:"
-(cd /opt/dt-data && $CMDPREFIX git rev-parse HEAD)
-echo ""
-
-$CMDPREFIX mkdir -p /opt/dt-data/run
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-$CMDPREFIX mv bootconf.json /opt/dt-data/run/provisionerchefroles.json
+$CMDPREFIX mv bootconf.json /opt/dt-data/run/$RUN_NAME/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
@@ -64,12 +53,12 @@ Chef::Log::Formatter.show_time = false
 
 EOF
 
-$CMDPREFIX mv chefconf.rb /opt/dt-data/run/provisionerchefconf.rb
+$CMDPREFIX mv chefconf.rb /opt/dt-data/run/$RUN_NAME/chefconf.rb
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-cat >> rerun-provisionerchef.sh << "EOF"
+cat >> rerun-chef-$RUN_NAME.sh << "EOF"
 #!/bin/bash
 CHEFLEVEL="info"
 if [ "X" != "X$1" ]; then
@@ -77,22 +66,23 @@ if [ "X" != "X$1" ]; then
 fi
 rm -rf /home/cc/app
 rm -rf /home/cc/app-venv
-chef-solo -l $CHEFLEVEL -c /opt/dt-data/run/provisionerchefconf.rb -j /opt/dt-data/run/provisionerchefroles.json
-exit $?
 EOF
 
-chmod +x rerun-provisionerchef.sh
+echo "chef-solo -l \$CHEFLEVEL -c /opt/dt-data/run/$RUN_NAME/chefconf.rb -j /opt/dt-data/run/$RUN_NAME/chefroles.json" >> rerun-chef-$RUN_NAME.sh
+echo "exit $?" >> rerun-chef-$RUN_NAME.sh
+
+chmod +x rerun-chef-$RUN_NAME.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv rerun-provisionerchef.sh /opt/rerun-provisionerchef.sh
+$CMDPREFIX mv rerun-chef-$RUN_NAME.sh /opt/rerun-chef-$RUN_NAME.sh
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Running chef-solo"
-$CMDPREFIX /opt/rerun-provisionerchef.sh  #debug
+$CMDPREFIX /opt/rerun-chef-$RUN_NAME.sh  #debug
 if [ $? -ne 0 ]; then
   exit 1
 fi
