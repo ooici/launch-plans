@@ -17,6 +17,7 @@
               "monitor_health":"True",
               "devmode_no_failure_compensation":"${epu_devmode}",
               "provisioner_vars": {
+                "thredds_hostname":"${thredds_hostname}",
                 "exchange_scope":"${exchange_scope}",
                 "epuworker_image_id":"${worker_id}",
                 "broker_ip_address":"${broker_ip_address}",
