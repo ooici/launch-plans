@@ -26,7 +26,8 @@
                 "git_repo":"${integration_git_repo}",
                 "git_branch":"${integration_git_branch}",
                 "git_commit":"${integration_git_commit}",
-                "ion_log_level":"${ion_log_level}"
+                "ion_log_level":"${ion_log_level}",
+                "dtdata_archive_url":"${dtdata_archive_url}"
               } 
             }
           }
