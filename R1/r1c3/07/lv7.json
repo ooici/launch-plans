@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "identityregistry-epu-container": [
+    "lv7-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 
