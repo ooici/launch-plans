@@ -14,7 +14,7 @@
     }
   },
   "virtualenv": {
-    "path" : "/home/ingestiontest/app-venv",
+    "path" : "/home/test/app-venv",
     "virtualenv" : "/opt/python2.5/bin/virtualenv",
     "python" : "python2.5"
   },
@@ -39,7 +39,7 @@
   "apprun":{
     "run_method":"sh"
   },
-  "username":"ingestiontest",
+  "username":"test",
   "groupname":"users",
   "recipes":["user", "r1app"]
 }
