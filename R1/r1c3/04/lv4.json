@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "dataservices-epu-container": [
+    "lv4-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 

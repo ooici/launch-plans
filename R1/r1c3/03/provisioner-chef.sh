@@ -88,7 +88,7 @@ if [ $? -ne 0 ]; then
 fi
 
 cat >> controller_list.txt << "EOF"
-dataservices_epu_controller
+lv4_epu_controller
 exchangepreserve_epu_controller
 attributestore_epu_controller
 identityregistry_epu_controller
