@@ -92,7 +92,7 @@ lv4_epu_controller
 lv5_epu_controller
 lv6_epu_controller
 lv7_epu_controller
-level8_epu_controller
+lv8_epu_controller
 ingestion_epu_controller
 eoiagent_epu_controller
 EOF
