@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "eoiagent-epu-container": [
+    "lv10-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 

@@ -94,7 +94,7 @@ lv6_epu_controller
 lv7_epu_controller
 lv8_epu_controller
 lv9_epu_controller
-eoiagent_epu_controller
+lv10_epu_controller
 EOF
 
 $CMDPREFIX chown cc controller_list.txt
