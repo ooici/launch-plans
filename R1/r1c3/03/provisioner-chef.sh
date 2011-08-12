@@ -89,7 +89,7 @@ fi
 
 cat >> controller_list.txt << "EOF"
 lv4_epu_controller
-exchangepreserve_epu_controller
+lv5_epu_controller
 attributestore_epu_controller
 identityregistry_epu_controller
 level8_epu_controller
