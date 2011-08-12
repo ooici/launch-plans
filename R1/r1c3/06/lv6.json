@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "attributestore-epu-container": [
+    "lv6-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 

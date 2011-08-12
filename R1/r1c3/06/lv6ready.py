@@ -3,7 +3,7 @@
 # We will have to make something that can automically determine a list of EPU
 # controllers to wait for in each level.  For now, hardcoding the name here.
 
-CONTROLLER="attributestore_epu_controller"
+CONTROLLER="lv6_epu_controller"
 
 APP_DIR="/home/epu6/app"
 MSG_CONF = APP_DIR + "/messaging.conf"
