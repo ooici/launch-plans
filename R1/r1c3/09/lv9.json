@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "ingestion-epu-container": [
+    "lv9-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 
