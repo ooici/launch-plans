@@ -3,7 +3,7 @@
 # We will have to make something that can automically determine a list of EPU
 # controllers to wait for in each level.  For now, hardcoding the name here.
 
-CONTROLLER="ingestion_epu_controller"
+CONTROLLER="lv9_epu_controller"
 
 APP_DIR="/home/epu9/app"
 MSG_CONF = APP_DIR + "/messaging.conf"
