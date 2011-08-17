@@ -10,7 +10,7 @@
       "broker_host": "${broker_ip_address}",
       "broker_port": 5672,
       "broker_vhost": "/",
-      "broker_heartbeat":${broker_heartbeat}
+      "broker_heartbeat": 0
     }
   },
   "virtualenv": {
