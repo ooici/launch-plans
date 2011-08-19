@@ -28,7 +28,7 @@ f.close()
 if not exchange and not server:
     raise Exception("Could not find all necessary configurations in order to run trial tests")
         
-envmap = {"ION_TEST_CASE_SYSNAME": exchange}
+envmap = {"ION_TEST_CASE_SYSNAME": exchange, "ION_NO_BUSYLOOP_DETECT": "1"}
 
 run = ["./bin/trial", TRIAL_TEST]
 runcmd = ' '.join(run)
