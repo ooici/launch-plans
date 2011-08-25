@@ -13,7 +13,7 @@
         "args": { }, 
         "config": {
           "epu.ionproc.provisioner":{
-            "context_uri":"https://nimbus.oceanobservatories.org:8446/ContextBroker/ctx/",
+            "context_uri":"https://${provisioner_iaas_host}:8446/ContextBroker/ctx/",
             "context_key":"${ctxbroker_key}",
             "context_secret":"${ctxbroker_secret}",
             "sites":{
