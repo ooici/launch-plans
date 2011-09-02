@@ -16,6 +16,7 @@
               "epuworker_type":"${worker_deployable_type}",
               "monitor_health":"True",
               "devmode_no_failure_compensation":"${epu_devmode}",
+              "unique_instances":{"abcdefgh":{"datastore_doinit":"True"}},
               "provisioner_vars": {
                 "exchange_scope":"${exchange_scope}",
                 "epuworker_image_id":"${worker_id}", 
@@ -23,7 +24,7 @@
                 "cassandra_hostname":"${cassandra_hostname}",
                 "cassandra_username":"${cassandra_username}",
                 "cassandra_password":"${cassandra_password}",
-                "datastore_doinit":"True",
+                "datastore_doinit":"False",
                 "retrieve_method":"${integration_retrieve_method}",
                 "archive_url":"${package_repo}/${integration_archive_name}", 
                 "package_repo":"${package_repo}",
