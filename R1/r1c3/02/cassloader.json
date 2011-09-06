@@ -20,7 +20,7 @@
       },
       "persistent archive":{
         "strategy_class":"org.apache.cassandra.locator.SimpleStrategy",
-        "replication_factor":1,
+        "replication_factor":${cassandra_repfactor},
         "cf_defs":
  [{"comment": null, "default_validation_class": "org.apache.cassandra.db.marshal.BytesType", 
   "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
