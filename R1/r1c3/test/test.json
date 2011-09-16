@@ -25,7 +25,7 @@
     "log_level":"${ion_log_level}"
   },
   "appretrieve":{
-    "retrieve_method":"git",
+    "retrieve_method":"${integration_retrieve_method}",
     "archive_url":"notused",
     "git_repo":"${integration_git_repo}",
     "git_branch":"${integration_git_branch}",
