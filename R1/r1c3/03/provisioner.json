@@ -77,7 +77,7 @@
   },
   "appretrieve":{
     "retrieve_method":"${epu_retrieve_method}",
-    "archive_url":"${package_repo}/${epu_archive_name}",
+    "archive_url":"${epu_archive_url}",
     "git_repo":"${epu_git_repo}",
     "git_branch":"${epu_git_branch}",
     "git_commit":"${epu_git_commit}"

@@ -80,7 +80,7 @@
   },
   "appretrieve":{
     "retrieve_method":"${integration_retrieve_method}",
-    "archive_url":"notused",
+    "archive_url":"${integration_archive_url}",
     "git_repo":"${integration_git_repo}",
     "git_branch":"${integration_git_branch}",
     "git_commit":"${integration_git_commit}"
