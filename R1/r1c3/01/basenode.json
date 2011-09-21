@@ -8,7 +8,8 @@
       "username":"${cassandra_username}",
       "password":"${cassandra_password}",
       "keyspace":"${exchange_scope}",
-      "replication_factor":${cassandra_repfactor}
+      "replication_factor":${cassandra_repfactor},
+      "truncate_column_families":"${epu_devmode}"
     }
   },
   "universal_app_confs":{
