@@ -1,6 +1,6 @@
 {
   "ioncontainers":{
-    "lv8-epu-container": [
+    "r2lv8-epu-container": [
       {
         "name": "epu-controller", 
         "args": { }, 
