@@ -1,0 +1,98 @@
+{
+  "ioncontainers":{
+    "provisioner-query-container": [
+      {
+        "name": "epu-provisioner-query",
+        "args" : {},
+        "config": {}
+      }
+    ],
+    "provisioner1-container": [
+      {
+        "name": "epu-provisioner", 
+        "args": { }, 
+        "config": {
+          "epu.ionproc.provisioner":{
+            "context_uri":"https://${provisioner_iaas_host}:8446/ContextBroker/ctx/",
+            "context_key":"${ctxbroker_key}",
+            "context_secret":"${ctxbroker_secret}",
+            "sites":{
+              "nimbus-ucsd" : {
+                "driver_class" : "libcloud.compute.drivers.ec2.NimbusNodeDriver",
+                "driver_kwargs" : {
+                  "key":"${nimbus_key}",
+                  "secret":"${nimbus_secret}",
+                  "host":"${provisioner_iaas_host}",
+                  "port":${provisioner_iaas_port}
+                }
+              }
+            },
+            "cassandra_hostname":"${cassandra_hostname}",
+            "cassandra_username":"${cassandra_username}",
+            "cassandra_password":"${cassandra_password}",
+            "cassandra_keyspace":"${exchange_scope}",
+            "cassandra_port":9160
+          }
+        },
+        "version": "0.1"
+      }
+    ],
+    "dtrs-container": [
+      {
+        "name": "epu-dtrs", 
+        "args": { }, 
+        "config": { },
+        "version": "0.1"
+      }
+    ],
+    "epulist-container": [
+      {
+        "name": "epu-list", 
+        "args": { }, 
+        "config": { 
+          "epu.ionproc.controller_list":{
+            "controller_list_path":"/home/cc/controller_list.txt"
+          }
+        },
+        "version": "0.1"
+      }
+    ]
+  },
+  "local_app_confs":{
+  },
+  "universal_app_confs":{
+    "broker_host_list":"${broker_ip_address}",
+    "sysname":"${exchange_scope}"
+  },
+  "virtualenv": {
+    "path" : "/home/cc/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
+  },
+  "pythoncc":{
+    "broker":"${broker_ip_address}",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"${broker_heartbeat}",
+    "logging_token":"${logging_token}",
+    "log_level":"${cei_ion_log_level}"
+  },
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${epu_archive_url}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_buildout",
+    "package_repo":"${package_repo}",
+    "super_cache":"http://ooici.net/releases/supercache.tar.gz"
+  },
+  "apprun":{
+    "run_method":"supervised",
+    "autorestart":true
+  },
+  "username":"cc",
+  "groupname":"users",
+  "recipes":["user", "r1app"]
+}

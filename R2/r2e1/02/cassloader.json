@@ -1,0 +1,99 @@
+{
+  "ioncontainers": {
+  },
+  "local_app_confs":{
+    "ion.core.data.cassandra_schema_script":{
+      "cassandra_username":"${cassandra_username}",
+      "cassandra_password":"${cassandra_password}",
+      "sysname":"${exchange_scope}",
+      "error_if_existing":false
+    },
+    "ion.core.data.cassandra_teardown_script":{
+      "cassandra_username":"${cassandra_username}",
+      "cassandra_password":"${cassandra_password}",
+      "sysname":"${exchange_scope}"
+    },
+    "ion.core.data.storage_configuration_utility":{
+      "storage provider":{
+        "host":"${cassandra_hostname}",
+        "port":9160
+      },
+      "persistent archive":{
+        "strategy_class":"org.apache.cassandra.locator.SimpleStrategy",
+        "replication_factor":${cassandra_repfactor},
+        "cf_defs":
+ [{"comment": null, "default_validation_class": "org.apache.cassandra.db.marshal.BytesType", 
+  "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+  "name": "notification_alert_service", "column_type": "Standard", "subcomparator_type": null, 
+  "column_metadata":[{"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "user_ooi_id"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "data_src_id"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "subscription_type"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "email_alerts_filter"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "dispatcher_alerts_filter"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "dispatcher_script_path"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "date_registered"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "title"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "institution"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "source"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "references"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "conventions"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "summary"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "comment"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_time_coverage_start"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_time_coverage_end"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_lat_min"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_lat_max"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_lon_min"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_lon_max"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_vertical_min"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_vertical_max"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "ion_geospatial_vertical_positive"}, 
+                      {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "download_url"}] 
+    },
+	{"comment": null, "default_validation_class": "org.apache.cassandra.db.marshal.BytesType", 
+  	"comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+  	"name": "scheduler", "column_type": "Standard", "subcomparator_type": null, 
+    "column_metadata": [{"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "task_id"}, 
+   					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "desired_origin"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "interval_seconds"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "payload"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "user_id"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "constant"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "start_time"}, 
+					    {"index_type": 0, "index_name": null, "validation_class": "org.apache.cassandra.db.marshal.BytesType", "name": "end_time"}] 
+ }]
+    }
+  }
+  },
+  "universal_app_confs":{
+  },
+  "virtualenv": {
+    "path" : "/home/cassload/app-venv",
+    "virtualenv" : "/opt/python2.5/bin/virtualenv",
+    "python" : "python2.5"
+  },
+  "pythoncc":{
+    "broker":"127.0.0.1",
+    "sysname":"${exchange_scope}",
+    "broker_heartbeat":"${broker_heartbeat}",
+    "log_level":"${ion_log_level}"
+  },
+  "appretrieve":{
+    "retrieve_method":"${integration_retrieve_method}",
+    "archive_url":"${integration_archive_url}",
+    "git_repo":"${integration_git_repo}",
+    "git_branch":"${integration_git_branch}",
+    "git_commit":"${integration_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_buildout",
+    "package_repo":"${package_repo}",
+    "super_cache":"http://ooici.net/releases/supercache.tar.gz"
+  },
+  "apprun":{
+    "run_method":"supervised"
+  },
+  "username":"cassload",
+  "groupname":"users",
+  "recipes":["user", "r1app"]
+}
