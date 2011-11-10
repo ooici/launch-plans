@@ -21,6 +21,8 @@
                 "exchange_scope":"${exchange_scope}",
                 "epuworker_image_id":"${worker_id}", 
                 "broker_ip_address":"${broker_ip_address}",
+                "broker_username":"${rabbitmq_username}",
+                "broker_password":"${rabbitmq_password}",
                 "cassandra_hostname":"${cassandra_hostname}",
                 "cassandra_username":"${cassandra_username}",
                 "cassandra_password":"${cassandra_password}",
@@ -71,6 +73,8 @@
     "broker":"${broker_ip_address}",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"${broker_heartbeat}",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
     "logging_token":"${logging_token}",
     "log_level":"${cei_ion_log_level}"
   },

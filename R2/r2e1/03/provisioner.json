@@ -73,6 +73,8 @@
     "broker":"${broker_ip_address}",
     "sysname":"${exchange_scope}",
     "broker_heartbeat":"${broker_heartbeat}",
+    "broker_username":"${rabbitmq_username}",
+    "broker_password":"${rabbitmq_password}",
     "logging_token":"${logging_token}",
     "log_level":"${cei_ion_log_level}"
   },
