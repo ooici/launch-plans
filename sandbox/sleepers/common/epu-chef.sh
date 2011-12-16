@@ -68,7 +68,7 @@ EOF
 
 echo "rm -rf /home/$RUN_NAME/app /home/$RUN_NAME/app-venv" >> rerun-chef-$RUN_NAME.sh
 echo "chef-solo -l \$CHEFLEVEL -c /opt/dt-data/run/$RUN_NAME/chefconf.rb -j /opt/dt-data/run/$RUN_NAME/chefroles.json" >> rerun-chef-$RUN_NAME.sh
-echo "exit $?" >> rerun-chef-$RUN_NAME.sh
+echo 'exit $?' >> rerun-chef-$RUN_NAME.sh
 
 chmod +x rerun-chef-$RUN_NAME.sh
 if [ $? -ne 0 ]; then
