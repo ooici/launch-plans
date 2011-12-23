@@ -36,7 +36,7 @@
     ]
   },
   "virtualenv": {
-    "path" : "/home/provisioner/app-venv"
+    "path" : "/home/${epu_username}/app-venv"
   },
   "appretrieve":{
     "retrieve_method":"${epu_retrieve_method}",
@@ -53,7 +53,8 @@
     "run_method":"supervised",
     "autorestart":true
   },
-  "username":"provisioner",
-  "groupname":"users",
-  "recipes":["user", "r2app"]
+  "appname":"provisioner",
+  "username":"${epu_username}",
+  "groupname":"${epu_groupname}",
+  "recipes":["r2app"]
 }

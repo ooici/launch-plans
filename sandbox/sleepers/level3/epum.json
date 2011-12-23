@@ -13,6 +13,22 @@
             }
           },
           "epumanagement": {
+            "needy_default_iaas_site": "ec2-east",
+            "needy_default_iaas_allocation": "t1.micro",
+            "provisioner_vars" : {
+              "epuworker_image_id":"${worker_id}",
+              "queue_name_work":"${queue1_name_work}",
+              "broker_ip_address":"${broker_ip_address}",
+              "broker_username":"${rabbitmq_username}",
+              "broker_password":"${rabbitmq_password}",
+              "retrieve_method":"${epu_retrieve_method}",
+              "archive_url":"${package_repo}/${epu_archive_name}",
+              "package_repo":"${package_repo}",
+              "git_repo":"${epu_git_repo}",
+              "git_branch":"${epu_git_branch}",
+              "git_commit":"${epu_git_commit}",
+              "dtdata_archive_url":"${dtdata_archive_url}"
+            },
             "initial_epus": {
               "epu1": {
                 "general": {
@@ -23,21 +39,7 @@
                 },
                 "engine_conf": {
                   "preserve_n": 1,
-                  "epuworker_type": "${worker_deployable_type}",
-                  "provisioner_vars" : {
-                    "epuworker_image_id":"${worker_id}",
-                    "queue_name_work":"${queue1_name_work}",
-                    "broker_ip_address":"${broker_ip_address}",
-                    "broker_username":"${rabbitmq_username}",
-                    "broker_password":"${rabbitmq_password}",
-                    "retrieve_method":"${epu_retrieve_method}",
-                    "archive_url":"${package_repo}/${epu_archive_name}",
-                    "package_repo":"${package_repo}",
-                    "git_repo":"${epu_git_repo}",
-                    "git_branch":"${epu_git_branch}",
-                    "git_commit":"${epu_git_commit}",
-                    "dtdata_archive_url":"${dtdata_archive_url}"
-                  }
+                  "epuworker_type": "${worker_deployable_type}"
                 }
               }
             }
@@ -47,7 +49,7 @@
     ]
   },
   "virtualenv": {
-    "path" : "/home/epum/app-venv"
+    "path" : "/home/${epu_username}/app-venv"
   },
   "appretrieve":{
     "retrieve_method":"${epu_retrieve_method}",
@@ -64,7 +66,8 @@
     "run_method":"supervised",
     "autorestart":true
   },
-  "username":"epum",
-  "groupname":"users",
-  "recipes":["user", "r2app"]
+  "username":"${epu_username}",
+  "groupname":"${epu_groupname}",
+  "appname":"epum",
+  "recipes":["r2app"]
 }

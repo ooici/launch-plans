@@ -16,5 +16,7 @@
     "git_commit":"HEAD",
     "chef_debug_level":"debug"
   },
-  "recipes":["rabbitmq"]
+  "username":"${epu_username}",
+  "groupname":"${epu_groupname}",
+  "recipes":["rabbitmq","user"]
 }

@@ -66,7 +66,7 @@ if [ "X" != "X$1" ]; then
 fi
 EOF
 
-echo "rm -rf /home/$RUN_NAME/app /home/$RUN_NAME/app-venv" >> rerun-chef-$RUN_NAME.sh
+echo "rm -rf /home/epu/$RUN_NAME " >> rerun-chef-$RUN_NAME.sh
 echo "chef-solo -l \$CHEFLEVEL -c /opt/dt-data/run/$RUN_NAME/chefconf.rb -j /opt/dt-data/run/$RUN_NAME/chefroles.json" >> rerun-chef-$RUN_NAME.sh
 echo 'exit $?' >> rerun-chef-$RUN_NAME.sh
 
