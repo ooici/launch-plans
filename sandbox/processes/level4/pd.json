@@ -43,6 +43,11 @@
     "run_method":"supervised",
     "autorestart":true
   },
+  "messaging":{
+    "broker":"${broker_ip_address}",
+    "username":"${rabbitmq_username}",
+    "password":"${rabbitmq_password}"
+  },
   "username":"${epu_username}",
   "groupname":"${epu_groupname}",
   "appname":"pd",
