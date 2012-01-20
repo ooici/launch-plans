@@ -41,7 +41,7 @@ Export the following environment variables into your shell:
     
 Run:
 
-   RUN_NAME = "my_run_name"
+   RUN_NAME="my_run_name"
    cloudinitd boot main.conf -v -v -v -l debug -x -n $RUN_NAME
    
 Inspect:
