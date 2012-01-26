@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ERROR=1
-USAGE="usage: $0 path/to/virtualenv config.yml"
+USAGE="usage: $0 path/to/virtualenv process-dispatcher config.yml"
 
 if [ -z "$1" ]; then
     echo "Your virtualenv must be the first argument"
@@ -10,12 +10,21 @@ if [ -z "$1" ]; then
 fi
 VENV="$1"
 
+#TODO: Hopefully much of this will be replaced with the nice epu cli
+
 if [ -z "$2" ]; then
-    echo "Your configuration must be the second argument"
+    echo "Your process dispatcher must be the second argument"
     echo $USAGE
     exit $ERROR
 fi
-CONFIG="`pwd`/$2"
+PROCESS_DISPATCHER="$2"
+
+if [ -z "$3" ]; then
+    echo "Your configuration must be the third argument"
+    echo $USAGE
+    exit $ERROR
+fi
+CONFIG="`pwd`/$3"
 
 
 ACTIVATE="${VENV}/bin/activate"
@@ -41,7 +50,7 @@ if [ ! `which $EPU_PROCESS` ]; then
 fi
 
 
-$EPU_PROCESS $CONFIG $CONFIG pd_0
+$EPU_PROCESS $CONFIG $CONFIG $PROCESS_DISPATCHER
 if [ $? -ne 0 ]; then
   exit 1
 fi

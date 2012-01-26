@@ -1,7 +1,7 @@
 {
   "process-dispatchers":{
-    "pd_0":{
-      "logfile": "/tmp/pd_0.log",
+    "${process_dispatcher_name}":{
+      "logfile": "/tmp/${process_dispatcher_name}.log",
       "engines":{
         "default":{
           "deployable_type": "eeagent",
@@ -14,7 +14,7 @@
   "nodes":{
     "nodeone":{
       "dt": "eeagent",
-      "process-dispatcher": "pd_0",
+      "process-dispatcher": "${process_dispatcher_name}",
       "eeagents":{
         "eeagent_nodeone":{
           "logfile": "/tmp/eeagent_nodeone.log"
