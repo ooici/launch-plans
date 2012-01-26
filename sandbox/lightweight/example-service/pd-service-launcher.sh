@@ -35,7 +35,7 @@ if [ ! `which $EPU_PROCESS` ]; then
     if [ -x "$EPU_PROCESS_ABS" ]; then
         EPU_PROCESS=$EPU_PROCESS_ABS
     else
-        echo "'epu-harness' isn't in search path. Is your virtualenv set correctly?"
+        echo "'$EPU_PROCESS' isn't in search path. Is your virtualenv set correctly?"
         exit $ERROR
     fi
 fi

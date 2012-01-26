@@ -9,7 +9,8 @@
             "amqp": {
               "host": "${broker_ip_address}",
               "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}"
+              "password": "${rabbitmq_password}",
+              "exchange": "${exchange_scope}"
             }
           },
           "provisioner": {

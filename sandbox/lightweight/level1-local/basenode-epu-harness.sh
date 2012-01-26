@@ -36,6 +36,7 @@ source $ACTIVATE
 
 if [ ! `which epu-harness` ]; then
     echo "'epu-harness' isn't in search path. Is your virtualenv set correctly?"
+    echo "Your virtualenv is at '${VENV}', and your PATH is : $PATH"
     exit $ERROR
 fi
 
