@@ -173,5 +173,45 @@ what we use most of the time.
   
 ==============================================================================
 
+IV. Launching Services Locally
 
+To launch a plan locally, you can use the local.conf cloudinitd config file,
+which will prepare a Process Dispatcher and an EEAgent (or a number of them),
+for your services to be deployed in. To use this, you'll need to prepare a
+virtualenv with your environment like so:
+
+    $ virtualenv venv --no-site-packages
+    $ source venv/bin/activate
+    $ cd venv
+    $ git clone git@github.com:ooici/epu.git
+    $ cd epu ; python setup.py develop ; cd -
+    $ pip install -e 'git+git://github.com/nimbusproject/epuharness.git#egg=epuharness'
+    $ pip install -e 'git+git://github.com/nimbusproject/cloudinit.d.git#egg=cloudinit.d'
+
+Or if you already have an epu development virtualenv already setup, just
+install the epu-harness package into your env. Do this with:
+
+    $ source path/to/your/venv/bin/activate
+    $ pip install -e 'git+git://github.com/nimbusproject/epuharness.git#egg=epuharness'
+
+Now you will need to set up a few environment variables to set your RabbitMQ
+credentials and exchange. The easiest way to do this is with a file that you
+source:
+
+    $ cat ~/.secrets/local
+    # Credentials for RabbitMQ
+    export RABBITMQ_HOSTNAME="localhost"
+    export RABBITMQ_USERNAME="guest"
+    export RABBITMQ_PASSWORD="guest"
+
+    export EXCHANGE_SCOPE="xchg`date +%s`"
+
+    if [ -n $EXCHANGE_SCOPE ]; then
+        RUN=$EXCHANGE_SCOPE
+    fi
+    export RUN
+
+Now you can launch the local launch plan with:
+
+    $ source ~/.secrets/local ; cloudinitd boot local.conf -n $RUN 
 
