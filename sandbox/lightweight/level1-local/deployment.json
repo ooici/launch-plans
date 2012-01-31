@@ -12,12 +12,24 @@
     }
   },
   "nodes":{
-    "nodeone":{
+    "pyonnode":{
       "dt": "eeagent",
       "process-dispatcher": "${process_dispatcher_name}",
       "eeagents":{
-        "eeagent_nodeone":{
-          "logfile": "/tmp/eeagent_nodeone.log"
+        "eeagent_pyonnode":{
+          "logfile": "/tmp/eeagent_pyonnode.log",
+          "launch_type": "pyon_single",
+          "pyon_directory": "${virtualenv}/pyon"
+        }
+      }
+    },
+    "supdnode":{
+      "dt": "eeagent",
+      "process-dispatcher": "${process_dispatcher_name}",
+      "eeagents":{
+        "eeagent_supdnode":{
+          "logfile": "/tmp/eeagent_supdnode.log",
+          "launch_type": "supd"
         }
       }
     }

@@ -13,7 +13,7 @@
   },
   "run_type": "supd",
   "parameters": {
-    "exec": "touch",
-    "argv": ["/tmp/hellofromprocess"]
+    "exec": "cat",
+    "argv": []
   }
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ERROR=1
-USAGE="usage: $0 path/to/virtualenv start|stop"
+USAGE="usage: $0 path/to/virtualenv start|stop|status"
 
 
 if [ -z "$1" ]; then
