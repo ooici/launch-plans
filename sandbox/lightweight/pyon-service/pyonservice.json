@@ -1,16 +1,4 @@
 {
-  "server":{
-    "amqp":{
-      "host": "${broker_ip_address}",
-      "vhost": "/",
-      "username": "${rabbitmq_username}",
-      "password": "${rabbitmq_password}",
-      "exchange": "${exchange_scope}"
-    }
-  },
-  "dashi":{
-    "exchange": "${exchange_scope}"
-  },
   "run_type": "pyon_single",
   "parameters":{                                                                
     "apps":{                                                                    
@@ -22,5 +10,14 @@
       "dependencies": "[]",                                                     
       "config": {"some": "'Hi'"}                                                
     }                                                                           
-  }  
+  },  
+  "server":{
+    "amqp":{
+      "host": "${broker_ip_address}",
+      "vhost": "/",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${exchange_scope}"
+    }
+  }
 }

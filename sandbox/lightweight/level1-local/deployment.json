@@ -19,7 +19,7 @@
         "eeagent_pyonnode":{
           "logfile": "/tmp/eeagent_pyonnode.log",
           "launch_type": "pyon_single",
-          "pyon_directory": "${virtualenv}/pyon"
+          "pyon_directory": "${pyon_path}"
         }
       }
     },
