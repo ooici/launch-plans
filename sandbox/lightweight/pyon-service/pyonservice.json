@@ -11,7 +11,7 @@
   "dashi":{
     "exchange": "${exchange_scope}"
   },
-  "run_type": "pyon",
+  "run_type": "pyon_single",
   "parameters":{                                                                
     "apps":{                                                                    
       "type": "application",                                                    
