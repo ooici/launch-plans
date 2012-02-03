@@ -1,0 +1,15 @@
+{
+  "run_type": "pyon_single",
+  "parameters":{                                                                
+    "apps":${app_json}                                                                   
+  },  
+  "server":{
+    "amqp":{
+      "host": "$${broker_ip_address}",
+      "vhost": "/",
+      "username": "$${rabbitmq_username}",
+      "password": "$${rabbitmq_password}",
+      "exchange": "$${exchange_scope}"
+    }
+  }
+}
