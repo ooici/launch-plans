@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 USAGE = """rel2levels -- convert a rel file to a number of cloudinitd levels
+Usage:
+rel2levels path/to/rel/file [-f] [-h]
+-f or --force: force overwriting pre-existing generated levels
+-h or --help:  show this text
 """
 
 import os
@@ -184,10 +188,17 @@ def validate(app):
 # Parse cli and start
 argv = list(sys.argv)
 cmd_name = argv.pop(0)
+
+if not argv:
+    error(USAGE)
+
 relfile = argv.pop(0)
-if '-f' in argv:
+if '-f' in argv or '--force' in argv:
     force = True
 else:
     force = False
+
+if '-h' in argv or '--help' in argv:
+    error(USAGE)
 
 rel2levels(relfile, force=force)
