@@ -1,0 +1,74 @@
+{
+  "epuservices":{
+    "epu-management-service": [
+      {
+        "name": "epu-management", 
+        "args": { }, 
+        "config": {
+          "server": {
+            "amqp": {
+              "host": "${broker_ip_address}",
+              "username": "${rabbitmq_username}",
+              "password": "${rabbitmq_password}",
+              "exchange": "${exchange_scope}"
+            }
+          },
+          "epumanagement": {
+            "needy_default_iaas_site": "ec2-east",
+            "needy_default_iaas_allocation": "t1.micro",
+            "provisioner_vars" : {
+              "epuworker_image_id":"${worker_id}",
+              "queue_name_work":"${queue1_name_work}",
+              "broker_ip_address":"${broker_ip_address}",
+              "broker_username":"${rabbitmq_username}",
+              "broker_password":"${rabbitmq_password}",
+              "retrieve_method":"${epu_retrieve_method}",
+              "archive_url":"${package_repo}/${epu_archive_name}",
+              "package_repo":"${package_repo}",
+              "git_repo":"${epu_git_repo}",
+              "git_branch":"${epu_git_branch}",
+              "git_commit":"${epu_git_commit}",
+              "dtdata_archive_url":"${dtdata_archive_url}"
+            },
+            "initial_epus": {
+              "epu1": {
+                "general": {
+                  "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
+                },
+                "health": {
+                  "monitor_health": false
+                },
+                "engine_conf": {
+                  "preserve_n": 1,
+                  "epuworker_type": "${worker_deployable_type}"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "virtualenv": {
+    "path" : "/home/${epu_username}/app-venv"
+  },
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${package_repo}/${epu_archive_name}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_setup",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"supervised",
+    "autorestart":true
+  },
+  "username":"${epu_username}",
+  "groupname":"${epu_groupname}",
+  "appname":"epum",
+  "recipes":["r2app"]
+}

@@ -1,0 +1,23 @@
+{
+  "run_type": "pyon_single",
+  "parameters":{                                                                
+    "apps":{                                                                    
+      "type": "application",                                                    
+      "name": "hello2",                                                         
+      "description": "Hello service (app version)",                             
+      "version": "0.1",                                                         
+      "mod": "examples.service.hello_service",                                  
+      "dependencies": "[]",                                                     
+      "config": {"some": "'Hi'"}                                                
+    }                                                                           
+  },  
+  "server":{
+    "amqp":{
+      "host": "${broker_ip_address}",
+      "vhost": "/",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${exchange_scope}"
+    }
+  }
+}

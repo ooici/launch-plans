@@ -1,0 +1,7 @@
+{
+  "run_type": "supd",
+  "parameters": {
+    "exec": "cat",
+    "argv": []
+  }
+}

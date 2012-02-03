@@ -1,0 +1,19 @@
+{
+  "server":{
+    "amqp":{
+      "host": "${broker_ip_address}",
+      "vhost": "/",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${exchange_scope}"
+    }
+  },
+  "dashi":{
+    "exchange": "${exchange_scope}"
+  },
+  "run_type": "supd",
+  "parameters": {
+    "exec": "touch",
+    "argv": ["/tmp/hellofromprocess"]
+  }
+}

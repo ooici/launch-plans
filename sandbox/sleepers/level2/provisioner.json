@@ -1,0 +1,60 @@
+{
+  "epuservices":{
+    "epu-provisioner-service": [
+      {
+        "name": "epu-provisioner", 
+        "args": { }, 
+        "config": {
+          "server": {
+            "amqp": {
+              "host": "${broker_ip_address}",
+              "username": "${rabbitmq_username}",
+              "password": "${rabbitmq_password}"
+            }
+          },
+          "provisioner": {
+            "dtrs": "epu.localdtrs.LocalDTRS",
+            "dt_path": "/opt/dt-data/dt",
+            "query_period": 10
+          },
+          "sites":{
+            "ec2-east":{
+              "driver_class":"libcloud.compute.drivers.ec2.EC2NodeDriver",
+              "driver_kwargs":{
+                "key":"${ec2_key}",
+                "secret":"${ec2_secret}"
+              }
+            }
+          },
+          "context": {
+            "uri":"https://svc.uc.futuregrid.org:8446/ContextBroker/ctx/",
+            "key":"${ctxbroker_key}",
+            "secret":"${ctxbroker_secret}"
+          }
+        }
+      }
+    ]
+  },
+  "virtualenv": {
+    "path" : "/home/${epu_username}/app-venv"
+  },
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${package_repo}/${epu_archive_name}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_setup",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"supervised",
+    "autorestart":true
+  },
+  "appname":"provisioner",
+  "username":"${epu_username}",
+  "groupname":"${epu_groupname}",
+  "recipes":["r2app"]
+}

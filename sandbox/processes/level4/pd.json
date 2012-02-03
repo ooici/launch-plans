@@ -1,0 +1,55 @@
+{
+  "epuservices":{
+    "epu-processdispatcher-service": [
+      {
+        "name": "epu-processdispatcher", 
+        "args": { }, 
+        "config": {
+          "server": {
+            "amqp": {
+              "host": "${broker_ip_address}",
+              "username": "${rabbitmq_username}",
+              "password": "${rabbitmq_password}"
+            }
+          },
+          "processdispatcher": {
+            "engines": {
+              "default": {
+                "deployable_type": "eeagent",
+                "slots": 4,
+                "base_need": 1
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "virtualenv": {
+    "path" : "/home/${epu_username}/app-venv"
+  },
+  "appretrieve":{
+    "retrieve_method":"${epu_retrieve_method}",
+    "archive_url":"${package_repo}/${epu_archive_name}",
+    "git_repo":"${epu_git_repo}",
+    "git_branch":"${epu_git_branch}",
+    "git_commit":"${epu_git_commit}"
+  },
+  "appinstall":{
+    "install_method":"py_venv_setup",
+    "package_repo":"${package_repo}"
+  },
+  "apprun":{
+    "run_method":"supervised",
+    "autorestart":true
+  },
+  "messaging":{
+    "broker":"${broker_ip_address}",
+    "username":"${rabbitmq_username}",
+    "password":"${rabbitmq_password}"
+  },
+  "username":"${epu_username}",
+  "groupname":"${epu_groupname}",
+  "appname":"pd",
+  "recipes":["r2app"]
+}

@@ -1,0 +1,37 @@
+{
+  "process-dispatchers":{
+    "${process_dispatcher_name}":{
+      "logfile": "/tmp/${process_dispatcher_name}.log",
+      "engines":{
+        "default":{
+          "deployable_type": "eeagent",
+          "slots": 4,
+          "base_need": 1
+        }
+      }
+    }
+  },
+  "nodes":{
+    "pyonnode":{
+      "dt": "eeagent",
+      "process-dispatcher": "${process_dispatcher_name}",
+      "eeagents":{
+        "eeagent_pyonnode":{
+          "logfile": "/tmp/eeagent_pyonnode.log",
+          "launch_type": "pyon_single",
+          "pyon_directory": "${pyon_path}"
+        }
+      }
+    },
+    "supdnode":{
+      "dt": "eeagent",
+      "process-dispatcher": "${process_dispatcher_name}",
+      "eeagents":{
+        "eeagent_supdnode":{
+          "logfile": "/tmp/eeagent_supdnode.log",
+          "launch_type": "supd"
+        }
+      }
+    }
+  }
+}

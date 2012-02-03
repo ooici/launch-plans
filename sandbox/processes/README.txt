@@ -13,16 +13,15 @@ differently, there is usually a way to make it happen.
 
 I. Quick guide for the impatient:
 
-Install epumgmt (dashi branch) into a virtualenv. cloudinitd will be installed
-as a dependency.
+Export the following environment variables into your shell:
 
 Export the following environment variables into your shell:
 
-    # Credentials for Nimbus Context Broker
-    # The default is the broker at FutureGrid hotel. Use your Cumulus creds.
-
+    # Credentials for Nimbus
     export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY`
     export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET`
+    export NIMBUS_KEY=`cat ~/.secrets/NIMBUS_KEY`
+    export NIMBUS_SECRET=`cat ~/.secrets/NIMBUS_SECRET`
     
     # Credentials for EC2
     # The provisioner uses to start worker nodes on EC2 in some situations
@@ -34,14 +33,30 @@ Export the following environment variables into your shell:
     export CLOUDBOOT_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
     export CLOUDBOOT_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
     
+    # Credentials for Cassandra
+    # You make these up
+    export CASSANDRA_USERNAME="mamacass"
+    export CASSANDRA_PASSWORD=`uuidgen`
+    
     # Credentials for RabbitMQ
     # You make these up
     export RABBITMQ_USERNAME="easterbunny"
     export RABBITMQ_PASSWORD=`uuidgen`
     
+    # If you are running your own Cassandra instance outside the launch
+    # plan, this HAS to change every launch.
+    export EXCHANGE_SCOPE="sysname123"
+    
+    # If you are using the ANF example:
+    export SQLSTREAM_RETRIEVE_ID="$AWS_ACCESS_KEY_ID"
+    export SQLSTREAM_RETRIEVE_SECRET="$AWS_SECRET_ACCESS_KEY"
+
 Run:
 
-   RUN_NAME="my_run_name"
+   RUN_NAME = "my_run_name"
+   if [ -n $EXCHANGE_SCOPE ]; then
+     RUN_NAME=$EXCHANGE_SCOPE
+   fi
    cloudinitd boot main.conf -v -v -v -l debug -x -n $RUN_NAME
    
 Inspect:
