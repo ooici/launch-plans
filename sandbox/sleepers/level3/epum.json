@@ -38,7 +38,7 @@
                   "monitor_health": false
                 },
                 "engine_conf": {
-                  "preserve_n": 1,
+                  "preserve_n": "${preserve_n}",
                   "epuworker_type": "${worker_deployable_type}"
                 }
               }
