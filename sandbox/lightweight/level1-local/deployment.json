@@ -5,7 +5,7 @@
       "engines":{
         "default":{
           "deployable_type": "eeagent",
-          "slots": 4,
+          "slots": 40,
           "base_need": 1
         }
       }
@@ -19,19 +19,12 @@
         "eeagent_pyonnode":{
           "logfile": "/tmp/eeagent_pyonnode.log",
           "launch_type": "pyon_single",
-          "pyon_directory": "${pyon_path}"
-        }
-      }
-    },
-    "supdnode":{
-      "dt": "eeagent",
-      "process-dispatcher": "${process_dispatcher_name}",
-      "eeagents":{
-        "eeagent_supdnode":{
-          "logfile": "/tmp/eeagent_supdnode.log",
-          "launch_type": "supd"
+          "pyon_directory": "${pyon_path}",
+          "slots": "50"
         }
       }
     }
-  }
+  },
+  "virtualenv":"${virtualenv}",
+  "exchange_scope":"${exchange_scope}"
 }
