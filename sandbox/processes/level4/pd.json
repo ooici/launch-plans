@@ -7,7 +7,7 @@
         "config": {
           "server": {
             "amqp": {
-              "host": "${broker_ip_address}",
+              "host": "${rabbitmq_host}",
               "username": "${rabbitmq_username}",
               "password": "${rabbitmq_password}"
             }
@@ -44,7 +44,7 @@
     "autorestart":true
   },
   "messaging":{
-    "broker":"${broker_ip_address}",
+    "broker":"${rabbitmq_host}",
     "username":"${rabbitmq_username}",
     "password":"${rabbitmq_password}"
   },

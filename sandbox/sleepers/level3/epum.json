@@ -7,7 +7,7 @@
         "config": {
           "server": {
             "amqp": {
-              "host": "${broker_ip_address}",
+              "host": "${rabbitmq_host}",
               "username": "${rabbitmq_username}",
               "password": "${rabbitmq_password}"
             }
@@ -18,7 +18,7 @@
             "provisioner_vars" : {
               "epuworker_image_id":"${worker_id}",
               "queue_name_work":"${queue1_name_work}",
-              "broker_ip_address":"${broker_ip_address}",
+              "broker_ip_address":"${rabbitmq_host}",
               "broker_username":"${rabbitmq_username}",
               "broker_password":"${rabbitmq_password}",
               "retrieve_method":"${epu_retrieve_method}",

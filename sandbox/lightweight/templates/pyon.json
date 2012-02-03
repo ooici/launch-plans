@@ -5,7 +5,7 @@
   },  
   "server":{
     "amqp":{
-      "host": "$${broker_ip_address}",
+      "host": "$${rabbitmq_host}",
       "vhost": "/",
       "username": "$${rabbitmq_username}",
       "password": "$${rabbitmq_password}",

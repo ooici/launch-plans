@@ -62,13 +62,13 @@ There are three layers of value substitutions to understand.
       epu_git_repo: https://github.com/ooici/epu.git
    
       1B. Variable
-      broker_ip_address: ${basenode.hostname}
+      rabbitmq_host: ${basenode.hostname}
      
    In the literal kind, you have a straight string value.
    
    In the variable kind, you are telling cloudinit.d that a service called
    "x" provides a dynamic value from the launch (in this example, a service
-   called "basenode" provides "hostname" -- when this key "broker_ip_address"
+   called "basenode" provides "hostname" -- when this key "rabbitmq_host"
    is desired later, cloudinit.d will provide the hostname value from wherever
    the "svc-basenode" service ended up).
 
@@ -80,7 +80,7 @@ There are three layers of value substitutions to understand.
    via substitution.
 
    Any substitution here comes from the *deps files*.  For example, if you list
-   "${broker_ip_address}", the value will come from the dep file containing that
+   "${rabbitmq_host}", the value will come from the dep file containing that
    key.  For each service you can explicitly list which deps files are "in play"
    for that substitution.
    
