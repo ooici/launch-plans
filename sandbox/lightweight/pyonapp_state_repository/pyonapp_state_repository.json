@@ -1,0 +1,30 @@
+{
+  "run_type": "pyon_single",
+  "parameters":{
+    "rel":{
+      "type":"release",
+      "name":"state_repository",
+      "version":"0.1",
+      "description":"Pyon service deployed by cloudinit.d",
+      "ion":"0.0.1",
+      "apps":[{
+  "version": 0.1, 
+  "name": "state_repository", 
+  "processapp": [
+    "state_repository", 
+    "ion.services.coi.state_repository_service", 
+    "StateRepositoryService"
+  ]
+}]
+    }
+  },
+  "server":{
+    "amqp":{
+      "host": "${rabbitmq_host}",
+      "vhost": "/",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${exchange_scope}"
+    }
+  }
+}

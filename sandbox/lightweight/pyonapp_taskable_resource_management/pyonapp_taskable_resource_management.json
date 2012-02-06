@@ -1,0 +1,30 @@
+{
+  "run_type": "pyon_single",
+  "parameters":{
+    "rel":{
+      "type":"release",
+      "name":"taskable_resource_management",
+      "version":"0.1",
+      "description":"Pyon service deployed by cloudinit.d",
+      "ion":"0.0.1",
+      "apps":[{
+  "version": 0.1, 
+  "name": "taskable_resource_management", 
+  "processapp": [
+    "taskable_resource_management", 
+    "ion.services.cei.taskable_resource_management_service", 
+    "TaskableResourceManagementService"
+  ]
+}]
+    }
+  },
+  "server":{
+    "amqp":{
+      "host": "${rabbitmq_host}",
+      "vhost": "/",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${exchange_scope}"
+    }
+  }
+}

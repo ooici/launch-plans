@@ -1,0 +1,27 @@
+{
+  "run_type": "pyon_single",
+  "parameters":{
+    "rel":{
+      "type":"release",
+      "name":"bootstrap_2",
+      "version":"0.1",
+      "description":"Pyon service deployed by cloudinit.d",
+      "ion":"0.0.1",
+      "apps":[{
+  "config": {
+    "level": "directory"
+  }, 
+  "name": "bootstrap"
+}]
+    }
+  },
+  "server":{
+    "amqp":{
+      "host": "${rabbitmq_host}",
+      "vhost": "/",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${exchange_scope}"
+    }
+  }
+}
