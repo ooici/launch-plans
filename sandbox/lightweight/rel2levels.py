@@ -16,7 +16,7 @@ from string import Template
 CLOUDINITD_CONFIG = "local.conf"
 JSON_TEMPLATE="templates/pyon.json"
 CONF_TEMPLATE="templates/pyon.conf"
-PYONAPP_PREFIX = "pyonapp_"
+PYONAPP_PREFIX = "pyonapp"
 
 TOP_LEVEL_CONF_MARKER = "########## Pyon Services ##########"
 
@@ -73,7 +73,8 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     app_names = []
     level_configs = []
     cloudinitd_config = clean_plan(cloudinitd_config)
-    level_index = get_last_level(cloudinitd_config)
+    level_offset = get_last_level(cloudinitd_config)
+    level_index = 0
     rel = yaml.load(rel_yaml)
     apps = rel['apps']
 
@@ -84,11 +85,11 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
         app_names.append(name)
         app_json = json.dumps(app, indent=2)
         conf_contents = conf_template.substitute(name=name)
-        conf_filename = "%s%s.conf" % (PYONAPP_PREFIX, name)
+        conf_filename = "%s%s%s.conf" % (PYONAPP_PREFIX, "_", name)
         json_contents = json_template.substitute(name=name, app_json=app_json)
-        json_filename = "%s%s.json" % (PYONAPP_PREFIX, name)
+        json_filename = "%s%s%s.json" % (PYONAPP_PREFIX, "_", name)
 
-        level_directory = "%s%s" % (PYONAPP_PREFIX, name)
+        level_directory = "%s%02d%s%s" % (PYONAPP_PREFIX, level_index, "_", name)
         level_directory = os.path.join(output_directory, level_directory)
         os.mkdir(level_directory)
 
@@ -99,7 +100,7 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
         with open(json_path, "w") as json_file:
             json_file.write(json_contents)
 
-        level_config = "level%s: %s" % (level_index, conf_path)
+        level_config = "level%s: %s" % (level_index + level_offset, conf_path)
 
         level_configs.append(level_config)
         level_index += 1
