@@ -1,13 +1,15 @@
 {
   "run_type": "pyon_single",
-  "parameters":{                                                                
-    "type":"release",
-    "name":"${name}",
-    "version":"0.1",
-    "description":"Pyon service deployed by cloudinit.d",
-    "ion":"0.0.1",
-    "apps":${app_json}                                                                   
-  },  
+  "parameters":{
+    "rel":{
+      "type":"release",
+      "name":"${name}",
+      "version":"0.1",
+      "description":"Pyon service deployed by cloudinit.d",
+      "ion":"0.0.1",
+      "apps":[${app_json}]
+    }
+  },
   "server":{
     "amqp":{
       "host": "$${rabbitmq_host}",
