@@ -1,5 +1,8 @@
 #!/bin/bash
+# ignore errors when sourceing bootenv.sh
+set +e
 . bootenv.sh
+set -e
 
 ERROR=1
 USAGE="usage: $0 start|stop|status"
