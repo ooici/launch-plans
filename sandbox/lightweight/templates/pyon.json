@@ -8,6 +8,13 @@
       "description":"Pyon service deployed by cloudinit.d",
       "ion":"0.0.1",
       "apps":[${app_json}]
+    },
+    "logging":{
+      "handlers":{
+        "file":{
+          "filename": "logs/pyonapp_${name}.log"
+        }
+      }
     }
   },
   "server":{
