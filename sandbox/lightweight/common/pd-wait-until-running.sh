@@ -10,7 +10,7 @@ Options:
 [-p|--password password]
 [-d|--processdispatcher pdname]
 [-x|--exchange xchg]
-[-c|--config cfg.yml]
+[-i|--upid id]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
@@ -33,8 +33,8 @@ while [ "$1" != "" ]; do
         -x | --exchange )       shift
                                 exchange=$1
                                 ;;
-        -c | --config )         shift
-                                config=$1
+        -i | --upid )           shift
+                                upid=$1
                                 ;;
         -h | --help )           echo "$USAGE"
                                 exit
@@ -57,14 +57,15 @@ if [ -z "$processdispatcher" ]; then
     exit $ERROR
 fi
 
-if [ -z "$config" ]; then
-    echo "Your configuration must be set"
-    echo $USAGE
-    exit $ERROR
+if [ -z "$upid" ]; then
+    #Try to get id from upid from bootout.json from readypgm
+    upid=`cat bootout.json | awk '/upid/ {print $2}' | tr -d '",'`
+    if [ -z "$upid" ]; then
+        echo "You must provide a upid for the process"
+        echo $USAGE
+        exit $ERROR
+    fi
 fi
-
-CONFIG="`pwd`/$config"
-
 
 ACTIVATE="${virtualenv}/bin/activate"
 
@@ -75,19 +76,28 @@ fi
 
 source $ACTIVATE
 
-# TODO: THis script schould be moved to a py entry point
 CEICTL="ceictl"
 if [ ! `which $CEICTL` ]; then
-
     echo "'$CEICTL' isn't in search path. Is your virtualenv set correctly?"
     exit $ERROR
 fi
 
-
-bootout=`$CEICTL --json -u $username -p $password -b $host -x $exchange process dispatch $CONFIG`
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-echo "$bootout" > bootout.json
+ATTEMPTS=60
+while true ; do
+    status=`$CEICTL --yaml -u $username -p $password -b $host -x $exchange process describe $upid | awk '/^state: / {print $2}'`
+    echo "$status" >> statuslog.log
+    if [ $? -ne 0 ]; then
+        exit $ERROR
+    elif [ "$status" = "500-RUNNING" ]; then
+        break
+    elif [ "$status" = "850-FAILED" ]; then
+        echo "Service $upid is in a failed state."
+        exit $ERROR
+    elif [ $ATTEMPTS -le 0 ]; then
+        echo "Service $upid took too long to reach a running state"
+        exit $ERROR
+    fi
+    let ATTEMPTS=$ATTEMPTS-1
+    sleep 1
+done
 exit
