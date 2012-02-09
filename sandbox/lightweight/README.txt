@@ -196,14 +196,22 @@ install the epu-harness package into your env. Do this with:
     $ pip install -e 'git+git://github.com/nimbusproject/epuharness.git#egg=epuharness'
 
 
-If you would like to launch pyon processes, you will need a pyon installation.
-You can make one with:
+If you would like to launch pyon processes, you will need a pyon and
+coi-services installation. You can make one with:
 
     $ git clone https://github.com/ooici/pyon.git
     $ cd pyon 
     $ git submodule update --init
     $ python bootstrap.py
     $ bin/buildout
+    $ bin/generate_interfaces
+    $ cd ..
+    $ git clone https://github.com/ooici/coi-services.git
+    $ cd coi-services 
+    $ git submodule update --init
+    $ python bootstrap.py
+    $ bin/buildout
+    $ bin/generate_interfaces
 
 You will also need to ensure that you have RabbitMQ set up and running, and
 couchdb running if you would like to use Pyon.
@@ -257,7 +265,7 @@ source:
     $ cat ~/.secrets/local
 
     # Pyon installation
-    export PYON_PATH=/path/to/pyon
+    export PYON_PATH=/path/to/coi-services
 
     # Credentials for RabbitMQ
     export RABBITMQ_HOST="localhost"
@@ -273,7 +281,7 @@ source:
 
 Next, you will need to generate the pyon launch levels with the rel2levels.py script. Do this with:
 
-    ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f
+    $ source ~/.secrets/local ; ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f
 
 Now you can launch the local launch plan with:
 
