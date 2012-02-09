@@ -271,6 +271,9 @@ source:
     fi
     export RUN
 
+Next, you will need to generate the pyon launch levels with the rel2levels.py script. Do this with:
+
+    ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f
 
 Now you can launch the local launch plan with:
 
