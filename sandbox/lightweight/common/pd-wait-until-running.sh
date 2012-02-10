@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ERROR=1
+TIMEOUT=600
 USAGE="usage: $0 [options]
 
 Options:
@@ -82,7 +83,6 @@ if [ ! `which $CEICTL` ]; then
     exit $ERROR
 fi
 
-ATTEMPTS=60
 while true ; do
     status=`$CEICTL --yaml -u $username -p $password -b $host -x $exchange process describe $upid | awk '/^state: / {print $2}'`
     echo "$status" >> statuslog.log
@@ -97,7 +97,7 @@ while true ; do
         echo "Service $upid took too long to reach a running state"
         exit $ERROR
     fi
-    let ATTEMPTS=$ATTEMPTS-1
+    let TIMEOUT=$TIMEOUT-1
     sleep 1
 done
 exit
