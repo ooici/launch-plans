@@ -11,6 +11,7 @@ import sys
 import yaml
 import json
 import shutil
+import argparse
 from string import Template
 
 CLOUDINITD_CONFIG = "local.conf"
@@ -25,7 +26,8 @@ def error(msg, exit_code=1):
     sys.exit(exit_code)
 
 def rel2levels(relpath, output_directory=None, json_template_path=None,
-        conf_template_path=None, cloudinitd_config_path=None, force=False):
+        conf_template_path=None, cloudinitd_config_path=None, force=False,
+        extra_level=None):
     """Convert a pyon rel file to a launch level for each app
 
     """
@@ -104,6 +106,10 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
 
         level_configs.append(level_config)
         level_index += 1
+
+    if extra_level:
+        level_config = "level%s: %s" % (level_index + level_offset, extra_level) 
+        level_configs.append(level_config)
 
     cloudinitd_config = clean_plan(cloudinitd_config)
     cloudinitd_config = append_levels(cloudinitd_config, level_configs)
@@ -190,16 +196,11 @@ def validate(app):
 argv = list(sys.argv)
 cmd_name = argv.pop(0)
 
-if not argv:
-    error(USAGE)
+parser = argparse.ArgumentParser(description='Create cloudinitd levels from a relfile')
+parser.add_argument('relfile', metavar='path/to/rel.yml')
+parser.add_argument('-f', '--force', dest='force', action='store_const', const=True)
+parser.add_argument('-a', '--append-level', nargs=1, metavar='path/to/level.conf', default=[None])
 
-relfile = argv.pop(0)
-if '-f' in argv or '--force' in argv:
-    force = True
-else:
-    force = False
-
-if '-h' in argv or '--help' in argv:
-    error(USAGE)
-
-rel2levels(relfile, force=force)
+opts = parser.parse_args()
+print opts
+rel2levels(opts.relfile, force=opts.force, extra_level=opts.append_level.pop(0))
