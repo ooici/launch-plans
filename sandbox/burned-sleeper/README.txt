@@ -7,4 +7,4 @@ $ tar cvzf provisioner.tar.gz provisioner/
 
 Then proceed with launching "main.conf" per the documentation.
 
-(it itself needs credentials: CLOUDBOOT_IAAS_ACCESS_KEY and CLOUDBOOT_IAAS_SECRET_KEY).
+(it itself needs credentials: CLOUDINITD_IAAS_ACCESS_KEY and CLOUDINITD_IAAS_SECRET_KEY).

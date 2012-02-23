@@ -31,8 +31,8 @@ Export the following environment variables into your shell:
     
     # Credentials for cloudinit.d itself
     # cloudinit.d uses to start the base nodes
-    export CLOUDBOOT_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
-    export CLOUDBOOT_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
+    export CLOUDINITD_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
+    export CLOUDINITD_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
     
     # Credentials for RabbitMQ
     # You make these up

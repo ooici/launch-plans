@@ -9,4 +9,4 @@ $ tar cvzf provisioner.tar.gz provisioner/
 
 Then proceed with launching "main.conf" per the documentation.
 
-(cloudinit.d itself needs credentials: CLOUDBOOT_IAAS_ACCESS_KEY and CLOUDBOOT_IAAS_SECRET_KEY).
+(cloudinit.d itself needs credentials: CLOUDINITD_IAAS_ACCESS_KEY and CLOUDINITD_IAAS_SECRET_KEY).
