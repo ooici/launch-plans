@@ -28,7 +28,7 @@
             }
           },
           "context": {
-            "uri":"https://nimbus.ci.uchicago.edu:8888/ContextBroker/ctx/",
+            "uri":"https://svc.uc.futuregrid.org:8446/ContextBroker/ctx/",
             "key":"${ctxbroker_key}",
             "secret":"${ctxbroker_secret}"
           }
