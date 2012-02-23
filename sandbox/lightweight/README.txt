@@ -206,12 +206,19 @@ coi-services installation. You can make one with:
     $ bin/buildout
     $ bin/generate_interfaces
     $ cd ..
+
     $ git clone https://github.com/ooici/coi-services.git
     $ cd coi-services 
     $ git submodule update --init
     $ python bootstrap.py
     $ bin/buildout
     $ bin/generate_interfaces
+
+Turn off force_clean in coi-services:
+    Create res/config/pyon.local.yml with following content:
+
+    system:
+      force_clean: False
 
 You will also need to ensure that you have RabbitMQ set up and running, and
 couchdb running if you would like to use Pyon.
