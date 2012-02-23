@@ -24,6 +24,13 @@
                 "key":"${ec2_key}",
                 "secret":"${ec2_secret}"
               }
+            },
+            "ec2-west":{
+              "driver_class":"libcloud.compute.drivers.ec2.EC2USWestNodeDriver",
+              "driver_kwargs":{
+                "key":"${ec2_key}",
+                "secret":"${ec2_secret}"
+              }
             }
           },
           "context": {
