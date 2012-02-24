@@ -51,39 +51,39 @@ to be in your authorized_keys file. Test this with:
 
 If you see something like the following, then you are set up.
 
-   $ ssh localhost
-   Last login: Wed Feb  1 13:18:00 2012
-   $
+    $ ssh localhost
+    Last login: Wed Feb  1 13:18:00 2012
+    $
 
 If you see something like the following, you need to enable your ssh daemon:
 
-   $ ssh localhost
-   ssh: connect to host localhost port 22: Connection refused
+    $ ssh localhost
+    ssh: connect to host localhost port 22: Connection refused
 
 If you see something like the following, you need to set up an ssh key. 
 
-   $ ssh localhost
-   user@localhost's password:
+    $ ssh localhost
+    user@localhost's password:
 
 If you do not have an ssh key already, you can generate one:
 
-   $ ls ~/.ssh/id_*
-   ls: /home/user/.ssh/id_*: No such file or directory
-   $ ssh-keygen
+    $ ls ~/.ssh/id_*
+    ls: /home/user/.ssh/id_*: No such file or directory
+    $ ssh-keygen
 
 Once you have an ssh key available, simply append the public key to your
 authorized_keys file:
 
-   $ ls ~/.ssh/id_*
-   /home/user/.ssh/id_rsa /home/user/.ssh/id_rsa.pub
-   $ cp ~/.ssh/authorized_keys cp ~/.ssh/authorized_keys.backup
-   $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+    $ ls ~/.ssh/id_*
+    /home/user/.ssh/id_rsa /home/user/.ssh/id_rsa.pub
+    $ cp ~/.ssh/authorized_keys cp ~/.ssh/authorized_keys.backup
+    $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 Now try sshing again:
 
-   $ ssh localhost                                                              
-   Last login: Wed Feb  1 13:18:00 2012                                         
-   $ 
+    $ ssh localhost                                                              
+    Last login: Wed Feb  1 13:18:00 2012                                         
+    $ 
 
 
 ##iii. Running the Launch plan:
