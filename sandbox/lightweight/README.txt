@@ -187,7 +187,6 @@ virtualenv with your environment like so:
     $ cd venv
     $ git clone git://github.com/nimbusproject/epuharness.git
     $ cd epuharness ; python setup.py develop ; cd -
-    $ pip install -e 'git+git://github.com/nimbusproject/cloudinit.d.git#egg=cloudinit.d'
 
 Or if you already have an epu development virtualenv already setup, just
 install the epu-harness package into your env. Do this with:
@@ -226,8 +225,9 @@ couchdb running if you would like to use Pyon.
 IV. ii. Setting up authentication:
 
 Now you will need to ensure that you can ssh to your local machine without a
-password. To do this, you will need an ssh key, and that same key needs to be
-in your authorized_keys file. Test this with:
+password. To do this, you will need to ensure that you have the ssh daemon
+running on your system, and you will need an ssh key, and that same key needs
+to be in your authorized_keys file. Test this with:
 
     $ ssh localhost
 
@@ -236,6 +236,11 @@ If you see something like the following, then you are set up.
    $ ssh localhost
    Last login: Wed Feb  1 13:18:00 2012
    $
+
+If you see something like the following, you need to enable your ssh daemon:
+
+   $ ssh localhost
+   ssh: connect to host localhost port 22: Connection refused
 
 If you see something like the following, you need to set up an ssh key. 
 
@@ -288,7 +293,8 @@ source:
 
 Next, you will need to generate the pyon launch levels with the rel2levels.py script. Do this with:
 
-    $ source ~/.secrets/local ; ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f
+    $ source ~/.secrets/local
+    $ ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f -a testsystem/testsystem.conf
 
 Now you can launch the local launch plan with:
 
