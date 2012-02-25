@@ -9,6 +9,13 @@
       "ion":"0.0.1",
       "apps":[${app_json}]
     },
+    "config":{
+      "process_dispatcher_bridge":{
+          "uri": "amqp://$${rabbitmq_username}:$${rabbitmq_password}@$${rabbitmq_host}/",
+          "exchange": "$${exchange_scope}",
+          "topic": "$${exchange_scope}"
+      }
+    },
     "logging":{
       "handlers":{
         "file":{
