@@ -202,5 +202,4 @@ parser.add_argument('-f', '--force', dest='force', action='store_const', const=T
 parser.add_argument('-a', '--append-level', nargs=1, metavar='path/to/level.conf', default=[None])
 
 opts = parser.parse_args()
-print opts
 rel2levels(opts.relfile, force=opts.force, extra_level=opts.append_level.pop(0))
