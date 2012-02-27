@@ -93,17 +93,18 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
         json_filename = "%s%s%s.json" % (PYONAPP_PREFIX, "_", name)
 
         level_directory = "%s%02d%s%s" % (PYONAPP_PREFIX, level_index, "_", name)
-        level_directory = os.path.join(output_directory, level_directory)
-        os.mkdir(level_directory)
+        level_directory_path = os.path.join(output_directory, level_directory)
+        os.mkdir(level_directory_path)
 
-        conf_path = os.path.join(level_directory, conf_filename)
-        json_path = os.path.join(level_directory, json_filename)
+        conf_relative_path = os.path.join(level_directory, conf_filename)
+        conf_path = os.path.join(level_directory_path, conf_filename)
+        json_path = os.path.join(level_directory_path, json_filename)
         with open(conf_path, "w") as conf_file:
             conf_file.write(conf_contents)
         with open(json_path, "w") as json_file:
             json_file.write(json_contents)
 
-        level_config = "level%s: %s" % (level_index + level_offset, conf_path)
+        level_config = "level%s: %s" % (level_index + level_offset, conf_relative_path)
 
         level_configs.append(level_config)
         level_index += 1
