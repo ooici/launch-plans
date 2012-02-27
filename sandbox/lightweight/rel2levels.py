@@ -15,8 +15,9 @@ import argparse
 from string import Template
 
 CLOUDINITD_CONFIG = "local.conf"
-JSON_TEMPLATE="templates/pyon.json"
-CONF_TEMPLATE="templates/pyon.conf"
+THIS_DIR=os.path.dirname(__file__)
+JSON_TEMPLATE=os.path.join(THIS_DIR, "templates", "pyon.json")
+CONF_TEMPLATE=os.path.join(THIS_DIR, "templates", "pyon.conf")
 PYONAPP_PREFIX = "pyonapp"
 
 TOP_LEVEL_CONF_MARKER = "########## Pyon Services ##########"
@@ -200,6 +201,10 @@ parser = argparse.ArgumentParser(description='Create cloudinitd levels from a re
 parser.add_argument('relfile', metavar='path/to/rel.yml')
 parser.add_argument('-f', '--force', dest='force', action='store_const', const=True)
 parser.add_argument('-a', '--append-level', nargs=1, metavar='path/to/level.conf', default=[None])
+parser.add_argument('-j', '--json-template', nargs=1, metavar='path/to/template.json', default=None)
+parser.add_argument('-t', '--conf-template', nargs=1, metavar='path/to/template.conf', default=None)
 
 opts = parser.parse_args()
-rel2levels(opts.relfile, force=opts.force, extra_level=opts.append_level.pop(0))
+rel2levels(opts.relfile, force=opts.force,
+        extra_level=opts.append_level.pop(0), json_template_path=opts.json-template,         
+        conf_template_path=opts.conf-template)
