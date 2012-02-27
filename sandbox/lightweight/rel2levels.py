@@ -206,5 +206,5 @@ parser.add_argument('-t', '--conf-template', nargs=1, metavar='path/to/template.
 
 opts = parser.parse_args()
 rel2levels(opts.relfile, force=opts.force,
-        extra_level=opts.append_level.pop(0), json_template_path=opts.json-template,         
-        conf_template_path=opts.conf-template)
+        extra_level=opts.append_level.pop(0), json_template_path=opts.json_template,         
+        conf_template_path=opts.conf_template)
