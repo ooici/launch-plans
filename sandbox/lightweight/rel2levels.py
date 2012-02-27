@@ -14,8 +14,8 @@ import shutil
 import argparse
 from string import Template
 
-CLOUDINITD_CONFIG = "local.conf"
 THIS_DIR=os.path.dirname(__file__)
+CLOUDINITD_CONFIG = os.path.join(THIS_DIR, "local.conf")
 JSON_TEMPLATE=os.path.join(THIS_DIR, "templates", "pyon.json")
 CONF_TEMPLATE=os.path.join(THIS_DIR, "templates", "pyon.conf")
 PYONAPP_PREFIX = "pyonapp"
@@ -33,7 +33,7 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
 
     """
 
-    output_directory = output_directory or '.'
+    output_directory = output_directory or THIS_DIR
     json_template_path = json_template_path or JSON_TEMPLATE
     conf_template_path = conf_template_path or CONF_TEMPLATE
     cloudinitd_config_path = cloudinitd_config_path or CLOUDINITD_CONFIG
