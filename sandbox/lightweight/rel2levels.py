@@ -110,6 +110,8 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
         level_index += 1
 
     if extra_level:
+        if not os.path.isabs(extra_level):
+            extra_level = os.path.join(os.getcwd(), extra_level)
         level_config = "level%s: %s" % (level_index + level_offset, extra_level) 
         level_configs.append(level_config)
 
