@@ -4,7 +4,7 @@ set +e
 . bootenv.sh
 set -e
 
-echo "It works!"
+echo "$0 running in `pwd`"
 echo "Pyon path is $pyon_path" 
 
 export CEI_LAUNCH_TEST=1
