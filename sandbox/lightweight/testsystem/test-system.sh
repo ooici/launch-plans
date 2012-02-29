@@ -1,12 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 # ignore errors when sourceing bootenv.sh
 set +e
 . bootenv.sh
 set -e
 
 echo "$0 running in `pwd`"
-echo "Directory contents:"
-ls -la
 echo "Pyon path is $pyon_path" 
 
 export CEI_LAUNCH_TEST=1
