@@ -1,5 +1,5 @@
 #!/bin/bash
-# ignore errors when sourceing bootenv.sh
+# ignore errors when sourcing bootenv.sh
 set +e
 . bootenv.sh
 set -e
@@ -9,5 +9,9 @@ echo "Pyon path is $pyon_path"
 
 export CEI_LAUNCH_TEST=1
 cd $pyon_path
+echo "env before tests:"
+env
 ./bin/pycc -x ion.processes.bootstrap.datastore_loader.DatastoreLoader op=dump path=res/dd
 ./bin/nosetests -a INT,group=sa -v
+echo "env after tests:"
+env
