@@ -12,6 +12,7 @@ Options:
 [-d|--processdispatcher pdname]
 [-x|--exchange xchg]
 [-i|--upid id]
+[-s|--state 800-RUNNING|]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
@@ -37,6 +38,9 @@ while [ "$1" != "" ]; do
         -i | --upid )           shift
                                 upid=$1
                                 ;;
+        -s | --state )          shift
+                                state=$1
+                                ;;
         -h | --help )           echo "$USAGE"
                                 exit
                                 ;;
@@ -54,6 +58,12 @@ fi
 
 if [ -z "$processdispatcher" ]; then
     echo "Your process dispatcher must be set"
+    echo $USAGE
+    exit $ERROR
+fi
+
+if [ -z "$state" ]; then
+    echo "Your waiting state must be set"
     echo $USAGE
     exit $ERROR
 fi
@@ -88,13 +98,13 @@ while true ; do
     echo "$status" >> statuslog.log
     if [ $? -ne 0 ]; then
         exit $ERROR
-    elif [ "$status" = "500-RUNNING" ]; then
+    elif [ "$status" = $state ]; then
         break
     elif [ "$status" = "850-FAILED" ]; then
         echo "Service $upid is in a failed state."
         exit $ERROR
-    elif [ $ATTEMPTS -le 0 ]; then
-        echo "Service $upid took too long to reach a running state"
+    elif [ $TIMEOUT -le 0 ]; then
+        echo "Service $upid took too long to reach a $state state"
         exit $ERROR
     fi
     let TIMEOUT=$TIMEOUT-1

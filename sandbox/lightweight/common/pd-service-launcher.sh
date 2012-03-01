@@ -8,6 +8,8 @@ Options:
 [-b|--host brokerhostname]
 [-u|--username username]
 [-p|--password password]
+[-a|--action stop|start]
+[-i|--upid id]
 [-d|--processdispatcher pdname]
 [-x|--exchange xchg]
 [-c|--config cfg.yml]
@@ -27,8 +29,14 @@ while [ "$1" != "" ]; do
         -p | --password )       shift
                                 password=$1
                                 ;;
+        -a | --action )         shift
+                                action=$1
+                                ;;
         -d | --processdispatcher )       shift
                                 processdispatcher=$1
+                                ;;
+        -i | --upid )           shift
+                                upid=$1
                                 ;;
         -x | --exchange )       shift
                                 exchange=$1
@@ -63,6 +71,12 @@ if [ -z "$config" ]; then
     exit $ERROR
 fi
 
+if [ -z "$action" ]; then
+    echo "Your action must be set"
+    echo $USAGE
+    exit $ERROR
+fi
+
 CONFIG="`pwd`/$config"
 
 
@@ -83,11 +97,30 @@ if [ ! `which $CEICTL` ]; then
     exit $ERROR
 fi
 
+if [ "$action" = "start" ]; then
+    bootout=`$CEICTL --json -u $username -p $password -b $host -x $exchange process dispatch $CONFIG`
+    echo "$bootout" > bootout.json
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
 
-bootout=`$CEICTL --json -u $username -p $password -b $host -x $exchange process dispatch $CONFIG`
-if [ $? -ne 0 ]; then
-  exit 1
+elif [ "$action" = "stop" ]; then
+
+    if [ -z "$upid" ]; then
+        #Try to get id from upid from bootout.json from readypgm
+        upid=`cat bootout.json | awk '/upid/ {print $2}' | tr -d '",'`
+        if [ -z "$upid" ]; then
+            echo "You must provide a upid for the process"
+            echo $USAGE
+            exit $ERROR
+        fi
+    fi
+
+    $CEICTL --json -u $username -p $password -b $host -x $exchange process kill $upid
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+    `pwd`/pd-wait-until-state.sh -d $processdispatcher -v $virtualenv -u $username -p $password -b $host -x $exchange -s 700-TERMINATED
 fi
 
-echo "$bootout" > bootout.json
 exit
