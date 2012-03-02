@@ -21,6 +21,14 @@
         "file":{
           "filename": "logs/pyonapp_${name}.log"
         }
+      },
+      "loggers":{
+        "pyon":{
+          "level": "INFO"
+        },
+        "ion":{
+          "level": "INFO"
+        }
       }
     }
   }
