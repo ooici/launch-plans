@@ -18,5 +18,5 @@
   },
   "username":"${epu_username}",
   "groupname":"${epu_groupname}",
-  "recipes":["rabbitmq","user"]
+  "recipes":["rabbitmq", "rsyslog", "user"]
 }

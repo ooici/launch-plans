@@ -12,6 +12,16 @@
               "password": "${rabbitmq_password}"
             }
           },
+          "logging":{
+            "handlers":{
+              "syslog":{
+                "address": ["${syslog_host}", 514]
+              }
+            },
+            "root":{
+              "handlers": ["console", "syslog"]
+            }
+          },
           "provisioner": {
             "dtrs": "epu.localdtrs.LocalDTRS",
             "dt_path": "/opt/dt-data/dt",

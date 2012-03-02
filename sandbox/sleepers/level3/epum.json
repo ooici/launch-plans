@@ -12,6 +12,16 @@
               "password": "${rabbitmq_password}"
             }
           },
+          "logging":{
+            "handlers":{
+              "syslog":{
+                "address": ["${syslog_host}", 514]
+              }
+            },
+            "root":{
+              "handlers": ["console", "syslog"]
+            }
+          },
           "epumanagement": {
             "needy_default_iaas_site": "ec2-east",
             "needy_default_iaas_allocation": "t1.micro",
