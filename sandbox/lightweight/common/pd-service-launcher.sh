@@ -121,6 +121,9 @@ elif [ "$action" = "stop" ]; then
         exit 1
     fi
     `pwd`/pd-wait-until-state.sh -d $processdispatcher -v $virtualenv -u $username -p $password -b $host -x $exchange -s 700-TERMINATED
+
+    # Delete Config file
+    rm $CONFIG
 fi
 
 exit
