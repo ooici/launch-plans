@@ -12,20 +12,15 @@
               "password": "${rabbitmq_password}"
             }
           },
-          "logging":{
-            "handlers":{
-              "syslog":{
-                "address": ["${syslog_host}", 514]
-              }
-            },
-            "root":{
-              "handlers": ["console", "syslog"]
-            }
-          },
           "provisioner": {
             "dtrs": "epu.localdtrs.LocalDTRS",
             "dt_path": "/opt/dt-data/dt",
             "query_period": 10
+          },
+          "zookeeper": {
+            "hosts": "${zookeeper0}:2181",
+            "provisioner_path": "/provisioner",
+            "timeout" : 5
           },
           "sites":{
             "ec2-east":{
@@ -62,12 +57,12 @@
     "git_branch":"${epu_git_branch}",
     "git_commit":"${epu_git_commit}"
   },
-  "appinstall":{
-    "install_method":"py_venv_setup",
-    "package_repo":"${package_repo}"
+  "apprun":{
+    "run_method":"supervised",
+    "autorestart":true
   },
-  "appname":"provisioner",
+  "appname":"${name}",
   "username":"${epu_username}",
   "groupname":"${epu_groupname}",
-  "recipes":["r2app", "kazoo"]
+  "recipes":["r2app"]
 }
