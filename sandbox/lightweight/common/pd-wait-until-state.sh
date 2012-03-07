@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ERROR=1
-TIMEOUT=600
+DEFAULT_TIMEOUT=60
 USAGE="usage: $0 [options]
 
 Options:
@@ -13,6 +13,7 @@ Options:
 [-x|--exchange xchg]
 [-i|--upid id]
 [-s|--state 800-RUNNING|]
+[-t|--timeout secs|]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
@@ -41,6 +42,9 @@ while [ "$1" != "" ]; do
         -s | --state )          shift
                                 state=$1
                                 ;;
+        -t | --timeout )        shift
+                                timeout=$1
+                                ;;
         -h | --help )           echo "$USAGE"
                                 exit
                                 ;;
@@ -66,6 +70,10 @@ if [ -z "$state" ]; then
     echo "Your waiting state must be set"
     echo $USAGE
     exit $ERROR
+fi
+
+if [ -z "$timeout" ]; then
+    timeout=$DEFAULT_TIMEOUT
 fi
 
 if [ -z "$upid" ]; then
@@ -103,11 +111,11 @@ while true ; do
     elif [ "$status" = "850-FAILED" ]; then
         echo "Service $upid is in a failed state."
         exit $ERROR
-    elif [ $TIMEOUT -le 0 ]; then
+    elif [ $timeout -le 0 ]; then
         echo "Service $upid took too long to reach a $state state"
         exit $ERROR
     fi
-    let TIMEOUT=$TIMEOUT-1
+    let timeout=$timeout-1
     sleep 1
 done
 exit
