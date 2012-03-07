@@ -40,7 +40,7 @@ while [ "$1" != "" ]; do
                                 upid=$1
                                 ;;
         -s | --state )          shift
-                                state=$1
+                                wantstate=$1
                                 ;;
         -t | --timeout )        shift
                                 timeout=$1
