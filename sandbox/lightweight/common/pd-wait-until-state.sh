@@ -66,7 +66,7 @@ if [ -z "$processdispatcher" ]; then
     exit $ERROR
 fi
 
-if [ -z "$state" ]; then
+if [ -z "$wantstate" ]; then
     echo "Your waiting state must be set"
     echo $USAGE
     exit $ERROR
@@ -103,18 +103,18 @@ fi
 
 while true ; do
     status=`$CEICTL --yaml -u $username -p $password -b $host -x $exchange process describe $upid | awk '/^state: / {print $2}'`
-    echo "$status" >> statuslog.log
     if [ $? -ne 0 ]; then
         exit $ERROR
-    elif [ "$status" = $state ]; then
+    elif [ "$status" = $wantstate ]; then
         break
     elif [ "$status" = "850-FAILED" ]; then
         echo "Service $upid is in a failed state."
         exit $ERROR
     elif [ $timeout -le 0 ]; then
-        echo "Service $upid took too long to reach a $state state"
+        echo "Service $upid took too long to reach a $wantstate state"
         exit $ERROR
     fi
+    echo "Status of $upid is $status, waiting for $wantstate, waiting for $timeout more seconds"
     let timeout=$timeout-1
     sleep 1
 done
