@@ -37,7 +37,11 @@
               "git_repo":"${epu_git_repo}",
               "git_branch":"${epu_git_branch}",
               "git_commit":"${epu_git_commit}",
-              "dtdata_archive_url":"${dtdata_archive_url}"
+              "dtdata_archive_url":"${dtdata_archive_url}",
+              "epuagent_retrieve_method":"${epuagent_retrieve_method}",
+              "epuagent_git_repo":"${epuagent_git_repo}",
+              "epuagent_git_branch":"${epuagent_git_branch}",
+              "epuagent_git_commit":"${epuagent_git_commit}"
             },
             "initial_epus": {
               "epu1": {
@@ -45,7 +49,7 @@
                   "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
                 },
                 "health": {
-                  "monitor_health": false
+                  "monitor_health": true
                 },
                 "engine_conf": {
                   "preserve_n": "${preserve_n}",
