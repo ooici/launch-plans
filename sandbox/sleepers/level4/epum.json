@@ -41,7 +41,8 @@
               "epuagent_retrieve_method":"${epuagent_retrieve_method}",
               "epuagent_git_repo":"${epuagent_git_repo}",
               "epuagent_git_branch":"${epuagent_git_branch}",
-              "epuagent_git_commit":"${epuagent_git_commit}"
+              "epuagent_git_commit":"${epuagent_git_commit}",
+              "heartbeat_period_seconds":"${heartbeat_period_seconds}"
             },
             "initial_epus": {
               "epu1": {
