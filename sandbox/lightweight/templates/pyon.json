@@ -19,7 +19,7 @@
     "logging":{
       "formatters":{
         "loggly":{
-          "format": "[${name}: %(module)-15s:%(lineno)3d] %(levelname)-5s:%(message)s"
+          "format": "[pyonapp_${name}: %(module)-15s:%(lineno)3d] %(levelname)-5s:%(message)s"
         }
       },
       "handlers":{
