@@ -26,6 +26,7 @@
         "syslog":{
           "class": "logging.handlers.SysLogHandler",
           "address": ["localhost", 514],
+          "formatter": "loggly",
           "facility": "local0"
         },
         "file":{
