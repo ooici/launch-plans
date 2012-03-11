@@ -4,6 +4,7 @@ set -e
 
 # Install dependencies
 export DEBIAN_FRONTEND="noninteractive"
+sudo -E apt-get update
 sudo -E apt-get -q -y install chef git libevent-dev libncurses-dev \
 libsqlite3-dev libyaml-dev libzmq-dev python-dev python-pip python-pysqlite2 \
 python-setuptools python-virtualenv rabbitmq-server swig >/dev/null 2>&1 < /dev/null
