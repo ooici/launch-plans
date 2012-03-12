@@ -27,6 +27,7 @@
           "class": "logging.handlers.SysLogHandler",
           "address": ["localhost", 514],
           "formatter": "loggly",
+          "level": "WARN",
           "facility": "local0"
         },
         "file":{
