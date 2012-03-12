@@ -38,4 +38,12 @@ EOF'
 # Disable chef-client on boot
 sudo update-rc.d chef-client disable
 
+# Increase open file descriptor limits
+sudo sh -c "echo 'fs.file-max = 131072' >> /etc/sysctl.conf"
+sudo sh -c "echo 'rabbitmq        soft    nofile          65536
+rabbitmq        hard    nofile          131072
+root            soft    nofile          65536
+root            hard    nofile          131072' >> /etc/security/limits.conf"
+sudo sh -c "echo 'session required        pam_limits.so' >> /etc/pam.d/common-session"
+
 exit 0
