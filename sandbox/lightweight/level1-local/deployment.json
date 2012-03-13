@@ -5,7 +5,7 @@
       "engines":{
         "default":{
           "deployable_type": "eeagent",
-          "slots": 40,
+          "slots": 100,
           "base_need": 1
         }
       }
@@ -20,7 +20,7 @@
           "logfile": "/tmp/eeagent_pyonnode.log",
           "launch_type": "pyon_single",
           "pyon_directory": "${pyon_path}",
-          "slots": "50"
+          "slots": "100"
         }
       }
     }
