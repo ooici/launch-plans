@@ -24,8 +24,7 @@
           },
           "provisioner": {
             "dtrs": "epu.localdtrs.LocalDTRS",
-            "dt_path": "/opt/dt-data/dt",
-            "query_period": 10
+            "dt_path": "/opt/dt-data/dt"
           },
           "zookeeper": {
             "hosts": "${zookeeper0}:2181",
