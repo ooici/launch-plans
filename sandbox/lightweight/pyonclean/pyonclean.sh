@@ -3,9 +3,9 @@ set +e
 . bootenv.sh
 set -e
 
-if [ -z "$cleancouchdb" -eq "0" ]; then
-    echo "\$CLEANCOUCHDB not set, skipping clean"
-    exit 0
+if [ -z "$cleancouchdb" ] || [ "$cleancouchdb" -eq "0" ]; then
+    echo "\$CLEANCOUCH not set, skipping clean"
+    exit 1
 fi
 
 if [ -z "$1" ]; then
