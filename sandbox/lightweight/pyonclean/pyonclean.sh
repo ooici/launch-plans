@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+set +e
+. bootenv.sh
+set -e
+
+if [ -z "$cleancouchdb" -eq "0" ]; then
+    echo "\$CLEANCOUCHDB not set, skipping clean"
+    exit 0
+fi
 
 if [ -z "$1" ]; then
     echo "please provide a pyon path as the first arg"

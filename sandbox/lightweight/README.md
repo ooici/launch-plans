@@ -97,6 +97,9 @@ source:
     # Pyon installation
     export PYON_PATH=/path/to/coi-services
 
+    # Set to 0 if you would rather not clean the db on each launch
+    export CLEANCOUCHDB=1
+
     # Credentials for RabbitMQ
     export RABBITMQ_HOST="localhost"
     export RABBITMQ_USERNAME="guest"

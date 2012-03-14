@@ -1,5 +1,6 @@
 {
   "system":{
     "force_clean":"true"
-  }
+  },
+  "cleancouchdb": "${cleancouchdb}"
 }
