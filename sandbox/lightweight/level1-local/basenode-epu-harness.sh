@@ -33,10 +33,16 @@ if [ ! `which epu-harness` ]; then
     exit $ERROR
 fi
 
-cp bootconf.json bootconf.yml
+ACTION=`echo $ACTION | tr '[A-Z]' '[a-z]'`
+
+if [ "${ACTION}" = "start" ]; then
+    EXTRA=bootconf.json
+else
+    EXTRA=""
+fi
 
 echo "${ACTION}ing epu-harness"
-epu-harness -x $EXCHANGE $ACTION bootconf.yml
+epu-harness -x $EXCHANGE $ACTION $EXTRA
 if [ $? -ne 0 ]; then
   exit 1
 fi
