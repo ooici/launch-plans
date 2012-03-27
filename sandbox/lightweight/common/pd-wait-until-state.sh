@@ -6,14 +6,11 @@ USAGE="usage: $0 [options]
 
 Options:
 [-v|--virtualenv path/to/virtualenv]
-[-b|--host brokerhostname]
-[-u|--username username]
-[-p|--password password]
 [-d|--processdispatcher pdname]
-[-x|--exchange xchg]
 [-i|--upid id]
 [-s|--state 800-RUNNING|]
 [-t|--timeout secs|]
+[-n|--name run]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
@@ -21,20 +18,8 @@ while [ "$1" != "" ]; do
         -v | --virtualenv )     shift
                                 virtualenv=$1
                                 ;;
-        -b | --host )           shift
-                                host=$1
-                                ;;
-        -u | --username )       shift
-                                username=$1
-                                ;;
-        -p | --password )       shift
-                                password=$1
-                                ;;
         -d | --processdispatcher )       shift
                                 processdispatcher=$1
-                                ;;
-        -x | --exchange )       shift
-                                exchange=$1
                                 ;;
         -i | --upid )           shift
                                 upid=$1
@@ -44,6 +29,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -t | --timeout )        shift
                                 timeout=$1
+                                ;;
+        -n | --name )           shift
+                                run_name=$1
                                 ;;
         -h | --help )           echo "$USAGE"
                                 exit
@@ -102,7 +90,7 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 while true ; do
-    status=`$CEICTL --yaml -u $username -p $password -b $host -x $exchange process describe $upid | awk '/^state: / {print $2}'`
+    status=`$CEICTL --yaml -n $run_name process describe $upid | awk '/^state: / {print $2}'`
     if [ $? -ne 0 ]; then
         exit $ERROR
     elif [ "$status" = $wantstate ]; then

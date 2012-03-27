@@ -16,7 +16,7 @@ fi
 ACTION="$1"
 
 VENV="${virtualenv}"
-EXCHANGE="${exchange_scope}"
+EXCHANGE="${rabbitmq_exchange}"
 
 ACTIVATE="${VENV}/bin/activate"
 

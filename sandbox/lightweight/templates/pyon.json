@@ -12,7 +12,7 @@
     "config":{
       "process_dispatcher_bridge":{
           "uri": "amqp://$${rabbitmq_username}:$${rabbitmq_password}@$${rabbitmq_host}/",
-          "exchange": "$${exchange_scope}",
+          "exchange": "$${rabbitmq_exchange}",
           "topic": "$${process_dispatcher_name}"
       }
     },

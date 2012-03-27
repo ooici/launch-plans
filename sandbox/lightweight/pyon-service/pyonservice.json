@@ -17,7 +17,7 @@
       "vhost": "/",
       "username": "${rabbitmq_username}",
       "password": "${rabbitmq_password}",
-      "exchange": "${exchange_scope}"
+      "exchange": "${rabbitmq_exchange}"
     }
   }
 }
