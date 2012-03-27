@@ -26,5 +26,5 @@
     }
   },
   "virtualenv":"${virtualenv}",
-  "exchange_scope":"${exchange_scope}"
+  "rabbitmq_exchange":"${rabbitmq_exchange}"
 }

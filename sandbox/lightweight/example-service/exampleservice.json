@@ -5,11 +5,8 @@
       "vhost": "/",
       "username": "${rabbitmq_username}",
       "password": "${rabbitmq_password}",
-      "exchange": "${exchange_scope}"
+      "exchange": "${rabbitmq_exchange}"
     }
-  },
-  "dashi":{
-    "exchange": "${exchange_scope}"
   },
   "run_type": "supd",
   "parameters": {

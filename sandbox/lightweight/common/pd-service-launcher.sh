@@ -5,29 +5,17 @@ USAGE="usage: $0 [options]
 
 Options:
 [-v|--virtualenv path/to/virtualenv]
-[-b|--host brokerhostname]
-[-u|--username username]
-[-p|--password password]
 [-a|--action stop|start]
 [-i|--upid id]
 [-d|--processdispatcher pdname]
-[-x|--exchange xchg]
 [-c|--config cfg.yml]
+[-n|--name run]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
     case $1 in
         -v | --virtualenv )     shift
                                 virtualenv=$1
-                                ;;
-        -b | --host )           shift
-                                host=$1
-                                ;;
-        -u | --username )       shift
-                                username=$1
-                                ;;
-        -p | --password )       shift
-                                password=$1
                                 ;;
         -a | --action )         shift
                                 action=$1
@@ -38,11 +26,11 @@ while [ "$1" != "" ]; do
         -i | --upid )           shift
                                 upid=$1
                                 ;;
-        -x | --exchange )       shift
-                                exchange=$1
-                                ;;
         -c | --config )         shift
                                 config=$1
+                                ;;
+        -n | --name )           shift
+                                run_name=$1
                                 ;;
         -h | --help )           echo "$USAGE"
                                 exit
@@ -77,6 +65,12 @@ if [ -z "$action" ]; then
     exit $ERROR
 fi
 
+if [ -z "$run_name" ]; then
+    echo "You must set a cloudinitd run"
+    echo $USAGE
+    exit $ERROR
+fi
+
 CONFIG="`pwd`/$config"
 
 
@@ -98,7 +92,7 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    bootout=`$CEICTL --json -u $username -p $password -b $host -x $exchange process dispatch $CONFIG`
+    bootout=`$CEICTL --json -n $run_name process dispatch $CONFIG`
     echo "$bootout" > bootout.json
     if [ $? -ne 0 ]; then
         exit 1
@@ -116,7 +110,7 @@ elif [ "$action" = "stop" ]; then
         fi
     fi
 
-    $CEICTL --json -u $username -p $password -b $host -x $exchange process kill $upid
+    $CEICTL --json -n $run_name process kill $upid
     if [ $? -ne 0 ]; then
         exit 1
     fi
