@@ -5,7 +5,7 @@ set -e
 
 if [ -z "$cleancouchdb" ] || [ "$cleancouchdb" -eq "0" ]; then
     echo "\$CLEANCOUCH not set, skipping clean"
-    exit 1
+    exit 0
 fi
 
 if [ -z "$1" ]; then
