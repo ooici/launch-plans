@@ -5,7 +5,7 @@ set +e
 set -e
 
 ERROR=1
-USAGE="usage: $0 start|stop|status"
+USAGE="usage: $0 start|stop|status config.yml"
 
 
 if [ -z "$1" ]; then
@@ -14,6 +14,13 @@ if [ -z "$1" ]; then
     exit $ERROR
 fi
 ACTION="$1"
+
+if [ -z "$2" ]; then
+    echo "You must provide a config"
+    echo $USAGE
+    exit $ERROR
+fi
+CONFIG="`pwd`/$2"
 
 VENV="${virtualenv}"
 EXCHANGE="${rabbitmq_exchange}"
@@ -42,7 +49,8 @@ else
 fi
 
 echo "${ACTION}ing epu-harness"
-epu-harness -x $EXCHANGE $ACTION $EXTRA
+echo epu-harness -x $EXCHANGE -c $CONFIG $ACTION $EXTRA 
+epu-harness -x $EXCHANGE -c $CONFIG $ACTION $EXTRA 
 if [ $? -ne 0 ]; then
   exit 1
 fi

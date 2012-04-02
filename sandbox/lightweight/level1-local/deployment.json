@@ -25,6 +25,14 @@
       }
     }
   },
+  "server":{
+    "amqp":{
+      "host": "${rabbitmq_host}",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${rabbitmq_exchange}"
+    }
+  },
   "virtualenv":"${virtualenv}",
   "rabbitmq_exchange":"${rabbitmq_exchange}"
 }
