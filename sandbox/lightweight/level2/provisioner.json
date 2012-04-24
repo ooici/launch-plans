@@ -10,7 +10,7 @@
               "host": "${rabbitmq_host}",
               "username": "${rabbitmq_username}",
               "password": "${rabbitmq_password}",
-              "exchange": "${rabbotmq_exchange}"
+              "exchange": "${rabbitmq_exchange}"
             }
           },
           "provisioner": {
