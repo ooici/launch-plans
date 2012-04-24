@@ -22,6 +22,7 @@
               "broker_ip_address":"${rabbitmq_host}",
               "broker_username":"${rabbitmq_username}",
               "broker_password":"${rabbitmq_password}",
+              "broker_exchange":"${rabbitmq_exchange}",
               "retrieve_method":"${epu_retrieve_method}",
               "archive_url":"${package_repo}/${epu_archive_name}",
               "package_repo":"${package_repo}",
