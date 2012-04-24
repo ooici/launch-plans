@@ -1,12 +1,15 @@
 {
   "process-dispatchers":{
     "${process_dispatcher_name}":{
-      "logfile": "/tmp/${process_dispatcher_name}.log",
-      "engines":{
-        "default":{
-          "deployable_type": "eeagent",
-          "slots": 100,
-          "base_need": 1
+      "config":{
+        "processdispatcher":{
+          "engines":{
+            "default":{
+              "deployable_type": "eeagent",
+              "slots": 100,
+              "base_need": 1
+            }
+          }
         }
       }
     }
