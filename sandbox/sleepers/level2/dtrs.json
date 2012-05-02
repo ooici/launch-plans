@@ -21,6 +21,11 @@
             "root":{
               "handlers": ["console", "file", "syslog"]
             }
+          },
+          "zookeeper": {
+            "hosts": "${zookeeper0}:2181",
+            "dtrs_path": "/dtrs",
+            "timeout" : 5
           }
         }
       }
@@ -47,5 +52,5 @@
   "username":"${epu_username}",
   "groupname":"${epu_groupname}",
   "appname":"dtrs",
-  "recipes":["r2app"]
+  "recipes":["r2app", "kazoo"]
 }
