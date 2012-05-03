@@ -36,7 +36,8 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     output_directory = output_directory or THIS_DIR
     json_template_path = json_template_path or JSON_TEMPLATE
     conf_template_path = conf_template_path or CONF_TEMPLATE
-    cloudinitd_config_path = cloudinitd_config_path or CLOUDINITD_CONFIG
+    print cloudinitd_config_path
+    cloudinitd_config_path = os.path.join(THIS_DIR, cloudinitd_config_path)
 
     try:
         with open(json_template_path) as jsonfile:
@@ -56,7 +57,7 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     except:
         raise
         error("Problem opening '%s'. Cannot proceed." % relpath)
-    
+
     try:
         with open(cloudinitd_config_path) as cidconffile:
             cloudinitd_config = cidconffile.read()
@@ -112,12 +113,12 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     if extra_level:
         if not os.path.isabs(extra_level):
             extra_level = os.path.join(os.getcwd(), extra_level)
-        level_config = "level%s: %s" % (level_index + level_offset, extra_level) 
+        level_config = "level%s: %s" % (level_index + level_offset, extra_level)
         level_configs.append(level_config)
 
     cloudinitd_config = clean_plan(cloudinitd_config)
     cloudinitd_config = append_levels(cloudinitd_config, level_configs)
-    
+
     with open(cloudinitd_config_path, "w") as cidconfig:
         cidconfig.write(cloudinitd_config)
 
@@ -136,7 +137,7 @@ def get_generated_levels(directory):
 
 
 def clean_plan(cloudinitd_conf):
-    """Remove any generated launch plan levels, and remove them from the 
+    """Remove any generated launch plan levels, and remove them from the
     plan, and save the file
     """
 
@@ -206,8 +207,10 @@ parser.add_argument('-f', '--force', dest='force', action='store_const', const=T
 parser.add_argument('-a', '--append-level', nargs=1, metavar='path/to/level.conf', default=[None])
 parser.add_argument('-j', '--json-template', nargs=1, metavar='path/to/template.json', default=None)
 parser.add_argument('-t', '--conf-template', nargs=1, metavar='path/to/template.conf', default=None)
+parser.add_argument('-c', '--top-level-config', nargs=1, metavar='path/to/main.conf', default="local.conf")
 
 opts = parser.parse_args()
 rel2levels(opts.relfile, force=opts.force,
-        extra_level=opts.append_level.pop(0), json_template_path=opts.json_template,         
-        conf_template_path=opts.conf_template)
+        extra_level=opts.append_level.pop(0), json_template_path=opts.json_template,
+        conf_template_path=opts.conf_template,
+        cloudinitd_config_path=opts.top_level_config.pop(0))

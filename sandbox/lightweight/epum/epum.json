@@ -9,11 +9,11 @@
             "amqp": {
               "host": "${rabbitmq_host}",
               "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}",
-              "exchange": "${rabbitmq_exchange}"
+              "password": "${rabbitmq_password}"
             }
           },
           "epumanagement": {
+            "default_user": "${epu_username}",
             "needy_default_iaas_site": "ec2-east",
             "needy_default_iaas_allocation": "t1.micro",
             "provisioner_vars" : {
@@ -22,7 +22,7 @@
               "broker_ip_address":"${rabbitmq_host}",
               "broker_username":"${rabbitmq_username}",
               "broker_password":"${rabbitmq_password}",
-              "broker_exchange":"${rabbitmq_exchange}",
+              "broker_exchange":"default_dashi_exchange",
               "retrieve_method":"${epu_retrieve_method}",
               "archive_url":"${package_repo}/${epu_archive_name}",
               "package_repo":"${package_repo}",
@@ -40,7 +40,7 @@
                   "monitor_health": false
                 },
                 "engine_conf": {
-                  "preserve_n": 1,
+                  "preserve_n": 0,
                   "epuworker_type": "${worker_deployable_type}"
                 }
               }
@@ -67,6 +67,11 @@
   "apprun":{
     "run_method":"supervised",
     "autorestart":true
+  },
+  "messaging":{
+    "broker":"${rabbitmq_host}",
+    "username":"${rabbitmq_username}",
+    "password":"${rabbitmq_password}"
   },
   "username":"${epu_username}",
   "groupname":"${epu_groupname}",
