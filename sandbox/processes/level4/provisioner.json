@@ -13,8 +13,8 @@
             }
           },
           "provisioner": {
-            "dtrs": "epu.localdtrs.LocalDTRS",
-            "dt_path": "/opt/dt-data/dt",
+            "default_user": "${epu_username}",
+            "dtrs_service_name": "dtrs",
             "query_period": 10
           },
           "sites":{

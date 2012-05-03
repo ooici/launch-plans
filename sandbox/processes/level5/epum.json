@@ -13,6 +13,7 @@
             }
           },
           "epumanagement": {
+            "default_user": "${epu_username}",
             "needy_default_iaas_site": "ec2-east",
             "needy_default_iaas_allocation": "t1.micro",
             "provisioner_vars" : {
