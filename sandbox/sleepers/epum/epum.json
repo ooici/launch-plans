@@ -44,7 +44,7 @@
               "epuagent_git_commit":"${epuagent_git_commit}",
               "heartbeat_period_seconds":"${heartbeat_period_seconds}"
             },
-            "initial_epus": {
+            "initial_domains": {
               "epu1": {
                 "general": {
                   "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
