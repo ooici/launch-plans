@@ -1,0 +1,8 @@
+{
+  "name": "EC2",
+  "description": "EC2 Site",
+  "driver_class": "libcloud.compute.drivers.ec2.EC2NodeDriver",
+  "access_key": "${ec2_key}",
+  "secret_key": "${ec2_secret}",
+  "key_name": "ooi"
+}
