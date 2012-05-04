@@ -101,9 +101,42 @@ if [ ! `which $CEICTL` ]; then
     exit $ERROR
 fi
 
-$CEICTL --yaml -n $run_name site add --definition $CONFIG $name
-$CEICTL --yaml -c $caller -n $run_name credentials add --definition $CONFIG $name
+# Build Site config
+if [ -z "$name" ] || [ -z "$description" ] || [ -z "$driver_class" ] ; then
+    echo "You need at least a name, description and driver_class for a site definition" >&2
+    exit 1
+fi
+SITE_FILE=`mktemp -t siteXXXXX`
+echo "---
+name: $name
+description: $description
+driver_class: $driver_class""" > $SITE_FILE
+$CEICTL --yaml -n $run_name site add --definition $SITE_FILE $name
+if [ $? -ne 0 ]; then
+    echo "Couldn't add site $name ($SITE_FILE)" >&2
+    exit 1
+fi
+rm -f $SITE_FILE
 
+
+# Build Credentials config
+if [ -z "$access_key" ] || [ -z "$secret_key" ] || [ -z "$key_name" ] ; then
+    echo "You need at least an access_key, secret_key and key_name for a site definition" >&2
+    exit 1
+fi
+CREDENTIAL_FILE=`mktemp -t credentialXXXX`
+echo "---
+access_key: $access_key
+secret_key: $secret_key
+key_name: $key_name" > $CREDENTIAL_FILE
+$CEICTL --yaml -c $caller -n $run_name credentials add --definition $CREDENTIAL_FILE $name
+if [ $? -ne 0 ]; then
+    echo "Couldn't add credential $name ($CREDENTIAL_FILE)" >&2
+    exit 1
+fi
+rm -f $CREDENTIAL_FILE
+
+# Add all dts
 for dt_file in `ls $dtdir/*.yml`; do
     dt_name=`basename $dt_file | sed 's/.yml//'`
     $CEICTL --yaml -c $caller -n $run_name dt add --definition $dt_file $dt_name
