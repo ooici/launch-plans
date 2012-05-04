@@ -9,7 +9,8 @@
             "amqp": {
               "host": "${rabbitmq_host}",
               "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}"
+              "password": "${rabbitmq_password}",
+              "exchange": "${rabbitmq_exchange}"
             }
           },
           "processdispatcher": {
@@ -22,6 +23,9 @@
                 "monitor_health": false
               },
               "engine_conf": {
+                  "iaas_site": "${iaas_site}",
+                  "iaas_allocation": "t1.micro",
+                  "deployable_type": "eeagent"
               }
             },
             "engines": {

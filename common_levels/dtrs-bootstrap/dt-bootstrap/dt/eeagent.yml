@@ -1,0 +1,51 @@
+---
+mappings:
+  ec2.us-east-1:
+    iaas_image: ${epuworker_image_id}
+    iaas_allocation: t1.micro
+contextualization:
+  method: chef-solo
+  chef_config:
+    epuservices:
+      eeagent:
+      - name: eeagent
+        args: []
+        version: "0.1"
+        config:
+          server:
+            amqp:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+              exchange: ${broker_exchange}
+          eeagent:
+            name: eeagent_${node_id}
+            heartbeat: 10
+            slots: 8
+            launch_type:
+              name: supd
+              supd_directory: /tmp/SupD
+          pd:
+            name: processdispatcher
+    appinstall:
+      install_method: py_venv_setup
+      package_repo: ${package_repo}
+    apprun:
+      run_method: supervised
+    appretrieve:
+      retrieve_method: git
+      archive_url: ${archive_url}
+      git_repo: https://github.com/nimbusproject/eeagent.git
+      git_branch: master
+      git_commit: HEAD
+    virtualenv:
+      path: /home/cc/app-venv
+    dtdata:
+      retrieve_method: archive
+      archive_url: ${dtdata_archive_url}
+      chef_debug_level: debug
+    username: cc
+    groupname: users
+    recipes:
+    - user
+    - r2app
