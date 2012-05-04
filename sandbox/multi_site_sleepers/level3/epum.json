@@ -29,7 +29,7 @@
               "git_commit":"${epu_git_commit}",
               "dtdata_archive_url":"${dtdata_archive_url}"
             },
-            "initial_epus": {
+            "initial_domains": {
               "epu-us-east-1": {
                 "general": {
                   "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
