@@ -9,9 +9,7 @@ virtualenv with your environment like so:
 
     $ virtualenv venv --no-site-packages
     $ source venv/bin/activate
-    $ cd venv
-    $ git clone git://github.com/nimbusproject/epuharness.git
-    $ cd epuharness ; python setup.py develop ; cd -
+    $ pip install -r https://raw.github.com/nimbusproject/epuharness/master/requirements.txt
 
 Or if you already have an epu development virtualenv already setup, just
 install the epu-harness package into your env. Do this with:
