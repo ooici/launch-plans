@@ -24,14 +24,20 @@
               },
               "engine_conf": {
                   "iaas_site": "${iaas_site}",
-                  "iaas_allocation": "t1.micro",
-                  "deployable_type": "eeagent"
+                  "iaas_allocation": "m1.small",
+                  "deployable_type": "eeagent_pyon"
               }
             },
             "engines": {
               "default": {
-                "deployable_type": "eeagent",
-                "slots": 4,
+                "deployable_type": "eeagent_pyon",
+                "launch_type": {
+                  "name": "pyon_single",
+                  "pyon_directory": "/home/cc/coi-services/",
+                  "container_args": "--noshell",
+                  "supd_directory": "/tmp"
+                },
+                "slots": 100,
                 "base_need": 1
               }
             }

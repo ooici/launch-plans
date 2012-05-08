@@ -1,0 +1,55 @@
+---
+mappings:
+  ec2.us-east-1:
+    iaas_image: ${epuworker_image_id}
+    iaas_allocation: m1.small
+contextualization:
+  method: chef-solo
+  chef_config:
+    epuservices:
+      eeagent:
+      - name: eeagent
+        args: []
+        version: "0.1"
+        config:
+          server:
+            amqp:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+              exchange: ${broker_exchange}
+          eeagent:
+            name: eeagent_${node_id}
+            heartbeat: 10
+            slots: 80
+            launch_type:
+              name: pyon_single
+              pyon_directory: /home/cc/coi-services/
+              container_args: --noshell
+              supd_directory: /tmp/
+          pd:
+            name: processdispatcher
+    appinstall:
+      install_method: py_venv_setup
+      package_repo: ${package_repo}
+      super_cache: http://cloud.github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache-new.tar.gz
+    apprun:
+      run_method: supervised
+    appretrieve:
+      retrieve_method: git
+      archive_url: ${archive_url}
+      git_repo: https://github.com/nimbusproject/eeagent.git
+      git_branch: master
+      git_commit: HEAD
+    virtualenv:
+      path: /home/cc/app-venv
+    dtdata:
+      retrieve_method: archive
+      archive_url: ${dtdata_archive_url}
+      chef_debug_level: debug
+    username: cc
+    groupname: users
+    recipes:
+    - user
+    - coi-services
+    - r2app
