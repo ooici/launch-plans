@@ -14,8 +14,8 @@ if [ -z "$1" ]; then
 fi
 export PYON_PATH=$1
 
-# CONFIG=`pwd`/bootconf.json
+CONFIG=`pwd`/bootconf.json
 
 #do pyon cleanup
 cd $PYON_PATH
-./bin/pycc -x ion.processes.bootstrap.datastore_loader.DatastoreLoader op=clear
+./bin/pycc -x ion.processes.bootstrap.datastore_loader.DatastoreLoader op=clear -c $CONFIG

@@ -1,4 +1,10 @@
 {
+  "server":{
+    "couchdb":{
+      "username": "${couchdb_username}",
+      "password": "${couchdb_password}"
+    }
+  },
   "system":{
     "force_clean":"true"
   },
