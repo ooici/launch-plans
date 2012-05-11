@@ -32,7 +32,7 @@ contextualization:
     appinstall:
       install_method: py_venv_setup
       package_repo: ${package_repo}
-      super_cache: http://cloud.github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache-new.tar.gz
+      super_cache: https://github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache.tar.gz
     apprun:
       run_method: supervised
     appretrieve:

@@ -10,6 +10,18 @@
       "apps":[${app_json}]
     },
     "config":{
+      "server":{
+        "amqp":{
+          "host": "$${rabbitmq_host}",
+          "username": "$${rabbitmq_username}",
+          "password": "$${rabbitmq_password}"
+        },
+        "couchdb":{
+          "host":  "$${couchdb_host}",
+          "username": "$${couchdb_username}",
+          "password": "$${couchdb_password}"
+        }
+      },
       "process_dispatcher_bridge":{
           "uri": "amqp://$${rabbitmq_username}:$${rabbitmq_password}@$${rabbitmq_host}/",
           "exchange": "$${rabbitmq_exchange}",

@@ -8,6 +8,10 @@
       }
     }
   },
+  "couchdb":{
+    "username": "${couchdb_username}",
+    "password": "${couchdb_password}"
+  },
   "dtdata":{
     "retrieve_method":"archive",
     "archive_url":"${dtdata_archive_url}",
@@ -18,5 +22,5 @@
   },
   "username":"${epu_username}",
   "groupname":"${epu_groupname}",
-  "recipes":["rabbitmq","user"]
+  "recipes":["rabbitmq", "couchdb", "user"]
 }

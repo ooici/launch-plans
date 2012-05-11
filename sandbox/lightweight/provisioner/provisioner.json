@@ -28,7 +28,7 @@
             }
           },
           "context": {
-            "uri":"https://svc.uc.futuregrid.org:8446/ContextBroker/ctx/",
+            "uri":"https://calliopex.phys.uvic.ca:8446/ContextBroker/ctx/",
             "key":"${ctxbroker_key}",
             "secret":"${ctxbroker_secret}"
           }

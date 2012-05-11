@@ -37,7 +37,7 @@
                   "container_args": "--noshell",
                   "supd_directory": "/tmp"
                 },
-                "slots": 100,
+                "slots": 4,
                 "base_need": 1
               }
             }
