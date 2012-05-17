@@ -103,6 +103,11 @@ source:
     export RABBITMQ_USERNAME="guest"
     export RABBITMQ_PASSWORD="guest"
 
+    # Credentials for CouchDB
+    export COUCHDB_HOST="localhost"
+    export COUCHDB_USERNAME="guest"
+    export COUCHDB_PASSWORD="guest"
+
     export EXCHANGE_SCOPE="xchg`date +%s`"
 
     if [ -n $EXCHANGE_SCOPE ]; then
@@ -122,3 +127,61 @@ Now you can launch the local launch plan with:
 Once you are done, you can terminate the plan with:
 
     $ cloudinitd terminate $RUN
+
+##iv. Running the Launch plan on EC2
+
+Now that we've run locally, let's try running on EC2. You're going to need a
+similar file to ~/.secrets/local. You will also need to set up your Context
+Broker and Amazon EC2 credentials. You will need to put your Context Broker
+credentials in ~/.secrets/CTXBROKER_KEY, and ~/.secrets/CTXBROKER_SECRET, and
+your AWS credentials in ~/.secrets/AWS_ACCESS_KEY_ID and
+~/.secrets/AWS_SECRET_ACCESS_KEY .
+
+    $ cat ~/.secrets/main
+
+    # Credentials for Nimbus Context Broker
+    # The default is the broker at FutureGrid hotel. Use your Cumulus creds.
+
+    export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY_CALLIOPEX`
+    export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET_CALLIOPEX`
+
+    # Credentials for EC2
+    # The provisioner uses to start worker nodes on EC2 in some situations
+    export AWS_ACCESS_KEY_ID=`cat ~/.secrets/AWS_ACCESS_KEY_ID`
+    export AWS_SECRET_ACCESS_KEY=`cat ~/.secrets/AWS_SECRET_ACCESS_KEY`
+
+    # Credentials for cloudinit.d itself
+    # cloudinit.d uses to start the base nodes
+    export CLOUDINITD_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
+    export CLOUDINITD_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
+    export CLOUDINITD_IAAS_SSHKEYNAME="ooi"
+    export CLOUDINITD_IAAS_SSHKEY="~/.ssh/id_rsa.pub"
+
+    # Credentials for RabbitMQ
+    export RABBITMQ_USERNAME=`uuidgen`
+    export RABBITMQ_PASSWORD=`uuidgen`
+
+    export COUCHDB_USERNAME=`uuidgen`
+    export COUCHDB_PASSWORD=`uuidgen`
+
+    export EXCHANGE_SCOPE="xchg`date +%s`"
+
+    if [ -n $EXCHANGE_SCOPE ]; then
+        RUN=$EXCHANGE_SCOPE
+    fi
+    export RUN
+
+Next, you will need to generate the pyon launch levels with the rel2levels.py
+script. Do this with:
+
+    $ source ~/.secrets/main
+    $ ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f
+
+Now you can launch the local launch plan with:
+
+    $ source ~/.secrets/main ; cloudinitd boot main.conf -n $RUN 
+
+Once you are done, you can terminate the plan with:
+
+    $ cloudinitd terminate $RUN
+
