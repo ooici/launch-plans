@@ -22,6 +22,9 @@
           "password": "$${couchdb_password}"
         }
       },
+      "system":{
+        "force_clean": false
+      },
       "process_dispatcher_bridge":{
           "uri": "amqp://$${rabbitmq_username}:$${rabbitmq_password}@$${rabbitmq_host}/",
           "exchange": "$${rabbitmq_exchange}",
