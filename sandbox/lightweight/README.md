@@ -142,8 +142,8 @@ your AWS credentials in ~/.secrets/AWS_ACCESS_KEY_ID and
     # Credentials for Nimbus Context Broker
     # The default is the broker at FutureGrid hotel. Use your Cumulus creds.
 
-    export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY_CALLIOPEX`
-    export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET_CALLIOPEX`
+    export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY`
+    export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET`
 
     # Credentials for EC2
     # The provisioner uses to start worker nodes on EC2 in some situations
