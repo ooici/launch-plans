@@ -38,7 +38,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-sudo mv bootconf.json /opt/dt-data/run/chefroles.json
+sudo cp bootconf.json /opt/dt-data/run/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi

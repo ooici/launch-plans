@@ -39,7 +39,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-$CMDPREFIX mv bootconf.json /opt/dt-data/run/$RUN_NAME/chefroles.json
+$CMDPREFIX cp bootconf.json /opt/dt-data/run/$RUN_NAME/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
 fi
