@@ -2,13 +2,26 @@
 
 ##i. Getting the code:
 
+###First steps:
+
+Regardless of whether you want to run locally or on EC2, you will need to set up
+a virtualenv and cloudinitd. cloudinitd is what runs the launch plan:
+
+    $ virtualenv venv --no-site-packages
+    $ source venv/bin/activate
+    $ pip install -e 'git+git://github.com/nimbusproject/cloudinitd.git#egg=cloudinitd'
+
+###Setting up local tools:
+
+If you want to run a launch plan on your local machine, you will need to install
+Pyon, coi-services, and epuharness. If you plan on running on EC2, you can skip to 
+step ii.
+
 To launch a plan locally, you can use the local.conf cloudinitd config file,
 which will prepare a Process Dispatcher and an EEAgent (or a number of them),
 for your services to be deployed in. To use this, you'll need to prepare a
 virtualenv with your environment like so:
 
-    $ virtualenv venv --no-site-packages
-    $ source venv/bin/activate
     $ pip install -r https://raw.github.com/nimbusproject/epuharness/master/requirements.txt
 
 Or if you already have an epu development virtualenv already setup, just
@@ -84,7 +97,7 @@ Now try sshing again:
     $ 
 
 
-##iii. Running the Launch plan:
+##iii. Running the launch plan locally:
 
 Now you will need to set up a few environment variables to set your RabbitMQ
 credentials and exchange. The easiest way to do this is with a file that you
@@ -128,7 +141,7 @@ Once you are done, you can terminate the plan with:
 
     $ cloudinitd terminate $RUN
 
-##iv. Running the Launch plan on EC2
+##iv. Running the launch plan on EC2
 
 Now that we've run locally, let's try running on EC2. You're going to need a
 similar file to ~/.secrets/local. You will also need to set up your Context
