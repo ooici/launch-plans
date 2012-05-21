@@ -118,7 +118,7 @@ source:
 Next, you will need to generate the pyon launch levels with the rel2levels.py script. Do this with:
 
     $ source ~/.secrets/local
-    $ ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f -a testsystem/testsystem.conf
+    $ ./rel2levels.py -c local.conf $PYON_PATH/res/deploy/r2deploy.yml -f -a testsystem/testsystem.conf
 
 Now you can launch the local launch plan with:
 
@@ -175,7 +175,7 @@ Next, you will need to generate the pyon launch levels with the rel2levels.py
 script. Do this with:
 
     $ source ~/.secrets/main
-    $ ./rel2levels.py $PYON_PATH/res/deploy/r2deploy.yml -f
+    $ ./rel2levels.py -c main.conf $PYON_PATH/res/deploy/r2deploy.yml -f
 
 Now you can launch the local launch plan with:
 
