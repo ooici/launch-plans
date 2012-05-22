@@ -33,6 +33,7 @@
               "coi_services_git_repo":"${coi_services_git_repo}",
               "coi_services_git_branch":"${coi_services_git_branch}",
               "coi_services_git_commit":"${coi_services_git_commit}",
+              "coi_services_buildout_config":"${coi_services_buildout_config}",
               "dtdata_archive_url":"${dtdata_archive_url}"
             },
             "initial_domains": {
