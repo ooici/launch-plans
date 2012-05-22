@@ -6,6 +6,10 @@ mappings:
 contextualization:
   method: chef-solo
   chef_config:
+    coi-services:
+      git_repo: ${coi_services_git_repo}
+      git_branch: ${coi_services_git_branch}
+      git_commit: ${coi_services_git_branch}
     epuservices:
       eeagent:
       - name: eeagent
