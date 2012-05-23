@@ -9,7 +9,7 @@ Options:
 [-t|--dtdir dtdirectory]
 [-s|--sitedir sitedirectory]
 [-u|--caller caller_name]
-[-c|--config cfg.yml]
+[-c|--credentials iaas_credentials.yml]
 [-n|--name run]
 "
 # Parse command line arguments
@@ -27,8 +27,8 @@ while [ "$1" != "" ]; do
         -s | --sitedir )        shift
                                 sitedir=$1
                                 ;;
-        -c | --config )         shift
-                                config=$1
+        -c | --credentials )    shift
+                                credentials=$1
                                 ;;
         -u | --caller )         shift
                                 caller=$1
@@ -68,8 +68,8 @@ if [ -z "$sitedir" ]; then
     sitedir="sites"
 fi
 
-if [ -z "$config" ]; then
-    echo "Your configuration must be set"
+if [ -z "$credentials" ]; then
+    echo "Your IaaS credentials must be set"
     echo $USAGE
     exit $ERROR
 fi
@@ -85,8 +85,6 @@ if [ -z "$run_name" ]; then
     echo $USAGE
     exit $ERROR
 fi
-
-CONFIG="`pwd`/$config"
 
 # Move to script dir
 cd `dirname $0`
@@ -115,22 +113,13 @@ for site_file in `ls $sitedir/*.yml`; do
     $CEICTL --yaml -n $run_name site add --definition $site_file $site_name
 done
 
-# Build Credentials config
-if [ -z "$access_key" ] || [ -z "$secret_key" ] || [ -z "$key_name" ] ; then
-    echo "You need at least an access_key, secret_key and key_name for a site credentials definition" >&2
-    exit 1
-fi
-CREDENTIAL_FILE=`mktemp -t credentialXXXX`
-echo "---
-access_key: $access_key
-secret_key: $secret_key
-key_name: $key_name" > $CREDENTIAL_FILE
-$CEICTL --yaml -c $caller -n $run_name credentials add --definition $CREDENTIAL_FILE $name
+# Add credentials for one site
+iaas_site=`basename $credentials | sed 's/.yml//'`
+$CEICTL --yaml -c $caller -n $run_name credentials add --definition $credentials $iaas_site
 if [ $? -ne 0 ]; then
-    echo "Couldn't add credential $name ($CREDENTIAL_FILE)" >&2
+    echo "Couldn't add credential $iaas_site ($iaas_credentials)" >&2
     exit 1
 fi
-rm -f $CREDENTIAL_FILE
 
 # Add all dts
 for dt_file in `ls $dtdir/*.yml`; do
