@@ -207,7 +207,7 @@ parser.add_argument('-f', '--force', dest='force', action='store_const', const=T
 parser.add_argument('-a', '--append-level', nargs=1, metavar='path/to/level.conf', default=[None])
 parser.add_argument('-j', '--json-template', nargs=1, metavar='path/to/template.json', default=None)
 parser.add_argument('-t', '--conf-template', nargs=1, metavar='path/to/template.conf', default=None)
-parser.add_argument('-c', '--top-level-config', nargs=1, metavar='path/to/main.conf', default="local.conf")
+parser.add_argument('-c', '--top-level-config', nargs=1, metavar='path/to/main.conf', default=["local.conf"])
 
 opts = parser.parse_args()
 rel2levels(opts.relfile, force=opts.force,
