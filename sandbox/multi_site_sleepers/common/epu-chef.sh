@@ -39,6 +39,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+$CMDPREFIX chmod 600 bootconf.json
 $CMDPREFIX cp bootconf.json /opt/dt-data/run/$RUN_NAME/chefroles.json
 if [ $? -ne 0 ]; then
   exit 1
