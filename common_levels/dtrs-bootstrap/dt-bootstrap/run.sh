@@ -7,6 +7,7 @@ Options:
 [-v|--virtualenv path/to/virtualenv]
 [-d|--dtrs dtrsname]
 [-t|--dtdir dtdirectory]
+[-s|--sitedir sitedirectory]
 [-u|--caller caller_name]
 [-c|--config cfg.yml]
 [-n|--name run]
@@ -22,6 +23,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -t | --dtdir )          shift
                                 dtdir=$1
+                                ;;
+        -s | --sitedir )        shift
+                                sitedir=$1
                                 ;;
         -c | --config )         shift
                                 config=$1
@@ -58,6 +62,10 @@ fi
 
 if [ -z "$dtdir" ]; then
     dtdir="dt"
+fi
+
+if [ -z "$sitedir" ]; then
+    sitedir="sites"
 fi
 
 if [ -z "$config" ]; then
@@ -101,27 +109,15 @@ if [ ! `which $CEICTL` ]; then
     exit $ERROR
 fi
 
-# Build Site config
-if [ -z "$name" ] || [ -z "$description" ] || [ -z "$driver_class" ] ; then
-    echo "You need at least a name, description and driver_class for a site definition" >&2
-    exit 1
-fi
-SITE_FILE=`mktemp -t siteXXXXX`
-echo "---
-name: $name
-description: $description
-driver_class: $driver_class""" > $SITE_FILE
-$CEICTL --yaml -n $run_name site add --definition $SITE_FILE $name
-if [ $? -ne 0 ]; then
-    echo "Couldn't add site $name ($SITE_FILE)" >&2
-    exit 1
-fi
-rm -f $SITE_FILE
-
+# Add all sites
+for site_file in `ls $sitedir/*.yml`; do
+    site_name=`basename $site_file | sed 's/.yml//'`
+    $CEICTL --yaml -n $run_name site add --definition $site_file $site_name
+done
 
 # Build Credentials config
 if [ -z "$access_key" ] || [ -z "$secret_key" ] || [ -z "$key_name" ] ; then
-    echo "You need at least an access_key, secret_key and key_name for a site definition" >&2
+    echo "You need at least an access_key, secret_key and key_name for a site credentials definition" >&2
     exit 1
 fi
 CREDENTIAL_FILE=`mktemp -t credentialXXXX`
