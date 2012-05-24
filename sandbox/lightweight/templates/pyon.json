@@ -16,6 +16,11 @@
           "username": "$${rabbitmq_username}",
           "password": "$${rabbitmq_password}"
         },
+        "amqp_priv":{
+          "host": "$${rabbitmq_host}",
+          "username": "$${rabbitmq_username}",
+          "password": "$${rabbitmq_password}"
+        },
         "couchdb":{
           "host":  "$${couchdb_host}",
           "username": "$${couchdb_username}",

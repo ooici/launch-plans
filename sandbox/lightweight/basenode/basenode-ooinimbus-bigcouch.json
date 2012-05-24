@@ -1,0 +1,14 @@
+{
+  "dtdata": {
+    "retrieve_method": "archive",
+    "archive_url": "${dtdata_archive_url}",
+    "chef_debug_level": "debug"
+  },
+  "bigcouch":{
+    "username": "${couchdb_username}",
+    "password": "${couchdb_password}"
+  },
+  "recipes": [
+    "bigcouch"
+  ]
+}

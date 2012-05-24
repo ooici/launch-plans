@@ -3,7 +3,10 @@
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
     "virtualenv": {
-      "path": "/home/${epu_username}/app-venv"
+      "path": "/home/${epu_username}/app-venv",
+      "python" : "${python}",
+      "virtualenv" : "${virtualenv}",
+      "args" : "${virtualenv_args}"
     },
     "action": [
       "run"
@@ -62,22 +65,18 @@
             "coi_services_git_commit":"${coi_services_git_commit}",
             "coi_services_buildout_config":"${coi_services_buildout_config}",
             "coi_services_system_name":"${coi_services_system_name}",
-            "dtdata_archive_url":"${dtdata_archive_url}"
+            "coi_services_egg_cache":"${coi_services_egg_cache}",
+            "dtdata_archive_url":"${dtdata_archive_url}",
+            "python":"${python}",
+            "virtualenv":"${virtualenv}",
+            "virtualenv_args":"${virtualenv_args}",
+            "epuagent_retrieve_method": "${epuagent_retrieve_method}",
+            "epuagent_git_repo": "${epuagent_git_repo}",
+            "epuagent_git_branch": "${epuagent_git_branch}",
+            "epuagent_git_commit": "${epuagent_git_commit}",
+            "heartbeat_period_seconds": "${heartbeat_period_seconds}"
           },
           "initial_domains": {
-            "domain1": {
-              "general": {
-                "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
-              },
-              "health": {
-                "monitor_health": true
-              },
-              "engine_conf": {
-                "preserve_n": "${preserve_n}",
-                "epuworker_type": "${worker_deployable_type}",
-                "force_site": "${iaas_site}"
-              }
-            }
           }
         }
       }

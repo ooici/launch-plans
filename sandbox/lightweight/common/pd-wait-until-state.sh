@@ -104,6 +104,6 @@ while true ; do
     fi
     echo "Status of $upid is $status, waiting for $wantstate, waiting for $timeout more seconds"
     let timeout=$timeout-1
-    sleep 1
+    sleep 0.5
 done
 exit
