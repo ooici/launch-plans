@@ -30,14 +30,14 @@ contextualization:
             launch_type:
               name: pyon_single
               pyon_directory: /home/cc/coi-services/
-              container_args: --noshell
+              container_args: --noshell -s ${coi_services_system_name}
               supd_directory: /tmp/
           pd:
             name: processdispatcher
     appinstall:
       install_method: py_venv_setup
       package_repo: ${package_repo}
-      super_cache: https://github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache.tar.gz
+      super_cache: https://github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache-no-cdat.tar.gz
     apprun:
       run_method: supervised
     appretrieve:
