@@ -15,9 +15,6 @@
   "dtdata":{
     "retrieve_method":"archive",
     "archive_url":"${dtdata_archive_url}",
-    "git_repo":"https://github.com/ooici/dt-data.git",
-    "git_branch":"master",
-    "git_commit":"HEAD",
     "chef_debug_level":"debug"
   },
   "username":"${epu_username}",
