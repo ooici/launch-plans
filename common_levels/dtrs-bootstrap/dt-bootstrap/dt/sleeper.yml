@@ -12,55 +12,70 @@ mappings:
 contextualization:
   method: chef-solo
   chef_config:
-    epuservices:
-      epu-worker:
-      - name: epu-worker-1
-        args: {}
-        version: '0.1'
+    dtdata:
+      retrieve_method: archive
+      archive_url: ${dtdata_archive_url}
+      chef_debug_level: debug
+    epu:
+      username: cc
+      groupname: users
+      virtualenv:
+        path: /home/cc/app-venv
+      action:
+      - retrieve
+      - install
+      - run
+      retrieve_config:
+        retrieve_method: ${retrieve_method}
+        archive_url: ${archive_url}
+        git_repo: ${git_repo}
+        git_reference: ${git_branch}
+      install_config:
+        install_method: py_venv_setup
+        package_repo: ${package_repo}
+      run_config:
+        program: epu-worker
+        run_directory: /home/cc/app
+        run_method: supervised
+        autorestart: true
         config:
           server:
             amqp:
               host: ${broker_ip_address}
               username: ${broker_username}
               password: ${broker_password}
-    appinstall:
-      install_method: py_venv_setup
-      package_repo: ${package_repo}
-    apprun:
-      run_method: supervised
-    appretrieve:
-      retrieve_method: ${retrieve_method}
-      archive_url: ${archive_url}
-      git_repo: ${git_repo}
-      git_branch: ${git_branch}
-      git_commit: ${git_commit}
-    appmonitor:
-      retrieve_method: ${epuagent_retrieve_method}
-      git_repo: ${epuagent_git_repo}
-      git_branch: ${epuagent_git_branch}
-      git_commit: ${epuagent_git_commit}
-      install_method: py_venv_setup
-      package_repo: ${package_repo}
-      config:
-        server:
-          amqp:
-            host: ${broker_ip_address}
-            username: ${broker_username}
-            password: ${broker_password}
-        epuagent:
-          heartbeat_dest: ${heartbeat_dest}
-          heartbeat_op: ou_heartbeat
-          period_seconds: ${heartbeat_period_seconds}
-          node_id: ${node_id}
-    virtualenv:
-      path: /home/cc/app-venv
-    dtdata:
-      retrieve_method: archive
-      archive_url: ${dtdata_archive_url}
-      chef_debug_level: debug
-    username: cc
-    groupname: users
-    appname: epu-worker
+    epuagent:
+      username: cc
+      groupname: users
+      virtualenv:
+        path: /home/cc/app-venv
+      action:
+      - retrieve
+      - install
+      - run
+      retrieve_config:
+        retrieve_method: ${epuagent_retrieve_method}
+        git_repo: ${epuagent_git_repo}
+        git_reference: ${epuagent_git_branch}
+      install_config:
+        install_method: py_venv_setup
+        package_repo: ${package_repo}
+      run_config:
+        program: epu-agent
+        run_directory: /home/cc/app-monitor
+        run_method: supervised
+        autorestart: true
+        config:
+          server:
+            amqp:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+          epuagent:
+            heartbeat_dest: ${heartbeat_dest}
+            heartbeat_op: ou_heartbeat
+            period_seconds: ${heartbeat_period_seconds}
+            node_id: ${node_id}
     recipes:
-    - user
-    - r2app
+    - apt
+    - epu

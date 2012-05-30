@@ -1,50 +1,57 @@
 {
-  "epuservices":{
-    "epu-provisioner-service": [
-      {
-        "name": "epu-provisioner", 
-        "args": { }, 
-        "config": {
-          "server": {
-            "amqp": {
-              "host": "${rabbitmq_host}",
-              "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}"
-            }
-          },
-          "logging":{
-            "handlers":{
-              "syslog":{
-                "address": ["${syslog_host}", 514]
-              }
-            },
-            "root":{
-              "handlers": ["console", "file", "syslog"]
-            }
-          },
-          "zookeeper": {
-            "hosts": "${zookeeper0}:2181",
-            "provisioner_path": "/provisioner",
-            "timeout" : 5
-          },
-          "context": {
-            "uri":"https://svc.uc.futuregrid.org:8446/ContextBroker/ctx/",
-            "key":"${ctxbroker_key}",
-            "secret":"${ctxbroker_secret}"
+  "epu": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "virtualenv": {
+      "path": "/home/${epu_username}/app-venv"
+    },
+    "action": [
+      "run"
+    ],
+    "run_config": {
+      "program": "epu-provisioner-service",
+      "run_directory": "/home/${epu_username}/${name}",
+      "run_method": "supervised",
+      "autorestart": true,
+      "config": {
+        "server": {
+          "amqp": {
+            "host": "${rabbitmq_host}",
+            "username": "${rabbitmq_username}",
+            "password": "${rabbitmq_password}"
           }
+        },
+        "logging": {
+          "handlers": {
+            "syslog": {
+              "address": [
+                "${syslog_host}",
+                514
+              ]
+            }
+          },
+          "root": {
+            "handlers": [
+              "console",
+              "file",
+              "syslog"
+            ]
+          }
+        },
+        "zookeeper": {
+          "hosts": "${zookeeper0}:2181",
+          "provisioner_path": "/provisioner",
+          "timeout": 5
+        },
+        "context": {
+          "uri": "https://svc.uc.futuregrid.org:8446/ContextBroker/ctx/",
+          "key": "${ctxbroker_key}",
+          "secret": "${ctxbroker_secret}"
         }
       }
-    ]
+    }
   },
-  "virtualenv": {
-    "path" : "/home/${epu_username}/app-venv"
-  },
-  "apprun":{
-    "run_method":"supervised",
-    "autorestart":true
-  },
-  "appname":"${name}",
-  "username":"${epu_username}",
-  "groupname":"${epu_groupname}",
-  "recipes":["r2app"]
+  "recipes": [
+    "epu"
+  ]
 }

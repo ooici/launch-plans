@@ -1,88 +1,84 @@
 {
-  "epuservices":{
-    "epu-management-service": [
-      {
-        "name": "epu-management", 
-        "args": { }, 
-        "config": {
-          "server": {
-            "amqp": {
-              "host": "${rabbitmq_host}",
-              "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}"
+  "epu": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "virtualenv": {
+      "path": "/home/${epu_username}/app-venv"
+    },
+    "action": [
+      "run"
+    ],
+    "run_config": {
+      "program": "epu-management-service",
+      "run_directory": "/home/${epu_username}/epum",
+      "run_method": "supervised",
+      "autorestart": true,
+      "config": {
+        "server": {
+          "amqp": {
+            "host": "${rabbitmq_host}",
+            "username": "${rabbitmq_username}",
+            "password": "${rabbitmq_password}"
+          }
+        },
+        "logging": {
+          "handlers": {
+            "syslog": {
+              "address": [
+                "${syslog_host}",
+                514
+              ]
             }
           },
-          "logging":{
-            "handlers":{
-              "syslog":{
-                "address": ["${syslog_host}", 514]
-              }
-            },
-            "root":{
-              "handlers": ["console", "file", "syslog"]
-            }
+          "root": {
+            "handlers": [
+              "console",
+              "file",
+              "syslog"
+            ]
+          }
+        },
+        "epumanagement": {
+          "default_user": "${epu_username}",
+          "provisioner_vars": {
+            "epuworker_image_id": "${worker_id}",
+            "queue_name_work": "${queue1_name_work}",
+            "broker_ip_address": "${rabbitmq_host}",
+            "broker_username": "${rabbitmq_username}",
+            "broker_password": "${rabbitmq_password}",
+            "retrieve_method": "${epu_retrieve_method}",
+            "archive_url": "${package_repo}/${epu_archive_name}",
+            "package_repo": "${package_repo}",
+            "git_repo": "${epu_git_repo}",
+            "git_branch": "${epu_git_branch}",
+            "git_commit": "${epu_git_commit}",
+            "dtdata_archive_url": "${dtdata_archive_url}",
+            "epuagent_retrieve_method": "${epuagent_retrieve_method}",
+            "epuagent_git_repo": "${epuagent_git_repo}",
+            "epuagent_git_branch": "${epuagent_git_branch}",
+            "epuagent_git_commit": "${epuagent_git_commit}",
+            "heartbeat_period_seconds": "${heartbeat_period_seconds}"
           },
-          "epumanagement": {
-            "default_user": "${epu_username}",
-            "provisioner_vars" : {
-              "epuworker_image_id":"${worker_id}",
-              "queue_name_work":"${queue1_name_work}",
-              "broker_ip_address":"${rabbitmq_host}",
-              "broker_username":"${rabbitmq_username}",
-              "broker_password":"${rabbitmq_password}",
-              "retrieve_method":"${epu_retrieve_method}",
-              "archive_url":"${package_repo}/${epu_archive_name}",
-              "package_repo":"${package_repo}",
-              "git_repo":"${epu_git_repo}",
-              "git_branch":"${epu_git_branch}",
-              "git_commit":"${epu_git_commit}",
-              "dtdata_archive_url":"${dtdata_archive_url}",
-              "epuagent_retrieve_method":"${epuagent_retrieve_method}",
-              "epuagent_git_repo":"${epuagent_git_repo}",
-              "epuagent_git_branch":"${epuagent_git_branch}",
-              "epuagent_git_commit":"${epuagent_git_commit}",
-              "heartbeat_period_seconds":"${heartbeat_period_seconds}"
-            },
-            "initial_domains": {
-              "domain1": {
-                "general": {
-                  "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
-                },
-                "health": {
-                  "monitor_health": true
-                },
-                "engine_conf": {
-                  "preserve_n": "${preserve_n}",
-                  "epuworker_type": "${worker_deployable_type}",
-                  "force_site": "${iaas_site}"
-                }
+          "initial_domains": {
+            "domain1": {
+              "general": {
+                "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
+              },
+              "health": {
+                "monitor_health": true
+              },
+              "engine_conf": {
+                "preserve_n": "${preserve_n}",
+                "epuworker_type": "${worker_deployable_type}",
+                "force_site": "${iaas_site}"
               }
             }
           }
         }
       }
-    ]
+    }
   },
-  "virtualenv": {
-    "path" : "/home/${epu_username}/app-venv"
-  },
-  "appretrieve":{
-    "retrieve_method":"${epu_retrieve_method}",
-    "archive_url":"${package_repo}/${epu_archive_name}",
-    "git_repo":"${epu_git_repo}",
-    "git_branch":"${epu_git_branch}",
-    "git_commit":"${epu_git_commit}"
-  },
-  "appinstall":{
-    "install_method":"py_venv_setup",
-    "package_repo":"${package_repo}"
-  },
-  "apprun":{
-    "run_method":"supervised",
-    "autorestart":true
-  },
-  "username":"${epu_username}",
-  "groupname":"${epu_groupname}",
-  "appname":"epum",
-  "recipes":["r2app"]
+  "recipes": [
+    "epu"
+  ]
 }
