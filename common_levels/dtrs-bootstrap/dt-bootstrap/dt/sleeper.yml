@@ -1,7 +1,7 @@
 ---
 mappings:
   ec2.us-east-1:
-    iaas_image: ami-51db1138
+    iaas_image: ami-b2dc7ddb
     iaas_allocation: t1.micro
   ec2-fake:
     iaas_image: ami-fake
