@@ -1,9 +1,14 @@
 {
   "run_type": "pyon_single",
   "parameters":{
-    "name": "${name}",
-    "module": "${module}",
-    "cls": "${cls}",
+    "rel":{
+      "type":"release",
+      "name":"${name}",
+      "version":"0.1",
+      "description":"Pyon service deployed by cloudinit.d",
+      "ion":"0.0.1",
+      "apps":[${app_json}]
+    },
     "config":{
       "server":{
         "amqp":{

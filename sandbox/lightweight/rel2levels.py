@@ -84,13 +84,13 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
 
     for app in apps:
         validate(app)
-        processapp = app['processapp']
-        name, module, cls = processapp
+        name = app['name']
         name = safe_get_appname(name, app_names)
         app_names.append(name)
+        app_json = json.dumps(app, indent=2)
         conf_contents = conf_template.substitute(name=name)
         conf_filename = "%s%s%s.conf" % (PYONAPP_PREFIX, "_", name)
-        json_contents = json_template.substitute(name=name, module=module, cls=cls)
+        json_contents = json_template.substitute(name=name, app_json=app_json)
         json_filename = "%s%s%s.json" % (PYONAPP_PREFIX, "_", name)
 
         level_directory = "%s%02d%s%s" % (PYONAPP_PREFIX, level_index, "_", name)
