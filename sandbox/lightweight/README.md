@@ -121,6 +121,8 @@ source:
     export COUCHDB_USERNAME="guest"
     export COUCHDB_PASSWORD="guest"
 
+    export COI_SYSTEM_NAME=`uuidgen`
+
     export EXCHANGE_SCOPE="xchg`date +%s`"
 
     if [ -n $EXCHANGE_SCOPE ]; then
@@ -176,6 +178,8 @@ your AWS credentials in ~/.secrets/AWS_ACCESS_KEY_ID and
 
     export COUCHDB_USERNAME=`uuidgen`
     export COUCHDB_PASSWORD=`uuidgen`
+
+    export COI_SYSTEM_NAME=`uuidgen`
 
     export EXCHANGE_SCOPE="xchg`date +%s`"
 
