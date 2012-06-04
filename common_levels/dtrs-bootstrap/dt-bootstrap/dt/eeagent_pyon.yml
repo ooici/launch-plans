@@ -11,11 +11,32 @@ contextualization:
       git_branch: ${coi_services_git_branch}
       git_commit: ${coi_services_git_branch}
       buildout_config: ${coi_services_buildout_config}
-    epuservices:
-      eeagent:
-      - name: eeagent
-        args: []
-        version: "0.1"
+    dtdata:
+      retrieve_method: archive
+      archive_url: ${dtdata_archive_url}
+      chef_debug_level: debug
+    epu:
+      virtualenv:
+        path: /home/cc/app-venv
+      username: cc
+      groupname: users
+      action:
+      - retrieve
+      - install
+      - run
+      retrieve_config:
+        retrieve_method: git
+        archive_url: ${archive_url}
+        git_repo: https://github.com/nimbusproject/eeagent.git
+        git_reference: master
+      install_config:
+        install_method: py_venv_setup
+        package_repo: ${package_repo}
+      run_config:
+        program: eeagent
+        run_directory: /home/cc/app
+        run_method: supervised
+        autorestart: true
         config:
           server:
             amqp:
@@ -35,26 +56,8 @@ contextualization:
           pd:
             name: processdispatcher
     appinstall:
-      install_method: py_venv_setup
-      package_repo: ${package_repo}
-      super_cache: https://github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache-no-cdat.tar.gz
-    apprun:
-      run_method: supervised
-    appretrieve:
-      retrieve_method: git
-      archive_url: ${archive_url}
-      git_repo: https://github.com/nimbusproject/eeagent.git
-      git_branch: master
-      git_commit: HEAD
-    virtualenv:
-      path: /home/cc/app-venv
-    dtdata:
-      retrieve_method: archive
-      archive_url: ${dtdata_archive_url}
-      chef_debug_level: debug
-    username: cc
-    groupname: users
+      super_cache: https://github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache.tar.gz
     recipes:
-    - user
+    - apt
     - coi-services
-    - r2app
+    - epu
