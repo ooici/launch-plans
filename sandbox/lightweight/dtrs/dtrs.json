@@ -1,52 +1,48 @@
 {
-  "epuservices":{
-    "epu-dtrs": [
-      {
-        "name": "epu-dtrs", 
-        "args": { }, 
-        "config": {
-          "server": {
-            "amqp": {
-              "host": "${rabbitmq_host}",
-              "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}",
-              "exchange": "${rabbitmq_exchange}"
+  "epu": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "virtualenv": {
+      "path": "/home/${epu_username}/app-venv"
+    },
+    "action": [
+      "run"
+    ],
+    "run_config": {
+      "program": "epu-dtrs",
+      "run_directory": "/home/${epu_username}/dtrs",
+      "run_method": "supervised",
+      "autorestart": true,
+      "config": {
+        "server": {
+          "amqp": {
+            "host": "${rabbitmq_host}",
+            "username": "${rabbitmq_username}",
+            "password": "${rabbitmq_password}",
+            "exchange": "${rabbitmq_exchange}"
+          }
+        },
+        "logging": {
+          "handlers": {
+            "syslog": {
+              "address": [
+                "${syslog_host}",
+                514
+              ]
             }
           },
-          "logging":{
-            "handlers":{
-              "syslog":{
-                "address": ["${syslog_host}", 514]
-              }
-            },
-            "root":{
-              "handlers": ["console", "file", "syslog"]
-            }
+          "root": {
+            "handlers": [
+              "console",
+              "file",
+              "syslog"
+            ]
           }
         }
       }
-    ]
+    }
   },
-  "virtualenv": {
-    "path" : "/home/${epu_username}/app-venv"
-  },
-  "appretrieve":{
-    "retrieve_method":"${epu_retrieve_method}",
-    "archive_url":"${package_repo}/${epu_archive_name}",
-    "git_repo":"${epu_git_repo}",
-    "git_branch":"${epu_git_branch}",
-    "git_commit":"${epu_git_commit}"
-  },
-  "appinstall":{
-    "install_method":"py_venv_setup",
-    "package_repo":"${package_repo}"
-  },
-  "apprun":{
-    "run_method":"supervised",
-    "autorestart":true
-  },
-  "username":"${epu_username}",
-  "groupname":"${epu_groupname}",
-  "appname":"dtrs",
-  "recipes":["r2app"]
+  "recipes": [
+    "epu"
+  ]
 }
