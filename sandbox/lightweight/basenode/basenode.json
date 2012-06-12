@@ -1,23 +1,63 @@
 {
-  "rabbitmq":{
-    "vhosts":["/"],
-    "users":{
-      "${rabbitmq_username}":{
-        "password":"${rabbitmq_password}",
-        "permissions":{"/":{"conf":".*", "write":".*", "read":".*"}}
+  "rabbitmq": {
+    "vhosts": [
+      "/"
+    ],
+    "users": {
+      "${rabbitmq_username}": {
+        "password": "${rabbitmq_password}",
+        "permissions": {
+          "/": {
+            "conf": ".*",
+            "write": ".*",
+            "read": ".*"
+          }
+        }
       }
     }
   },
+  "dtdata": {
+    "retrieve_method": "archive",
+    "archive_url": "${dtdata_archive_url}",
+    "chef_debug_level": "debug"
+  },
   "couchdb":{
-    "username": "${couchdb_username}",
-    "password": "${couchdb_password}"
+      "username": "${couchdb_username}",
+      "password": "${couchdb_password}"
   },
-  "dtdata":{
-    "retrieve_method":"archive",
-    "archive_url":"${dtdata_archive_url}",
-    "chef_debug_level":"debug"
+  "kazoo": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "virtualenv": {
+      "path": "/home/${epu_username}/app-venv"
+    }
   },
-  "username":"${epu_username}",
-  "groupname":"${epu_groupname}",
-  "recipes":["rabbitmq", "couchdb", "user"]
+  "epu": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "virtualenv": {
+      "path": "/home/${epu_username}/app-venv"
+    },
+    "action": [
+      "retrieve",
+      "install"
+    ],
+    "retrieve_config": {
+      "retrieve_method": "${epu_retrieve_method}",
+      "git_repo": "${epu_git_repo}",
+      "git_reference": "${epu_git_branch}"
+    },
+    "install_config": {
+      "install_method": "py_venv_setup",
+      "package_repo": "${package_repo}"
+    }
+  },
+  "recipes": [
+    "apt",
+    "rabbitmq",
+    "couchdb",
+    "rsyslog",
+    "kazoo",
+    "epu"
+  ]
 }

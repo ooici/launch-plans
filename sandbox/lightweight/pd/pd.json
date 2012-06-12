@@ -1,76 +1,60 @@
 {
-  "epuservices":{
-    "epu-processdispatcher-service": [
-      {
-        "name": "epu-processdispatcher", 
-        "args": { }, 
-        "config": {
-          "server": {
-            "amqp": {
-              "host": "${rabbitmq_host}",
-              "username": "${rabbitmq_username}",
-              "password": "${rabbitmq_password}",
-              "exchange": "${rabbitmq_exchange}"
+  "epu": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "virtualenv": {
+      "path": "/home/${epu_username}/app-venv"
+    },
+    "action": [
+      "run"
+    ],
+    "run_config": {
+      "program": "epu-processdispatcher-service",
+      "run_directory": "/home/${epu_username}/pd",
+      "run_method": "supervised",
+      "autorestart": true,
+      "config": {
+        "server": {
+          "amqp": {
+            "host": "${rabbitmq_host}",
+            "username": "${rabbitmq_username}",
+            "password": "${rabbitmq_password}",
+            "exchange": "${rabbitmq_exchange}"
+          }
+        },
+        "processdispatcher": {
+          "default_user": "${epu_username}",
+          "domain_config": {
+            "general": {
+              "engine_class": "epu.decisionengine.impls.needy.NeedyEngine"
+            },
+            "health": {
+              "monitor_health": false
+            },
+            "engine_conf": {
+                "iaas_site": "${iaas_site}",
+                "iaas_allocation": "m1.small",
+                "deployable_type": "eeagent_pyon"
             }
           },
-          "processdispatcher": {
-            "default_user": "${epu_username}",
-            "domain_config": {
-              "general": {
-                "engine_class": "epu.decisionengine.impls.needy.NeedyEngine"
+          "engines": {
+            "default": {
+              "deployable_type": "eeagent_pyon",
+              "launch_type": {
+                "name": "pyon_single",
+                "pyon_directory": "/home/cc/coi-services/",
+                "container_args": "--noshell",
+                "supd_directory": "/tmp"
               },
-              "health": {
-                "monitor_health": false
-              },
-              "engine_conf": {
-                  "iaas_site": "${iaas_site}",
-                  "iaas_allocation": "m1.small",
-                  "deployable_type": "eeagent_pyon"
-              }
-            },
-            "engines": {
-              "default": {
-                "deployable_type": "eeagent_pyon",
-                "launch_type": {
-                  "name": "pyon_single",
-                  "pyon_directory": "/home/cc/coi-services/",
-                  "container_args": "--noshell",
-                  "supd_directory": "/tmp"
-                },
-                "slots": 100,
-                "base_need": 1
-              }
+              "slots": 100,
+              "base_need": 1
             }
           }
         }
       }
-    ]
+    }
   },
-  "virtualenv": {
-    "path" : "/home/${epu_username}/app-venv"
-  },
-  "appretrieve":{
-    "retrieve_method":"${epu_retrieve_method}",
-    "archive_url":"${package_repo}/${epu_archive_name}",
-    "git_repo":"${epu_git_repo}",
-    "git_branch":"${epu_git_branch}",
-    "git_commit":"${epu_git_commit}"
-  },
-  "appinstall":{
-    "install_method":"py_venv_setup",
-    "package_repo":"${package_repo}"
-  },
-  "apprun":{
-    "run_method":"supervised",
-    "autorestart":true
-  },
-  "messaging":{
-    "broker":"${rabbitmq_host}",
-    "username":"${rabbitmq_username}",
-    "password":"${rabbitmq_password}"
-  },
-  "username":"${epu_username}",
-  "groupname":"${epu_groupname}",
-  "appname":"pd",
-  "recipes":["r2app"]
+  "recipes": [
+    "epu"
+  ]
 }
