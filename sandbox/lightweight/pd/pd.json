@@ -34,12 +34,12 @@
             "engine_conf": {
                 "iaas_site": "${iaas_site}",
                 "iaas_allocation": "m1.small",
-                "deployable_type": "eeagent_pyon"
+                "deployable_type": "eeagent_pyon_single"
             }
           },
           "engines": {
             "default": {
-              "deployable_type": "eeagent_pyon",
+              "deployable_type": "eeagent_pyon_single",
               "launch_type": {
                 "name": "pyon_single",
                 "pyon_directory": "/home/cc/coi-services/",
