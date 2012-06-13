@@ -21,10 +21,6 @@
     "archive_url": "${dtdata_archive_url}",
     "chef_debug_level": "debug"
   },
-  "couchdb":{
-      "username": "${couchdb_username}",
-      "password": "${couchdb_password}"
-  },
   "kazoo": {
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
@@ -55,7 +51,6 @@
   "recipes": [
     "apt",
     "rabbitmq",
-    "couchdb",
     "rsyslog",
     "kazoo",
     "epu"
