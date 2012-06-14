@@ -22,8 +22,13 @@
     "chef_debug_level": "debug"
   },
   "couchdb":{
-      "username": "${couchdb_username}",
-      "password": "${couchdb_password}"
+    "username": "${couchdb_username}",
+    "password": "${couchdb_password}"
+  },
+  "contextbroker":{
+    "users": [
+      ["${ctxbroker_key}", "${ctxbroker_secret}"]
+    ]
   },
   "kazoo": {
     "username": "${epu_username}",
@@ -55,6 +60,7 @@
   "recipes": [
     "apt",
     "rabbitmq",
+    "contextbroker",
     "couchdb",
     "rsyslog",
     "kazoo",

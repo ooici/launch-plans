@@ -49,7 +49,7 @@
           "query_period": 10
         },
         "context": {
-          "uri": "${ctxbroker_uri}",
+          "uri": "https://${ctxbroker_host}:8446/ContextBroker/ctx/",
           "key": "${ctxbroker_key}",
           "secret": "${ctxbroker_secret}"
         }
