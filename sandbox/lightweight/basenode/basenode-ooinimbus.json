@@ -21,6 +21,11 @@
     "archive_url": "${dtdata_archive_url}",
     "chef_debug_level": "debug"
   },
+  "contextbroker":{
+    "users": [
+      ["${ctxbroker_key}", "${ctxbroker_secret}"]
+    ]
+  },
   "kazoo": {
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
