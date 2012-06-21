@@ -212,8 +212,8 @@ You will need to create a credentials file in ~/.secrets/ooi.ucsd.yml . It
 should look something like this:
 
     ---
-    access_key: YOURKEYHERE
-    secret_key: YOURSECRETHERE
+    access_key: YOUR_NIMBUS_KEY_HERE
+    secret_key: YOUR_NIMBUS_SECRET_HERE
     key_name: ooi
 
 
@@ -287,8 +287,8 @@ You will need to create a credentials file in ~/.secrets/ec2.us-east-1.yml . It
 should look something like this:
 
     ---
-    access_key: YOURKEYHERE
-    secret_key: YOURSECRETHERE
+    access_key: YOUR_AWS_KEY_HERE
+    secret_key: YOUR_AWS_SECRET_HERE
     key_name: ooi
 
 
