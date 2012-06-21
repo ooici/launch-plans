@@ -36,7 +36,6 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     output_directory = output_directory or THIS_DIR
     json_template_path = json_template_path or JSON_TEMPLATE
     conf_template_path = conf_template_path or CONF_TEMPLATE
-    print cloudinitd_config_path
     cloudinitd_config_path = os.path.join(THIS_DIR, cloudinitd_config_path)
 
     try:
@@ -50,6 +49,9 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
             conf_template = Template(conffile.read())
     except:
         error("Problem opening '%s'. Cannot proceed." % conf_template_path)
+
+    if relpath[0] != '/':
+        relpath = os.path.normpath(os.path.join(os.getcwd(), relpath))
 
     try:
         with open(relpath) as relfile:
