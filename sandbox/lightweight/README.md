@@ -23,6 +23,7 @@ a virtualenv and cloudinitd. cloudinitd is what runs the launch plan:
     $ virtualenv venv --no-site-packages
     $ source venv/bin/activate
     $ pip install -e 'git+git://github.com/nimbusproject/cloudinitd.git#egg=cloudinitd'
+    $ pip install -e 'git+git://github.com/nimbusproject/ceiclient.git#egg=ceiclient'
 
 ###Setting up local tools (lightweight only):
 
