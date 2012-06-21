@@ -181,6 +181,9 @@ connected to the VPN.
     export CTXBROKER_KEY="$NIMBUS_KEY"
     export CTXBROKER_SECRET="$NIMBUS_SECRET"
 
+    export EPU_IAAS_SITE="ooi.ucsd"
+    export EPU_IAAS_CREDENTIALS="~/.secrets/$EPU_IAAS_SITE.yml"
+
     # Credentials for cloudinit.d itself
     # cloudinit.d uses to start the base nodes
     export CLOUDINITD_IAAS_ACCESS_KEY="$NIMBUS_KEY"
@@ -204,10 +207,19 @@ connected to the VPN.
     fi
     export RUN
 
+You will need to create a credentials file in ~/.secrets/ooi.ucsd.yml . It
+should look something like this:
+
+    ---
+    access_key: YOURKEYHERE
+    secret_key: YOURSECRETHERE
+    key_name: ooi
+
+
 Next, you will need to generate the pyon launch levels with the rel2levels.py
 script. Do this with:
 
-    $ source ~/.secrets/main
+    $ source ~/.secrets/nimbus
     $ ./rel2levels.py -c ooinimbus.conf $PYON_PATH/res/deploy/r2deploy.yml -f
 
 Now you can launch the local launch plan with:
@@ -288,75 +300,6 @@ script. Do this with:
 Now you can launch the local launch plan with:
 
     $ source ~/.secrets/main ; cloudinitd boot ec2.conf -n $RUN 
-
-Once you are done, you can terminate the plan with:
-
-    $ cloudinitd terminate $RUN
-
-##vi. Running the launch plan on OOI Nimbus (experimental)
-
-This will be very similar to the ec2 launch, however you will need to change
-your secrets file:
-
-You will need to put your OOI Nimbus IaaS credentials in ~/.secrets/NIMBUS_ACCESS_KEY_ID and
-~/.secrets/NIMBUS_SECRET_ACCESS_KEY
-
-    $ cat ~/.secrets/nimbus
-
-    # Credentials for Nimbus Context Broker
-
-    export CTXBROKER_KEY=`cat ~/.secrets/CTXBROKER_KEY`
-    export CTXBROKER_SECRET=`cat ~/.secrets/CTXBROKER_SECRET`
-
-    # Credentials for EC2
-    # The provisioner uses to start worker nodes on EC2 in some situations
-    export AWS_ACCESS_KEY_ID=`cat ~/.secrets/NIMBUS_ACCESS_KEY_ID`
-    export AWS_SECRET_ACCESS_KEY=`cat ~/.secrets/NIMBUS_SECRET_ACCESS_KEY`
-
-    export EPU_IAAS_SITE="ooi.ucsd"
-    export EPU_IAAS_CREDENTIALS="~/.secrets/$EPU_IAAS_SITE.yml"
-
-    # Credentials for cloudinit.d itself
-    # cloudinit.d uses to start the base nodes
-    export CLOUDINITD_IAAS_ACCESS_KEY="$AWS_ACCESS_KEY_ID"
-    export CLOUDINITD_IAAS_SECRET_KEY="$AWS_SECRET_ACCESS_KEY"
-    export CLOUDINITD_IAAS_SSHKEYNAME="ooi"
-    export CLOUDINITD_IAAS_SSHKEY="~/.ssh/id_rsa.pub"
-
-    # Credentials for RabbitMQ
-    export RABBITMQ_USERNAME=`uuidgen`
-    export RABBITMQ_PASSWORD=`uuidgen`
-
-    export COUCHDB_USERNAME=`uuidgen`
-    export COUCHDB_PASSWORD=`uuidgen`
-
-    export COI_SYSTEM_NAME=sys`uuidgen`
-
-    export EXCHANGE_SCOPE="xchg`date +%s`"
-
-    if [ -n $EXCHANGE_SCOPE ]; then
-        RUN=$EXCHANGE_SCOPE
-    fi
-    export RUN
-
-You will need to create a credentials file in ~/.secrets/ooi.ucsd.yml . It
-should look something like this:
-
-    ---
-    access_key: YOURKEYHERE
-    secret_key: YOURSECRETHERE
-    key_name: ooi
-
-
-Next, you will need to generate the pyon launch levels with the rel2levels.py
-script. Do this with:
-
-    $ source ~/.secrets/nimbus
-    $ ./rel2levels.py -c ooinimbus.conf $PYON_PATH/res/deploy/r2deploy.yml -f
-
-Now you can launch the local launch plan with:
-
-    $ source ~/.secrets/nimbus ; cloudinitd boot ooinimbus.conf -n $RUN 
 
 Once you are done, you can terminate the plan with:
 
