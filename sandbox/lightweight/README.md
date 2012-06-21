@@ -22,7 +22,7 @@ a virtualenv and cloudinitd. cloudinitd is what runs the launch plan:
 
     $ virtualenv venv --no-site-packages
     $ source venv/bin/activate
-    $ pip install -e 'git+git://github.com/nimbusproject/cloudinitd.git#egg=cloudinitd'
+    $ pip install -e 'git+git://github.com/nimbusproject/cloudinit.d.git#egg=cloudinitd'
     $ pip install -e 'git+git://github.com/nimbusproject/ceiclient.git#egg=ceiclient'
 
 ###Setting up local tools (lightweight only):
@@ -225,7 +225,7 @@ script. Do this with:
 
 Now you can launch the local launch plan with:
 
-    $ source ~/.secrets/main ; cloudinitd boot ooinimbus.conf -n $RUN 
+    $ source ~/.secrets/nimbus ; cloudinitd boot ooinimbus.conf -n $RUN 
 
 Once you are done, you can terminate the plan with:
 
@@ -295,12 +295,12 @@ should look something like this:
 Next, you will need to generate the pyon launch levels with the rel2levels.py
 script. Do this with:
 
-    $ source ~/.secrets/main
+    $ source ~/.secrets/ec2
     $ ./rel2levels.py -c ec2.conf $PYON_PATH/res/deploy/r2deploy.yml -f
 
 Now you can launch the local launch plan with:
 
-    $ source ~/.secrets/main ; cloudinitd boot ec2.conf -n $RUN 
+    $ source ~/.secrets/ec2 ; cloudinitd boot ec2.conf -n $RUN 
 
 Once you are done, you can terminate the plan with:
 
