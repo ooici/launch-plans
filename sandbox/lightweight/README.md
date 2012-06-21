@@ -293,7 +293,7 @@ Once you are done, you can terminate the plan with:
 
     $ cloudinitd terminate $RUN
 
-##v. Running the launch plan on OOI Nimbus (experimental)
+##vi. Running the launch plan on OOI Nimbus (experimental)
 
 This will be very similar to the ec2 launch, however you will need to change
 your secrets file:
