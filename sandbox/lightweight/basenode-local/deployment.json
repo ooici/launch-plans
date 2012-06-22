@@ -38,8 +38,5 @@
     }
   },
   "virtualenv":"${virtualenv}",
-  "rabbitmq_exchange":"${rabbitmq_exchange}",
-  "couchdb_username":"${couchdb_username}",
-  "couchdb_password":"${couchdb_password}",
-  "couchdb_host":"${couchdb_host}"
+  "rabbitmq_exchange":"${rabbitmq_exchange}"
 }

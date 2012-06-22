@@ -1,0 +1,5 @@
+{
+  "couchdb_username":"${couchdb_username}",
+  "couchdb_password":"${couchdb_password}",
+  "couchdb_host":"${couchdb_host}"
+}
