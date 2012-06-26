@@ -29,6 +29,11 @@ if [ -z "$couchdb_host" ]; then
     exit 1
 fi
 
+# Don't need to setup admin for non-local couch
+if [ "$couchdb_host" != "localhost" ]; then
+    exit 0
+fi
+
 if [ "${ACTION}" = "start" ]; then
 
     echo "Checking to see if $couchdb_username is already an admin"
