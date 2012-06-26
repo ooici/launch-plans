@@ -140,8 +140,8 @@ source:
 
     # Credentials for CouchDB
     export COUCHDB_HOST="localhost"
-    export COUCHDB_USERNAME="guest"
-    export COUCHDB_PASSWORD="guest"
+    export COUCHDB_USERNAME=""
+    export COUCHDB_PASSWORD=""
 
     export COI_SYSTEM_NAME=`uuidgen`
 
