@@ -10,7 +10,11 @@ contextualization:
   method: chef-solo
   chef_config:
     coi_services:
-      archive_url: ${coi_services_archive_url}
+      git_repo: ${coi_services_git_repo}
+      git_branch: ${coi_services_git_branch}
+      git_commit: ${coi_services_git_branch}
+      buildout_config: ${coi_services_buildout_config}
+      super_cache: ${coi_services_egg_cache}
     dtdata:
       retrieve_method: archive
       archive_url: ${dtdata_archive_url}
@@ -94,5 +98,5 @@ contextualization:
             period_seconds: ${heartbeat_period_seconds}
             node_id: ${node_id}
     recipes:
-    - coi-services::prebuilt
+    - coi-services
     - epu

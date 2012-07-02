@@ -82,6 +82,7 @@
             "coi_services_buildout_config":"${coi_services_buildout_config}",
             "coi_services_system_name":"${coi_services_system_name}",
             "coi_services_egg_cache":"${coi_services_egg_cache}",
+            "coi_services_archive_url":"${coi_services_archive_url}",
             "dtdata_archive_url":"${dtdata_archive_url}",
             "python":"${python}",
             "virtualenv":"${virtualenv}",
