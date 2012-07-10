@@ -1,0 +1,34 @@
+{
+  "provisioners": {
+    "provisioner": {
+      "config": {
+        "ssl_no_host_check": "True",
+        "provisioner": {
+          "default_user": "epu",
+          "dtrs_service_name": "dtrs",
+          "query_period": 10
+        },
+        "context": {
+          "uri": "https://${ctxbroker_host}:8446/ContextBroker/ctx/",
+          "key": "${ctxbroker_key}",
+          "secret": "${ctxbroker_secret}"
+        }
+      }
+    }
+  }, 
+  "dt_registries": {
+    "dtrs": {
+      "config": {}
+    }
+  },
+  "server":{
+    "amqp":{
+      "host": "${rabbitmq_host}",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${rabbitmq_exchange}"
+    }
+  },
+  "virtualenv":"${virtualenv}",
+  "rabbitmq_exchange":"${rabbitmq_exchange}"
+}
