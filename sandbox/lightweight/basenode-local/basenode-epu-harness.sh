@@ -5,7 +5,7 @@ set +e
 set -e
 
 ERROR=1
-USAGE="usage: $0 start|stop|status config.yml"
+USAGE="usage: $0 start|stop|status config.yml [virtualenv]"
 
 
 if [ -z "$1" ]; then
@@ -22,7 +22,11 @@ if [ -z "$2" ]; then
 fi
 CONFIG="`pwd`/$2"
 
-VENV="${virtualenv}"
+if [ -z "$3" ]; then
+    VENV="${virtualenv}"
+else
+    VENV="$3"
+fi
 EXCHANGE="${rabbitmq_exchange}"
 
 ACTIVATE="${VENV}/bin/activate"
