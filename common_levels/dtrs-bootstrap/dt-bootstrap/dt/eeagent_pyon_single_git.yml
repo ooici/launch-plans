@@ -9,16 +9,50 @@ mappings:
 contextualization:
   method: chef-solo
   chef_config:
-    coi_services:
-      git_repo: ${coi_services_git_repo}
-      git_branch: ${coi_services_git_branch}
-      git_commit: ${coi_services_git_branch}
-      buildout_config: ${coi_services_buildout_config}
-      super_cache: ${coi_services_egg_cache}
     dtdata:
       retrieve_method: archive
       archive_url: ${dtdata_archive_url}
       chef_debug_level: debug
+    pyon:
+      virtualenv:
+        path: /home/cc/app-venv
+        python: ${python}
+        virtualenv: ${virtualenv}
+        args: ${virtualenv_args}
+      username: cc
+      groupname: users
+      action:
+      - retrieve
+      - install
+      - configure
+      retrieve_config:
+        retrieve_method: git
+        retrieve_directory: /home/cc/coi-services
+        git_repo: ${coi_services_git_repo}
+        git_reference: ${coi_services_git_branch}
+      install_config:
+        install_method: py_venv_buildout
+        buildout_file: ${coi_services_buildout_config}
+        package_repo: ${package_repo}
+        egg_cache: ${coi_services_egg_cache}
+      configure_config:
+        config:
+          server:
+            amqp:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+            amqp_priv:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+            couchdb:
+              host:  ${couchdb_host}
+              username: ${couchdb_username}
+              password: ${couchdb_password}
+            system:
+              name: ${coi_services_system_name}
+
     epu:
       virtualenv:
         path: /home/cc/app-venv
@@ -33,7 +67,6 @@ contextualization:
       - run
       retrieve_config:
         retrieve_method: git
-        archive_url: ${archive_url}
         git_repo: https://github.com/nimbusproject/eeagent.git
         git_reference: master
       install_config:
@@ -98,5 +131,4 @@ contextualization:
             period_seconds: ${heartbeat_period_seconds}
             node_id: ${node_id}
     recipes:
-    - coi-services
     - epu
