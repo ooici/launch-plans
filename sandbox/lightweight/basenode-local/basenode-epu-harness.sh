@@ -52,9 +52,15 @@ else
     EXTRA=""
 fi
 
+if [ -n "${EXCHANGE}" ]; then
+    exchangearg="-x ${EXCHANGE}"
+else
+    exchangearg=""
+fi
+
 echo "${ACTION}ing epu-harness"
-echo epu-harness -x $EXCHANGE -c $CONFIG $ACTION $EXTRA 
-epu-harness -x $EXCHANGE -c $CONFIG $ACTION $EXTRA 
+echo epu-harness $exchangearg -c $CONFIG $ACTION $EXTRA 
+epu-harness $exchangearg -c $CONFIG $ACTION $EXTRA 
 if [ $? -ne 0 ]; then
   exit 1
 fi
