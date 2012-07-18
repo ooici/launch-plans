@@ -13,6 +13,7 @@ import json
 import shutil
 import argparse
 from string import Template
+from collections import defaultdict
 
 THIS_DIR=os.path.abspath(os.path.dirname(__file__))
 CLOUDINITD_CONFIG = os.path.join(THIS_DIR, "local.conf")
@@ -84,29 +85,52 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     rel = yaml.load(rel_yaml)
     apps = rel['apps']
 
-    for app in apps:
-        validate(app)
-        name = app['name']
-        name = safe_get_appname(name, app_names)
-        app_names.append(name)
-        app_json = json.dumps(app, indent=2)
-        conf_contents = conf_template.substitute(name=name)
-        conf_filename = "%s%s%s.conf" % (PYONAPP_PREFIX, "_", name)
-        json_contents = json_template.substitute(name=name, app_json=app_json)
-        json_filename = "%s%s%s.json" % (PYONAPP_PREFIX, "_", name)
+    validate_apps(apps)
 
-        level_directory = "%s%02d%s%s" % (PYONAPP_PREFIX, level_index, "_", name)
+    # dictionary of lists of apps in each level. bootlevel numbers don't
+    # necessarily need to be sequential.
+    levels = defaultdict(list)
+
+    # first sort apps into bootlevels
+    for app in apps:
+        bootlevel = app['bootlevel']
+        levels[bootlevel].append(app)
+
+    # then walk levels and write out all of the files
+    for level in sorted(levels.keys()):
+        level_apps = levels[level]
+
+        if len(level_apps) == 1:
+            name = level_apps[0]['name']
+            name = safe_get_appname(name, app_names)
+            level_name = "%s%02d_%s" % (PYONAPP_PREFIX, level_index, name)
+        else:
+            level_name = "%s%02d" % (PYONAPP_PREFIX, level_index)
+
+        level_directory = level_name
+        conf_filename = "%s.conf" % level_name
+        conf_relative_path = os.path.join(level_directory, conf_filename)
         level_directory_path = os.path.join(output_directory, level_directory)
         os.mkdir(level_directory_path)
 
-        conf_relative_path = os.path.join(level_directory, conf_filename)
+        conf_contents = ""
+        for app in level_apps:
+            name = app['name']
+            name = safe_get_appname(name, app_names)
+            app_names.append(name)
+
+            app_json = json.dumps(app, indent=2)
+            conf_contents += conf_template.substitute(name=name) + "\n"
+            json_contents = json_template.substitute(name=name, app_json=app_json)
+            json_filename = "%s_%s.json" % (PYONAPP_PREFIX, name)
+
+            json_path = os.path.join(level_directory_path, json_filename)
+            with open(json_path, "w") as json_file:
+                json_file.write(json_contents)
+
         conf_path = os.path.join(level_directory_path, conf_filename)
-        json_path = os.path.join(level_directory_path, json_filename)
         with open(conf_path, "w") as conf_file:
             conf_file.write(conf_contents)
-        with open(json_path, "w") as json_file:
-            json_file.write(json_contents)
-
         level_config = "level%s: %s" % (level_index + level_offset, conf_relative_path)
 
         level_configs.append(level_config)
@@ -191,13 +215,35 @@ def safe_get_appname(wanted_app_name, app_names):
         else:
             i += 1
 
-def validate(app):
+def validate_apps(apps):
+    pred = lambda app: "bootlevel" in app
+    any_bootlevels = any(pred(app) for app in apps)
+    if any_bootlevels:
+        if not all(pred(app) for app in apps):
+            error("Either every app in the rel file must have a bootlevel, or none may.")
+
+    for ndex, app in enumerate(apps):
+        validate_app(app)
+        if not any_bootlevels:
+            # stick a fake bootlevel on each app
+            app['bootlevel'] = ndex+1
+
+def validate_app(app):
     try:
         name = app['name']
     except KeyError, e:
         argname = e.args[0]
         error("Pyon app does not have required attribute '%s'. App:\n%s" % (
             argname, app))
+    bootlevel = app.get('bootlevel')
+    if bootlevel is not None:
+        try:
+            bootlevel = int(bootlevel)
+            if bootlevel < 1:
+                error("Pyon app '%s' has invalid bootlevel: %s" % (name, bootlevel))
+        except ValueError:
+            error("Pyon app '%s' has invalid bootlevel value: %s" % (name, bootlevel))
+
 
 # Parse cli and start
 argv = list(sys.argv)
