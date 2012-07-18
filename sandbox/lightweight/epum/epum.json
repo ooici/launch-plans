@@ -88,6 +88,7 @@
             "virtualenv":"${virtualenv}",
             "virtualenv_args":"${virtualenv_args}",
             "epuagent_retrieve_method": "${epuagent_retrieve_method}",
+            "epuagent_archive_url": "${epuagent_archive_url}",
             "epuagent_git_repo": "${epuagent_git_repo}",
             "epuagent_git_branch": "${epuagent_git_branch}",
             "epuagent_git_commit": "${epuagent_git_commit}",

@@ -42,7 +42,7 @@ contextualization:
             name: ${coi_services_system_name}
     epu:
       virtualenv:
-        path: /home/cc/app-venv
+        path: /home/cc/eeagent-venv
         python: ${python}
         virtualenv: ${virtualenv}
         args: ${virtualenv_args}
@@ -50,18 +50,15 @@ contextualization:
       groupname: users
       action:
       - retrieve
-      - install
       - run
       retrieve_config:
-        retrieve_method: git
+        retrieve_method: virtualenv_archive
         git_repo: https://github.com/nimbusproject/eeagent.git
         git_reference: master
-      install_config:
-        install_method: py_venv_setup
-        package_repo: ${package_repo}
+        archive_url: http://ooici.net/releases/eeagent-venv.tar.gz
       run_config:
         program: eeagent
-        run_directory: /home/cc/app
+        run_directory: /home/cc/eeagent
         run_method: supervised
         autorestart: true
         config:
@@ -86,24 +83,24 @@ contextualization:
       username: cc
       groupname: users
       virtualenv:
-        path: /home/cc/app-venv
+        path: /home/cc/epuagent-venv
         python: ${python}
         virtualenv: ${virtualenv}
         args: ${virtualenv_args}
       action:
       - retrieve
-      - install
       - run
       retrieve_config:
         retrieve_method: ${epuagent_retrieve_method}
         git_repo: ${epuagent_git_repo}
         git_reference: ${epuagent_git_branch}
+        archive_url: ${epuagent_archive_url}
       install_config:
         install_method: py_venv_setup
         package_repo: ${package_repo}
       run_config:
         program: epu-agent
-        run_directory: /home/cc/app-monitor
+        run_directory: /home/cc/epuagent
         run_method: supervised
         autorestart: true
         config:
