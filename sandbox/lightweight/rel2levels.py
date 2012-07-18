@@ -14,7 +14,7 @@ import shutil
 import argparse
 from string import Template
 
-THIS_DIR=os.path.dirname(__file__)
+THIS_DIR=os.path.abspath(os.path.dirname(__file__))
 CLOUDINITD_CONFIG = os.path.join(THIS_DIR, "local.conf")
 JSON_TEMPLATE=os.path.join(THIS_DIR, "templates", "pyon.json")
 CONF_TEMPLATE=os.path.join(THIS_DIR, "templates", "pyon.conf")
