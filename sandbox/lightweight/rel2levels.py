@@ -217,7 +217,10 @@ def safe_get_appname(wanted_app_name, app_names):
 
 def validate_apps(apps):
     pred = lambda app: "bootlevel" in app
-    any_bootlevels = any(pred(app) for app in apps)
+
+    # TODO temporarily disabled bootlevel parsing to workaround issue
+    #any_bootlevels = any(pred(app) for app in apps)
+    any_bootlevels = False
     if any_bootlevels:
         if not all(pred(app) for app in apps):
             error("Either every app in the rel file must have a bootlevel, or none may.")
