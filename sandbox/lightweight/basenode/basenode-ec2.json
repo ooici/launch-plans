@@ -26,39 +26,28 @@
       ["${ctxbroker_key}", "${ctxbroker_secret}"]
     ]
   },
-  "kazoo": {
-    "username": "${epu_username}",
-    "groupname": "${epu_groupname}",
-    "virtualenv": {
-      "path": "/home/${epu_username}/app-venv"
-    }
-  },
   "epu": {
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
     "virtualenv": {
-      "path": "/home/${epu_username}/app-venv"
+      "path": "/home/${epu_username}/app-venv",
+      "python" : "${python}",
+      "virtualenv" : "${virtualenv}",
+      "args" : "${virtualenv_args}"
     },
     "action": [
-      "retrieve",
-      "install"
+      "retrieve"
     ],
     "retrieve_config": {
       "retrieve_method": "${epu_retrieve_method}",
       "git_repo": "${epu_git_repo}",
-      "git_reference": "${epu_git_branch}"
-    },
-    "install_config": {
-      "install_method": "py_venv_setup",
-      "package_repo": "${package_repo}"
+      "git_reference": "${epu_git_branch}",
+      "archive_url": "${epu_archive_url}"
     }
   },
   "recipes": [
-    "apt",
     "contextbroker",
     "rabbitmq",
-    "rsyslog",
-    "kazoo",
     "epu"
   ]
 }

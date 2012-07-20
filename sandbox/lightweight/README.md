@@ -257,7 +257,7 @@ your AWS credentials in ~/.secrets/AWS_ACCESS_KEY_ID and
     export AWS_ACCESS_KEY_ID=`cat ~/.secrets/AWS_ACCESS_KEY_ID`
     export AWS_SECRET_ACCESS_KEY=`cat ~/.secrets/AWS_SECRET_ACCESS_KEY`
 
-    export EPU_IAAS_SITE="ec2.us-east-1"
+    export EPU_IAAS_SITE="ec2.us-west-1"
     export EPU_IAAS_CREDENTIALS="~/.secrets/$EPU_IAAS_SITE.yml"
 
     # Credentials for cloudinit.d itself
@@ -283,7 +283,7 @@ your AWS credentials in ~/.secrets/AWS_ACCESS_KEY_ID and
     fi
     export RUN
 
-You will need to create a credentials file in ~/.secrets/ec2.us-east-1.yml . It
+You will need to create a credentials file in ~/.secrets/ec2.us-west-1.yml . It
 should look something like this:
 
     ---

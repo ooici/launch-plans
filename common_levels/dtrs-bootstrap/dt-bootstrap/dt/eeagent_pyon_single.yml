@@ -1,5 +1,8 @@
 ---
 mappings:
+  ec2.us-west-1:
+    iaas_image: ami-5bc7e21e
+    iaas_allocation: m1.small
   ec2.us-east-1:
     iaas_image: ${epuworker_image_id}
     iaas_allocation: m1.small
