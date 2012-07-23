@@ -1,0 +1,17 @@
+{
+  "dtdata": {
+    "retrieve_method": "archive",
+    "archive_url": "${dtdata_archive_url}",
+    "chef_debug_level": "debug"
+  },
+  "zookeeper": {
+    "name": "${name}",
+    "initLimit": "1000",
+    "servers": [
+      "${zookeeper0}"
+    ]
+  },
+  "recipes": [
+    "zookeeper"
+  ]
+}
