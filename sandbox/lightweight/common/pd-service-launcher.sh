@@ -10,12 +10,28 @@ Options:
 [-d|--processdispatcher pdname]
 [-c|--config cfg.yml]
 [-n|--name run]
+[-b|--host brokerhostname]
+[-u|--username username]
+[-p|--password password]
+[-x|--exchange xchg]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
     case $1 in
         -v | --virtualenv )     shift
                                 virtualenv=$1
+                                ;;
+        -b | --host )           shift
+                                host=$1
+                                ;;
+        -u | --username )       shift
+                                username=$1
+                                ;;
+        -p | --password )       shift
+                                password=$1
+                                ;;
+        -x | --exchange )       shift
+                                exchange=$1
                                 ;;
         -a | --action )         shift
                                 action=$1
@@ -65,10 +81,20 @@ if [ -z "$action" ]; then
     exit $ERROR
 fi
 
-if [ -z "$run_name" ]; then
-    echo "You must set a cloudinitd run"
-    echo $USAGE
-    exit $ERROR
+if [ -n "$run_name" ]; then
+    CEICTL_ARGS="-n $run_name"
+
+else
+    if [ -z "$host" -o -z "$username" -o -z "$password" ]; then
+        echo "You must set set either a cloudinitd run or a host and credentials"
+        echo $USAGE
+        exit $ERROR
+    else
+        CEICTL_ARGS="-b $host -u $username -p $password"
+        if [ -n "$exchange" ]; then
+            CEICTL_ARGS="$CEICTL_ARGS -x $exchange"
+        fi
+    fi
 fi
 
 CONFIG="`pwd`/$config"
@@ -92,7 +118,7 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    bootout=`$CEICTL --json -n $run_name process dispatch $CONFIG`
+    bootout=`$CEICTL $CEICTL_ARGS --json process dispatch $CONFIG`
     echo "$bootout" > bootout.json
     if [ $? -ne 0 ]; then
         exit 1
@@ -110,7 +136,7 @@ elif [ "$action" = "stop" ]; then
         fi
     fi
 
-    $CEICTL --json -n $run_name process kill $upid
+    $CEICTL $CEICTL_ARGS --json process kill $upid
     if [ $? -ne 0 ]; then
         exit 1
     fi

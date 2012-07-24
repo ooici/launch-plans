@@ -11,12 +11,28 @@ Options:
 [-s|--state 800-RUNNING|]
 [-t|--timeout secs|]
 [-n|--name run]
+[-b|--host brokerhostname]
+[-u|--username username]
+[-p|--password password]
+[-x|--exchange xchg]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
     case $1 in
         -v | --virtualenv )     shift
                                 virtualenv=$1
+                                ;;
+        -b | --host )           shift
+                                host=$1
+                                ;;
+        -u | --username )       shift
+                                username=$1
+                                ;;
+        -p | --password )       shift
+                                password=$1
+                                ;;
+        -x | --exchange )       shift
+                                exchange=$1
                                 ;;
         -d | --processdispatcher )       shift
                                 processdispatcher=$1
@@ -60,6 +76,22 @@ if [ -z "$wantstate" ]; then
     exit $ERROR
 fi
 
+if [ -n "$run_name" ]; then
+    CEICTL_ARGS="-n $run_name"
+
+else
+    if [ -z "$host" -o -z "$username" -o -z "$password" ]; then
+        echo "You must set set either a cloudinitd run or a host and credentials"
+        echo $USAGE
+        exit $ERROR
+    else
+        CEICTL_ARGS="-b $host -u $username -p $password"
+        if [ -n "$exchange" ]; then
+            CEICTL_ARGS="$CEICTL_ARGS -x $exchange"
+        fi
+    fi
+fi
+
 if [ -z "$timeout" ]; then
     timeout=$DEFAULT_TIMEOUT
 fi
@@ -90,7 +122,7 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 while true ; do
-    status=`$CEICTL --yaml -n $run_name process describe $upid | awk '/^state: / {print $2}'`
+    status=`$CEICTL $CEICTL_ARGS --yaml process describe $upid | awk '/^state: / {print $2}'`
     if [ $? -ne 0 ]; then
         exit $ERROR
     elif [ "$status" = $wantstate ]; then
