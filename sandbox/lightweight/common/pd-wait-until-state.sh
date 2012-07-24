@@ -58,11 +58,6 @@ while [ "$1" != "" ]; do
     shift
 done
 
-if [ -z "$virtualenv" ]; then
-    echo "You must set a virtualenv"
-    echo $USAGE
-    exit $ERROR
-fi
 
 if [ -z "$processdispatcher" ]; then
     echo "Your process dispatcher must be set"
@@ -106,14 +101,17 @@ if [ -z "$upid" ]; then
     fi
 fi
 
-ACTIVATE="${virtualenv}/bin/activate"
+if [ -n "$virtualenv" ]; then
+    ACTIVATE="${virtualenv}/bin/activate"
 
-if [ ! -f "$ACTIVATE" ]; then
-    echo "'${ACTIVATE}' can't be accessed. Is your virtualenv set correctly?"
-    exit $ERROR
+    if [ ! -f "$ACTIVATE" ]; then
+        echo "'${ACTIVATE}' can't be accessed. Is your virtualenv set correctly?"
+        exit $ERROR
+    fi
+
+    source $ACTIVATE
 fi
 
-source $ACTIVATE
 
 CEICTL="ceictl"
 if [ ! `which $CEICTL` ]; then

@@ -50,12 +50,6 @@ set +e
 set -e
 
 
-if [ -z "$virtualenv" ]; then
-    echo "You must set a virtualenv"
-    echo $USAGE
-    exit $ERROR
-fi
-
 if [ -z "$dtrs" ]; then
     dtrs="dtrs"
 fi
@@ -90,14 +84,16 @@ fi
 cd `dirname $0`
 
 
-ACTIVATE="${virtualenv}/bin/activate"
+if [ -n "$virtualenv" ]; then
+    ACTIVATE="${virtualenv}/bin/activate"
 
-if [ ! -f "$ACTIVATE" ]; then
-    echo "'${ACTIVATE}' can't be accessed. Is your virtualenv set correctly?"
-    exit $ERROR
+    if [ ! -f "$ACTIVATE" ]; then
+        echo "'${ACTIVATE}' can't be accessed. Is your virtualenv set correctly?"
+        exit $ERROR
+    fi
+
+    source $ACTIVATE
 fi
-
-source $ACTIVATE
 
 # TODO: THis script schould be moved to a py entry point
 CEICTL="ceictl"

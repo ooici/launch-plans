@@ -67,59 +67,8 @@ Turn off force_clean in coi-services:
 You will also need to ensure that you have RabbitMQ set up and running, and
 couchdb running if you would like to use Pyon.
 
-##ii. Setting up authentication:
 
-Parts of the launch plan work by executing `ceictl` commands locally that
-send messages to running services. For example to create deployable types.
-However cloudinit.d does not natively support local command execution.
-So these steps run via SSH calls to localhost. This may be improved in
-the future.
-
-You must ensure that you can ssh to your local machine without a
-password. To do this, you will need to ensure that you have the ssh daemon
-running on your system, and you will need an ssh key, and that same key needs
-to be in your authorized_keys file. Test this with:
-
-    $ ssh localhost
-
-If you see something like the following, then you are set up.
-
-    $ ssh localhost
-    Last login: Wed Feb  1 13:18:00 2012
-    $
-
-If you see something like the following, you need to enable your ssh daemon:
-
-    $ ssh localhost
-    ssh: connect to host localhost port 22: Connection refused
-
-If you see something like the following, you need to set up an ssh key. 
-
-    $ ssh localhost
-    user@localhost's password:
-
-If you do not have an ssh key already, you can generate one:
-
-    $ ls ~/.ssh/id_*
-    ls: /home/user/.ssh/id_*: No such file or directory
-    $ ssh-keygen
-
-Once you have an ssh key available, simply append the public key to your
-authorized_keys file:
-
-    $ ls ~/.ssh/id_*
-    /home/user/.ssh/id_rsa /home/user/.ssh/id_rsa.pub
-    $ cp ~/.ssh/authorized_keys cp ~/.ssh/authorized_keys.backup
-    $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-
-Now try sshing again:
-
-    $ ssh localhost                                                              
-    Last login: Wed Feb  1 13:18:00 2012                                         
-    $ 
-
-
-##iii. Running the launch plan locally:
+##ii. Running the launch plan locally:
 
 Now you will need to set up a few environment variables to set your RabbitMQ
 credentials and exchange. The easiest way to do this is with a file that you
@@ -165,7 +114,7 @@ Once you are done, you can terminate the plan with:
 
     $ cloudinitd terminate $RUN
 
-##iv. Running the launch plan on OOI Nimbus
+##iii. Running the launch plan on OOI Nimbus
 
 Now that we've run locally, let's try running with real VMs. You're going to
 need a similar file to ~/.secrets/local. You will also need to set up your
@@ -232,7 +181,7 @@ Once you are done, you can terminate the plan with:
     $ cloudinitd terminate $RUN
 
 
-##v. Running the launch plan on EC2 (experimental)
+##iv. Running the launch plan on EC2 (experimental)
 
 EC2 is also supported, however be forewarned that the base image is
 different. Not all dependencies may be available or compatible.
