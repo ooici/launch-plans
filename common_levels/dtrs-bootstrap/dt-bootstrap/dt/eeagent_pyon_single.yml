@@ -58,7 +58,7 @@ contextualization:
         retrieve_method: virtualenv_archive
         git_repo: https://github.com/nimbusproject/eeagent.git
         git_reference: master
-        archive_url: http://ooici.net/releases/eeagent-venv.tar.gz
+        archive_url: http://ooici.net/releases/eeagent-venv-nimbusproject-master.tar.gz
       run_config:
         program: eeagent
         run_directory: /home/cc/eeagent
