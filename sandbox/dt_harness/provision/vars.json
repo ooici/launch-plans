@@ -1,4 +1,5 @@
 {
+  "epuworker_image_id":"ami-b2dc7ddb",
   "broker_ip_address":"${rabbitmq_host}",
   "broker_username":"${rabbitmq_username}",
   "broker_password":"${rabbitmq_password}",
@@ -26,6 +27,7 @@
   "epuagent_git_repo": "${epuagent_git_repo}",
   "epuagent_git_branch": "${epuagent_git_branch}",
   "epuagent_git_commit": "${epuagent_git_commit}",
+  "epuagent_archive_url": "${epuagent_archive_url}",
   "heartbeat_period_seconds": "5",
   "heartbeat_dest": "nowhere",
   "node_id": "hats"
