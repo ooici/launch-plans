@@ -29,7 +29,7 @@ def error(msg, exit_code=1):
 
 def rel2levels(relpath, output_directory=None, json_template_path=None,
         conf_template_path=None, cloudinitd_config_path=None, force=False,
-        extra_level=None):
+        extra_level=None, ignore_bootlevels=False):
     """Convert a pyon rel file to a launch level for each app
 
     """
@@ -85,7 +85,7 @@ def rel2levels(relpath, output_directory=None, json_template_path=None,
     rel = yaml.load(rel_yaml)
     apps = rel['apps']
 
-    validate_apps(apps)
+    validate_apps(apps, ignore_bootlevels=ignore_bootlevels)
 
     # dictionary of lists of apps in each level. bootlevel numbers don't
     # necessarily need to be sequential.
@@ -215,17 +215,17 @@ def safe_get_appname(wanted_app_name, app_names):
         else:
             i += 1
 
-def validate_apps(apps):
+def validate_apps(apps, ignore_bootlevels=False):
     pred = lambda app: "bootlevel" in app
 
     any_bootlevels = any(pred(app) for app in apps)
-    if any_bootlevels:
+    if any_bootlevels and not ignore_bootlevels:
         if not all(pred(app) for app in apps):
             error("Either every app in the rel file must have a bootlevel, or none may.")
 
     for ndex, app in enumerate(apps):
         validate_app(app)
-        if not any_bootlevels:
+        if ignore_bootlevels or not any_bootlevels:
             # stick a fake bootlevel on each app
             app['bootlevel'] = ndex+1
 
@@ -257,9 +257,13 @@ parser.add_argument('-a', '--append-level', nargs=1, metavar='path/to/level.conf
 parser.add_argument('-j', '--json-template', nargs=1, metavar='path/to/template.json', default=None)
 parser.add_argument('-t', '--conf-template', nargs=1, metavar='path/to/template.conf', default=None)
 parser.add_argument('-c', '--top-level-config', nargs=1, metavar='path/to/main.conf', default=["local.conf"])
+parser.add_argument('-i', '--ignore-bootlevels', dest='ignore_bootlevels',
+        action='store_const', const=True,
+        help="ignore bootlevels in rel and generate one level per app")
 
 opts = parser.parse_args()
 rel2levels(opts.relfile, force=opts.force,
         extra_level=opts.append_level.pop(0), json_template_path=opts.json_template,
         conf_template_path=opts.conf_template,
-        cloudinitd_config_path=opts.top_level_config.pop(0))
+        cloudinitd_config_path=opts.top_level_config.pop(0),
+        ignore_bootlevels=opts.ignore_bootlevels)
