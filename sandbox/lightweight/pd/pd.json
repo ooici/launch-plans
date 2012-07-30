@@ -27,13 +27,8 @@
         },
         "processdispatcher": {
           "default_user": "${epu_username}",
+          "definition_id": "pd_definition",
           "domain_config": {
-            "general": {
-              "engine_class": "epu.decisionengine.impls.needy.NeedyEngine"
-            },
-            "health": {
-              "monitor_health": false
-            },
             "engine_conf": {
                 "iaas_site": "${iaas_site}",
                 "iaas_allocation": "m1.small",

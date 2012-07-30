@@ -59,18 +59,25 @@
             "epuagent_git_commit": "${epuagent_git_commit}",
             "heartbeat_period_seconds": "${heartbeat_period_seconds}"
           },
-          "initial_domains": {
-            "domain1": {
+          "initial_definitions": {
+            "definition1": {
               "general": {
                 "engine_class": "epu.decisionengine.impls.simplest.SimplestEngine"
               },
               "health": {
                 "monitor_health": true
-              },
-              "engine_conf": {
-                "preserve_n": "${preserve_n}",
-                "epuworker_type": "${worker_deployable_type}",
-                "force_site": "${iaas_site}"
+              }
+            }
+          },
+          "initial_domains": {
+            "domain1": {
+              "definition": "definition1",
+              "config": {
+                "engine_conf": {
+                  "preserve_n": "${preserve_n}",
+                  "epuworker_type": "${worker_deployable_type}",
+                  "force_site": "${iaas_site}"
+                }
               }
             }
           }

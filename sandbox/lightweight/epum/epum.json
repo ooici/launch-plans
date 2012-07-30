@@ -94,6 +94,16 @@
             "epuagent_git_commit": "${epuagent_git_commit}",
             "heartbeat_period_seconds": "${heartbeat_period_seconds}"
           },
+          "initial_definitions": {
+            "pd_definition": {
+              "general": {
+                "engine_class": "epu.decisionengine.impls.needy.NeedyEngine"
+              },
+              "health": {
+                "monitor_health": false
+              }
+            }
+          },
           "initial_domains": {
           }
         }
