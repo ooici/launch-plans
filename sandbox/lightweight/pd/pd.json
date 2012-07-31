@@ -1,32 +1,52 @@
 {
-  "epu": {
+  "pyon":{
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
-    "virtualenv": {
-      "path": "/home/${epu_username}/app-venv",
-      "python":"${python}",
-      "virtualenv":"${virtualenv}",
-      "virtualenv_args":"${virtualenv_args}"
-    },
     "action": [
+      "configure",
       "run"
     ],
-    "run_config": {
-      "program": "epu-processdispatcher-service",
-      "run_directory": "/home/${epu_username}/pd",
-      "run_method": "supervised",
-      "autorestart": true,
-      "config": {
-        "server": {
-          "amqp": {
+    "configure_config":{
+      "config_file": "/home/${epu_username}/coi-services/res/config/pyon.local.yml",
+      "config":{
+        "server":{
+          "amqp":{
             "host": "${rabbitmq_host}",
             "username": "${rabbitmq_username}",
-            "password": "${rabbitmq_password}",
-            "exchange": "${rabbitmq_exchange}"
+            "password": "${rabbitmq_password}"
+          },
+          "amqp_priv":{
+            "host": "${rabbitmq_host}",
+            "username": "${rabbitmq_username}",
+            "password": "${rabbitmq_password}"
+          },
+          "couchdb":{
+            "host": "${couchdb_host}",
+            "username": "${couchdb_username}",
+            "password": "${couchdb_password}"
           }
         },
+        "system":{
+          "name": "${coi_services_system_name}"
+        }
+      }
+    },
+    "run_config": {
+      "program": "processdispatcher",
+      "name": "processdispatcher",
+      "system_name": "${coi_services_system_name}",
+      "module": "ion.services.cei.process_dispatcher_service",
+      "class": "ProcessDispatcherService",
+      "run_directory": "/home/${epu_username}/coi-services",
+      "run_method": "supervised",
+      "supervisord_path": "/home/${epu_username}/coi-services/bin/supervisord",
+      "autorestart": true,
+      "config": {
         "processdispatcher": {
-          "default_user": "${epu_username}",
+          "heartbeat_queue" : "processdispatcher_heartbeats",
+          "backend": "native",
+          "dashi_uri": "amqp://${rabbitmq_username}:${rabbitmq_password}@${rabbitmq_host}/",
+          "dashi_exchange": "${rabbitmq_exchange}",
           "definition_id": "pd_definition",
           "domain_config": {
             "engine_conf": {
@@ -40,7 +60,7 @@
               "deployable_type": "${worker_deployable_type}",
               "launch_type": {
                 "name": "pyon_single",
-                "pyon_directory": "/home/cc/coi-services/",
+                "pyon_directory": "/home/${epu_username}/coi-services/",
                 "container_args": "--noshell",
                 "supd_directory": "/tmp"
               },

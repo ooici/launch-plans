@@ -1,16 +1,17 @@
 ---
 mappings:
+  ec2.us-west-1:
+    iaas_image: ami-05a78240
+    iaas_allocation: m1.small
   ec2.us-east-1:
     iaas_image: ${epuworker_image_id}
     iaas_allocation: m1.small
+  ooi.ucsd:
+    iaas_image: r2-worker
+    iaas_allocation: m1.large
 contextualization:
   method: chef-solo
   chef_config:
-    coi_services:
-      git_repo: ${coi_services_git_repo}
-      git_branch: ${coi_services_git_branch}
-      git_commit: ${coi_services_git_branch}
-      buildout_config: ${coi_services_buildout_config}
     dtdata:
       retrieve_method: archive
       archive_url: ${dtdata_archive_url}
@@ -22,49 +23,53 @@ contextualization:
       groupname: users
       action:
       - retrieve
-      - install
+      - configure
       - run
       retrieve_config:
-        retrieve_method: git
-        archive_url: ${archive_url}
-        git_repo: ${coi_services_git_repo}
-        git_reference: ${coi_services_git_branch}
-      install_config:
-        install_method: py_venv_buildout
-        buildout_file: ${coi_services_buildout_config}
-        package_repo: ${package_repo}
-      run_config:
-        program: eeagent
-        name: eeagent
-        system_name: ${coi_services_system_name}
-        module: ion.agents.cei.execution_engine_agent
-        class: ExecutionEngineAgent
-        run_directory: /home/cc/app
-        run_method: supervised
-        autorestart: true
+        retrieve_method: archive
+        retrieve_directory: /home/cc/coi-services
+        archive_url: ${coi_services_archive_url}
+      configure_config:
         config:
           server:
             amqp:
               host: ${broker_ip_address}
               username: ${broker_username}
               password: ${broker_password}
-              exchange: ${broker_exchange}
+            amqp_priv:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
             couchdb:
-              host: ${couchdb_host}
+              host:  ${couchdb_host}
               username: ${couchdb_username}
               password: ${couchdb_password}
+          system:
+            name: ${coi_services_system_name}
+      run_config:
+        program: eeagent
+        name: eeagent
+        system_name: ${coi_services_system_name}
+        module: ion.agents.cei.execution_engine_agent
+        class: ExecutionEngineAgent
+        run_directory: /home/cc/coi-services
+        run_method: supervised
+        supervisord_path: /home/cc/coi-services/bin/supervisord
+        autorestart: true
+        config:
+          agent:
+            resource_id: eeagent_${node_id}}
           eeagent:
             name: eeagent_${node_id}
             heartbeat: 10
+            heartbeat_queue: processdispatcher_heartbeats
             slots: 80
             launch_type:
               name: pyon
               pyon_directory: /home/cc/coi-services/
-              supd_directory: /tmp/
+              persistence_directory: /tmp/
           pd:
             name: processdispatcher
-    appinstall:
-      super_cache: https://github.com/downloads/ooici/dt-data/coi-services-ubuntu-cache.tar.gz
     recipes:
     - apt
     - pyon_deps

@@ -26,6 +26,18 @@
       ["${ctxbroker_key}", "${ctxbroker_secret}"]
     ]
   },
+  "pyon":{
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "action": [
+      "retrieve"
+    ],
+    "retrieve_config":{
+      "retrieve_method": "archive",
+      "retrieve_directory": "/home/${epu_username}/coi-services",
+      "archive_url": "${coi_services_archive_url}"
+    }
+  },
   "epu": {
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
