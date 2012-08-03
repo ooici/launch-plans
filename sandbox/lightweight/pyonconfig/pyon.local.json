@@ -1,4 +1,12 @@
 {
+  "system": {
+    "name": "${coi_services_system_name}"
+  },
+  "endpoint": {
+    "recieve": {
+      "timeout": "30"
+    }
+  },
   "server": {
     "amqp": {
       "host": "${rabbitmq_host}",
