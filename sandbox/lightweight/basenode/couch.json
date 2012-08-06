@@ -9,6 +9,7 @@
     "password": "${couchdb_password}"
   },
   "recipes": [
+    "sshkeys",
     "bigcouch"
   ]
 }

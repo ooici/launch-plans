@@ -68,4 +68,5 @@ contextualization:
     recipes:
     - apt
     - pyon_deps
+    - sshkeys
     - epu

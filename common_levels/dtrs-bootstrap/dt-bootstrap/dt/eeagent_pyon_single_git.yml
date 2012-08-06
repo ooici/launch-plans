@@ -131,4 +131,5 @@ contextualization:
             period_seconds: ${heartbeat_period_seconds}
             node_id: ${node_id}
     recipes:
+    - sshkeys
     - epu

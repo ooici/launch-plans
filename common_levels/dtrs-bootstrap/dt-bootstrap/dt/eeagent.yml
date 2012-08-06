@@ -48,4 +48,5 @@ contextualization:
     groupname: users
     recipes:
     - user
+    - sshkeys
     - r2app

@@ -47,6 +47,7 @@
   },
   "recipes": [
     "rabbitmq",
+    "sshkeys",
     "epu"
   ]
 }

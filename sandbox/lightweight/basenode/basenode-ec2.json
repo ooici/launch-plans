@@ -46,6 +46,7 @@
     }
   },
   "recipes": [
+    "sshkeys",
     "contextbroker",
     "rabbitmq",
     "epu"
