@@ -70,6 +70,7 @@ if [ $? -ne 0 ]; then
 fi
 
 cat >> chefconf.rb << "EOF"
+data_bag_path "/opt/dt-data/data_bags"
 cookbook_path "/opt/dt-data/cookbooks"
 log_level :info
 file_store_path "/opt/dt-data/tmp"
