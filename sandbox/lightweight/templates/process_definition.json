@@ -1,0 +1,5 @@
+name: ${name}
+executable:
+  module: ${module}
+  class: ${klass}
+  config: ${config}
