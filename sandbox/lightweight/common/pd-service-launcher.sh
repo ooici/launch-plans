@@ -45,6 +45,12 @@ while [ "$1" != "" ]; do
         -c | --config )         shift
                                 config=$1
                                 ;;
+        -s | --sysname )        shift
+                                sysname=$1
+                                ;;
+        -j | --process-definition-id ) shift
+                                process_definition_id=$1
+                                ;;
         -n | --name )           shift
                                 run_name=$1
                                 ;;
@@ -88,6 +94,10 @@ else
         if [ -n "$exchange" ]; then
             CEICTL_ARGS="$CEICTL_ARGS -x $exchange"
         fi
+
+        if [ -n "$sysname" ]; then
+            CEICTL_ARGS="$CEICTL_ARGS -s $sysname"
+        fi
     fi
 fi
 
@@ -114,8 +124,16 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    bootout=`$CEICTL $CEICTL_ARGS --json process dispatch $CONFIG`
-    echo "$bootout" > bootout.json
+    echo $CEICTL $CEICTL_ARGS --pyon --json process create $process_definition_id
+    procid=`$CEICTL $CEICTL_ARGS --pyon --json process create $process_definition_id`
+    echo $procid
+    schedule='{"restart_mode": "NEVER", "queueing_mode": "ALWAYS", "target": {}}'
+    echo "$schedule" > schedule.json
+
+    echo $CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid
+    upid=`$CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid`
+    echo $upid > bootout.json
+
     if [ $? -ne 0 ]; then
         exit 1
     fi

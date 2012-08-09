@@ -18,7 +18,8 @@ from subprocess import check_call
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 CLOUDINITD_CONFIG = os.path.join(THIS_DIR, "local.conf")
-JSON_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon.json")
+OLD_JSON_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon.json")
+JSON_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon_process_start.json")
 CONF_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon.conf")
 PD_TEMPLATE = os.path.join(THIS_DIR, "templates", "process_definition.json")
 PYONAPP_PREFIX = "pyonapp"
@@ -35,13 +36,19 @@ def rel2levels(
         relpath, output_directory=None, json_template_path=None,
         pd_template_path=None,
         conf_template_path=None, cloudinitd_config_path=None, force=False,
-        extra_level=None, ignore_bootlevels=False):
+        extra_level=None, ignore_bootlevels=False,
+        old_pd_api=False):
     """Convert a pyon rel file to a launch level for each app
 
     """
 
     output_directory = output_directory or THIS_DIR
-    json_template_path = json_template_path or JSON_TEMPLATE
+    if json_template_path:
+        json_template_path = json_template_path
+    elif old_pd_api:
+        json_template_path = OLD_JSON_TEMPLATE
+    else:
+        json_template_path = JSON_TEMPLATE
     conf_template_path = conf_template_path or CONF_TEMPLATE
     pd_template_path = pd_template_path or PD_TEMPLATE
     cloudinitd_config_path = os.path.join(THIS_DIR, cloudinitd_config_path)
@@ -134,9 +141,12 @@ def rel2levels(
             process_name, process_module, process_class = app['processapp']
             process_config = app.get('config', {})
 
-            app_json = json.dumps(app, indent=2)
             conf_contents += conf_template.substitute(name=name) + "\n"
-            json_contents = json_template.substitute(name=name, app_json=app_json)
+            if old_pd_api:
+                app_json = json.dumps(app, indent=2)
+                json_contents = json_template.substitute(name=name, app_json=app_json)
+            else:
+                json_contents = json_template.substitute(process_definition_id=name)
             json_filename = "%s_%s.json" % (PYONAPP_PREFIX, name)
 
             json_path = os.path.join(level_directory_path, json_filename)
@@ -312,6 +322,9 @@ parser.add_argument('-c', '--top-level-config', nargs=1, metavar='path/to/main.c
 parser.add_argument('-i', '--ignore-bootlevels', dest='ignore_bootlevels',
                     action='store_const', const=True,
                     help="ignore bootlevels in rel and generate one level per app")
+parser.add_argument('-o', '--old-pd-api', dest='old_pd_api',
+                    action='store_const', const=True,
+                    help="Use old PD API where processes definition and creation is one step")
 
 opts = parser.parse_args()
 rel2levels(
@@ -319,4 +332,5 @@ rel2levels(
     extra_level=opts.append_level.pop(0), json_template_path=opts.json_template,
     conf_template_path=opts.conf_template,
     cloudinitd_config_path=opts.top_level_config.pop(0),
-    ignore_bootlevels=opts.ignore_bootlevels)
+    ignore_bootlevels=opts.ignore_bootlevels,
+    old_pd_api=opts.old_pd_api)
