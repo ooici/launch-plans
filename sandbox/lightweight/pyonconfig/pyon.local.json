@@ -1,6 +1,7 @@
 {
   "system": {
-    "name": "${coi_services_system_name}"
+    "name": "${coi_services_system_name}",
+    "auto_bootstrap": false
   },
   "endpoint": {
     "recieve": {
