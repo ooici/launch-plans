@@ -58,7 +58,7 @@ contextualization:
         autorestart: true
         config:
           agent:
-            resource_id: eeagent_${node_id}}
+            resource_id: eeagent_${node_id}
           eeagent:
             name: eeagent_${node_id}
             heartbeat: 10
