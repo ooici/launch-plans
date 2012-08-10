@@ -7,6 +7,15 @@
       "run"
     ],
     "configure_config":{
+      "logging_config_file": "/home/${epu_username}/coi-services/res/config/logging.local.yml",
+      "logging_config":{
+        "loggers":{
+          "epu":{
+            "handlers": ["console", "file"],
+            "level": "DEBUG"
+          }
+        }
+      },
       "config_file": "/home/${epu_username}/coi-services/res/config/pyon.local.yml",
       "config":{
         "server":{

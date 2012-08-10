@@ -132,7 +132,7 @@ if [ "$action" = "start" ]; then
 
     echo $CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid
     upid=`$CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid`
-    echo $upid > bootout.json
+    echo "{\"upid\": $upid }" > bootout.json
 
     if [ $? -ne 0 ]; then
         exit 1

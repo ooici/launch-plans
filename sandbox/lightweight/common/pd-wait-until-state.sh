@@ -11,6 +11,7 @@ Options:
 [-b|--host brokerhostname]
 [-u|--username username]
 [-p|--password password]
+[-s|--sysname sysname]
 [-x|--exchange xchg]
 "
 # Parse command line arguments
@@ -39,6 +40,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -n | --name )           shift
                                 run_name=$1
+                                ;;
+        -s | --sysname )        shift
+                                sysname=$1
                                 ;;
         -h | --help )           echo "$USAGE"
                                 exit
@@ -69,12 +73,15 @@ else
         if [ -n "$exchange" ]; then
             CEICTL_ARGS="$CEICTL_ARGS -x $exchange"
         fi
+        if [ -n "$sysname" ]; then
+            CEICTL_ARGS="$CEICTL_ARGS -s $sysname"
+        fi
     fi
 fi
 
 if [ -z "$upid" ]; then
     #Try to get id from upid from bootout.json from readypgm
-    upid=`cat bootout.json | tr -d '",'`
+    upid=`cat bootout.json | awk '/upid/ {print $2}' | tr -d '",'`
     if [ -z "$upid" ]; then
         echo "You must provide a upid for the process"
         echo $USAGE
