@@ -1,4 +1,7 @@
 {
+  "system": {
+    "name": "${coi_services_system_name}"
+  },
   "server": {
     "amqp": {
       "host": "${rabbitmq_host}",
