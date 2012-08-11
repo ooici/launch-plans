@@ -36,6 +36,7 @@
           }
         },
         "system":{
+          "auto_bootstrap": "False",
           "name": "${coi_services_system_name}"
         }
       }

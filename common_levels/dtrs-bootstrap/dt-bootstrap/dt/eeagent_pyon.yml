@@ -45,6 +45,7 @@ contextualization:
               username: ${couchdb_username}
               password: ${couchdb_password}
           system:
+            auto_bootstrap: False
             name: ${coi_services_system_name}
       run_config:
         program: eeagent
