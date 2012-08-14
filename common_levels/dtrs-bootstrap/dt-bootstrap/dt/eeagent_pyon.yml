@@ -30,6 +30,11 @@ contextualization:
         retrieve_directory: /home/cc/coi-services
         archive_url: ${coi_services_archive_url}
       configure_config:
+        logging_config:
+          loggers:
+            eeagent:
+              handlers: [console, file]
+              level: DEBUG
         config:
           server:
             amqp:
