@@ -63,8 +63,8 @@ while [ "$1" != "" ]; do
     shift
 done
 
-if [ -z "$processdispatcher" ]; then
-    echo "Your process dispatcher must be set"
+if [ -z "$process_definition_id" ]; then
+    echo "Your process definition id must be set"
     echo $USAGE
     exit $ERROR
 fi
@@ -124,13 +124,10 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    echo $CEICTL $CEICTL_ARGS --pyon --json process create $process_definition_id
     procid=`$CEICTL $CEICTL_ARGS --pyon --json process create $process_definition_id`
-    echo $procid
     schedule='{"restart_mode": "NEVER", "queueing_mode": "ALWAYS", "target": {}}'
     echo "$schedule" > schedule.json
 
-    echo $CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid
     upid=`$CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid`
     echo "{\"upid\": $upid }" > bootout.json
 
