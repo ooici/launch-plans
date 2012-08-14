@@ -140,13 +140,14 @@ def rel2levels(
 
             process_name, process_module, process_class = app['processapp']
             process_config = app.get('config', {})
+            process_config = json.dumps(process_config, indent=2)
 
             conf_contents += conf_template.substitute(name=name) + "\n"
             if old_pd_api:
                 app_json = json.dumps(app, indent=2)
                 json_contents = json_template.substitute(name=name, app_json=app_json)
             else:
-                json_contents = json_template.substitute(process_definition_id=name)
+                json_contents = json_template.substitute(process_config=process_config)
             json_filename = "%s_%s.json" % (PYONAPP_PREFIX, name)
 
             json_path = os.path.join(level_directory_path, json_filename)

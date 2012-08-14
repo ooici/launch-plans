@@ -1,3 +1,1 @@
-{
-    "process_definition_id": "${process_definition_id}"
-}
+${process_config}
