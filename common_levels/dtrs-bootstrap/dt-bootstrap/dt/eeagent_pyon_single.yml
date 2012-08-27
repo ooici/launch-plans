@@ -43,6 +43,7 @@ contextualization:
               password: ${couchdb_password}
           system:
             name: ${coi_services_system_name}
+            autobootstrap: False
     epu:
       virtualenv:
         path: /home/cc/eeagent-venv

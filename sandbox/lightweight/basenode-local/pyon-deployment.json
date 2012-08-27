@@ -1,0 +1,80 @@
+{
+  "pyon-process-dispatchers": {
+    "process_dispatcher": {
+      "config": {
+        "system":{
+          "name": "${coi_services_system_name}"
+        },
+        "pyon_directory": "${pyon_path}",
+        "processdispatcher": {
+          "static_resources": true,
+          "backend": "native",
+          "heartbeat_queue" : "processdispatcher_heartbeats",
+          "dashi_uri": "amqp://${rabbitmq_username}:${rabbitmq_password}@${rabbitmq_host}/",
+          "dashi_exchange": "${rabbitmq_exchange}",
+          "definition_id": "pd_definition",
+          "domain_config": {
+            "engine_conf": {
+              "deployable_type": "${eeagent_dt}"
+            }
+          },
+          "engines": {
+            "default": {
+              "deployable_type": "${eeagent_dt}",
+              "launch_type": {
+                "name": "pyon",
+                "pyon_directory": "${pyon_path}",
+                "container_args": "--noshell",
+                "supd_directory": "/tmp"
+              },
+              "slots": 100,
+              "base_need": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "pyon-nodes": {
+    "pyonnode": {
+      "dt": "${eeagent_dt}",
+      "process-dispatcher": "${coi_services_system_name}.dashi_process_dispatcher",
+      "eeagents": {
+        "eeagent_pyonnode": {
+          "config": {
+            "system":{
+              "name": "${coi_services_system_name}"
+            },
+            "agent": {
+              "resource_id": "eeagent_pyonnode"
+            },
+            "eeagent": {
+              "name": "eeagent_pyonnode",
+              "heartbeat": 10,
+              "heartbeat_queue": "processdispatcher_heartbeats",
+              "slots": 100,
+              "launch_type": {
+                "name": "pyon",
+                "pyon_directory": "${pyon_path}",
+                "persistence_directory": "/tmp"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "server": {
+    "amqp": {
+      "host": "${rabbitmq_host}",
+      "username": "${rabbitmq_username}",
+      "password": "${rabbitmq_password}",
+      "exchange": "${rabbitmq_exchange}"
+    }
+  },
+  "virtualenv": "${virtualenv}",
+  "rabbitmq_exchange": "${rabbitmq_exchange}",
+  "couchdb_username": "${couchdb_username}",
+  "couchdb_password": "${couchdb_password}",
+  "couchdb_host": "${couchdb_host}"
+}
