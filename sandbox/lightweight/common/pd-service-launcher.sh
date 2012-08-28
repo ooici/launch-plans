@@ -125,6 +125,9 @@ fi
 
 if [ "$action" = "start" ]; then
     procid=`$CEICTL $CEICTL_ARGS --pyon --json process create $process_definition_id`
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
     schedule='{"restart_mode": "NEVER", "queueing_mode": "ALWAYS", "target": {}}'
     echo "$schedule" > schedule.json
 
