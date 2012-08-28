@@ -13,7 +13,7 @@ RUN_NAME=$1
 
 # the archive url can be passed in as an optional second argument
 if [ "X$2" == "X" ]; then
-    DTDATA_ARCHIVE_URL="http://ooici.net/releases/dt-data-develop.tar.gz"
+    DTDATA_ARCHIVE_URL="http://sddevrepo.oceanobservatories.org/releases/dt-data-develop.tar.gz"
 else
     DTDATA_ARCHIVE_URL=$2
 fi
