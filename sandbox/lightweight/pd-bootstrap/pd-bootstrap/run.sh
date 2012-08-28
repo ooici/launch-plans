@@ -102,7 +102,7 @@ set +e
 for pd_file in `ls $pddir/*.yml`; do
     pd_name=`basename $pd_file | sed 's/.yml//'`
     attempts=5
-    for i in $(seq 0 $attempts) ; do
+    for i in `eval echo {0..$attempts}` ; do
         echo $CEICTL $CEICTL_ARGS --yaml --pyon process-definition create -i $pd_name $pd_file
         $CEICTL $CEICTL_ARGS --yaml --pyon process-definition create -i $pd_name $pd_file
         CEI_RET=$?
