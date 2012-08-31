@@ -112,7 +112,11 @@ def rel2levels(
 
     # first sort apps into bootlevels
     for app in apps:
-        bootlevel = app['bootlevel']
+        include = app['deploy'].get('include', True)
+        if not include:
+            print >> sys.stderr, "Not including %s in generated levels" % app['name']
+            continue
+        bootlevel = app['deploy']['bootlevel']
         levels[bootlevel].append(app)
 
     # then walk levels and write out all of the files
@@ -278,7 +282,7 @@ def safe_get_appname(wanted_app_name, app_names):
 
 
 def validate_apps(apps, ignore_bootlevels=False):
-    pred = lambda app: "bootlevel" in app
+    pred = lambda app: 'deploy' in app and 'bootlevel' in app['deploy']
 
     any_bootlevels = any(pred(app) for app in apps)
     if any_bootlevels and not ignore_bootlevels:
@@ -289,7 +293,9 @@ def validate_apps(apps, ignore_bootlevels=False):
         validate_app(app)
         if ignore_bootlevels or not any_bootlevels:
             # stick a fake bootlevel on each app
-            app['bootlevel'] = ndex + 1
+            if not app.get('deploy'):
+                app['deploy'] = {}
+            app['deploy']['bootlevel'] = ndex + 1
 
 
 def validate_app(app):
@@ -299,7 +305,7 @@ def validate_app(app):
         argname = e.args[0]
         error("Pyon app does not have required attribute '%s'. App:\n%s" % (
             argname, app))
-    bootlevel = app.get('bootlevel')
+    bootlevel = app.get('deploy', {}).get('bootlevel')
     if bootlevel is not None:
         try:
             bootlevel = int(bootlevel)
