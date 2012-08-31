@@ -77,7 +77,6 @@ contextualization:
           pd:
             name: processdispatcher
     recipes:
-    - apt
     - pyon_deps
     - sshkeys
     - epu
