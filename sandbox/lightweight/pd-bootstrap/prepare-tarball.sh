@@ -12,7 +12,7 @@ fi
 
 if [ -f $DIRNAME.tar.gz ]; then
   rm $DIRNAME.tar.gz
-  echo "Removed old $DIRNAME.tar.gz"
+  #echo "Removed old $DIRNAME.tar.gz"
 fi
 
 tar czf $DIRNAME.tar.gz $DIRNAME
@@ -21,6 +21,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Created $DIRNAME.tar.gz"
+#echo "Created $DIRNAME.tar.gz"
 
-cd -
+cd - >/dev/null
