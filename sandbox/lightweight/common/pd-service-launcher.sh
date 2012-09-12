@@ -124,10 +124,10 @@ fi
 
 if [ "$action" = "start" ]; then
     procid="${process_definition_id}_`uuidgen`"
-    schedule='{"restart_mode": "NEVER", "queueing_mode": "ALWAYS", "target": {}}'
-    echo "$schedule" > schedule.json
+    restart_mode="NEVER"
+    queueing_mode="ALWAYS"
 
-    upid=`$CEICTL $CEICTL_ARGS --json -d $processdispatcher process schedule $procid $process_definition_id schedule.json bootconf.json`
+    upid=`$CEICTL $CEICTL_ARGS --json -d ${processdispatcher} process schedule ${procid} ${process_definition_id} bootconf.json --queueing-mode ${queueing_mode} --restart-mode ${restart_mode}`
     if [ $? -ne 0 ]; then
         exit 1
     fi
