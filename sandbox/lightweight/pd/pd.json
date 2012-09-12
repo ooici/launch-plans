@@ -58,6 +58,7 @@
           "dashi_uri": "amqp://${rabbitmq_username}:${rabbitmq_password}@${rabbitmq_host}/",
           "dashi_exchange": "${rabbitmq_exchange}",
           "definition_id": "pd_definition",
+          "dashi_messaging": true,
           "domain_config": {
             "engine_conf": {
                 "iaas_site": "${iaas_site}",

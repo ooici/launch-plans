@@ -115,7 +115,6 @@ if [ -n "$virtualenv" ]; then
     source $ACTIVATE
 fi
 
-# TODO: THis script schould be moved to a py entry point
 CEICTL="ceictl"
 if [ ! `which $CEICTL` ]; then
 
@@ -124,14 +123,11 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    procid=`$CEICTL $CEICTL_ARGS --pyon --json process create $process_definition_id`
-    if [ $? -ne 0 ]; then
-        exit 1
-    fi
+    procid="${process_definition_id}_`uuidgen`"
     schedule='{"restart_mode": "NEVER", "queueing_mode": "ALWAYS", "target": {}}'
     echo "$schedule" > schedule.json
 
-    upid=`$CEICTL $CEICTL_ARGS --pyon --json process schedule $process_definition_id schedule.json $CONFIG $procid`
+    upid=`$CEICTL $CEICTL_ARGS --json -d $processdispatcher process schedule $procid $process_definition_id schedule.json bootconf.json`
     if [ $? -ne 0 ]; then
         exit 1
     fi

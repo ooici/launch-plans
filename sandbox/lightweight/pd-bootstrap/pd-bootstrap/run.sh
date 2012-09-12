@@ -5,12 +5,13 @@ USAGE="usage: $0 [options]
 
 Options:
 [-v|--virtualenv path/to/virtualenv]
-[-p|--process-dispatcher pdname]
+[-d|--process-dispatcher pdname]
 [-t|--pddir pddirectory]
 [-n|--name run]
 [-b|--host brokerhostname]
 [-u|--username username]
 [-p|--password password]
+[-x|--exchange exchange]
 "
 echo "args: $@"
 # Parse command line arguments
@@ -37,6 +38,12 @@ while [ "$1" != "" ]; do
         -s | --sysname )            shift
                                     sysname=$1
                                     ;;
+        -x | --exchange )           shift
+                                    exchange=$1
+                                    ;;
+        -d | --process-dispatcher )  shift
+                                    process_dispatcher=$1
+                                    ;;
         -h | --help )               echo "$USAGE"
                                     exit
                                     ;;
@@ -53,6 +60,10 @@ set -e
 
 if [ -z "$pddir" ]; then
     pddir="process-definitions"
+fi
+
+if [ -z "$process_dispatcher" ]; then
+    process_dispatcher="processdispatcher"
 fi
 
 if [ -n "$run_name" ]; then
@@ -103,8 +114,8 @@ for pd_file in `ls $pddir/*.yml`; do
     pd_name=`basename $pd_file | sed 's/.yml//'`
     attempts=5
     for i in `eval echo {0..$attempts}` ; do
-        echo $CEICTL $CEICTL_ARGS --yaml --pyon process-definition create -i $pd_name $pd_file
-        $CEICTL $CEICTL_ARGS --yaml --pyon process-definition create -i $pd_name $pd_file
+        echo $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create -i $pd_name $pd_file
+        $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create -i $pd_name $pd_file
         CEI_RET=$?
         echo "Got $CEI_RET when creating $pd_name"
         if [ $CEI_RET -eq 0 ]; then

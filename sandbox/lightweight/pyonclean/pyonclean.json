@@ -8,5 +8,6 @@
   "system":{
     "force_clean":"true"
   },
+  "coi_services_system_name": "${coi_services_system_name}",
   "cleancouchdb": "${cleancouchdb}"
 }

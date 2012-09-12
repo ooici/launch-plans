@@ -4,7 +4,7 @@ set +e
 set -e
 
 if [ -z "$cleancouchdb" ] || [ "$cleancouchdb" -eq "0" ]; then
-    echo "\$CLEANCOUCH not set, skipping clean"
+    echo "\$CLEANCOUCHDB not set, skipping clean"
     exit 0
 fi
 
@@ -18,4 +18,4 @@ CONFIG=`pwd`/bootconf.json
 
 #do pyon cleanup
 cd $PYON_PATH
-./bin/pycc -x ion.processes.bootstrap.datastore_loader.DatastoreLoader op=clear -c $CONFIG
+./bin/pycc -s $coi_services_system_name -x ion.processes.bootstrap.datastore_loader.DatastoreLoader op=clear -c $CONFIG
