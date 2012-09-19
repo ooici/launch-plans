@@ -57,7 +57,7 @@
               "launch_type": {
                 "name": "pyon",
                 "pyon_directory": "${pyon_path}",
-                "persistence_directory": "/tmp"
+                "persistence_directory": "${persistence_dir}"
               }
             }
           }
@@ -74,6 +74,7 @@
     }
   },
   "virtualenv": "${virtualenv}",
+  "persistence_dir": "${persistence_dir}",
   "rabbitmq_exchange": "${rabbitmq_exchange}",
   "couchdb_username": "${couchdb_username}",
   "couchdb_password": "${couchdb_password}",
