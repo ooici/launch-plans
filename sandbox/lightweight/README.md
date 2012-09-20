@@ -132,7 +132,7 @@ connected to the VPN.
     export CTXBROKER_SECRET="$NIMBUS_SECRET"
 
     export EPU_IAAS_SITE="ooi.ucsd"
-    export EPU_IAAS_CREDENTIALS="~/.secrets/$EPU_IAAS_SITE.yml"
+    export EPU_IAAS_CREDENTIALS="$HOME/.secrets/$EPU_IAAS_SITE.yml"
 
     # Credentials for cloudinit.d itself
     # cloudinit.d uses to start the base nodes
@@ -207,7 +207,7 @@ your AWS credentials in ~/.secrets/AWS_ACCESS_KEY_ID and
     export AWS_SECRET_ACCESS_KEY=`cat ~/.secrets/AWS_SECRET_ACCESS_KEY`
 
     export EPU_IAAS_SITE="ec2.us-west-1"
-    export EPU_IAAS_CREDENTIALS="~/.secrets/$EPU_IAAS_SITE.yml"
+    export EPU_IAAS_CREDENTIALS="$HOME/.secrets/$EPU_IAAS_SITE.yml"
 
     # Credentials for cloudinit.d itself
     # cloudinit.d uses to start the base nodes
