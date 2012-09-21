@@ -30,5 +30,6 @@
   "epuagent_archive_url": "${epuagent_archive_url}",
   "heartbeat_period_seconds": "5",
   "heartbeat_dest": "nowhere",
-  "node_id": "hats"
+  "node_id": "hats",
+  "ddns_hostname": ""
 }

@@ -69,12 +69,6 @@
           "engines": {
             "default": {
               "deployable_type": "${worker_deployable_type}",
-              "launch_type": {
-                "name": "pyon_single",
-                "pyon_directory": "/home/${epu_username}/coi-services/",
-                "container_args": "--noshell",
-                "supd_directory": "/tmp"
-              },
               "slots": 100,
               "base_need": 1
             }

@@ -76,7 +76,10 @@ contextualization:
               persistence_directory: /tmp/
           pd:
             name: processdispatcher
+    ddns:
+      hostname: ${ddns_hostname}
     recipes:
     - pyon_deps
     - sshkeys
     - epu
+    - ddns
