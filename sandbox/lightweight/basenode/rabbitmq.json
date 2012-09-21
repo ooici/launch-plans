@@ -1,0 +1,28 @@
+{
+  "rabbitmq": {
+    "vhosts": [
+      "/"
+    ],
+    "users": {
+      "${rabbitmq_username}": {
+        "password": "${rabbitmq_password}",
+        "permissions": {
+          "/": {
+            "conf": ".*",
+            "write": ".*",
+            "read": ".*"
+          }
+        }
+      }
+    }
+  },
+  "dtdata": {
+    "retrieve_method": "archive",
+    "archive_url": "${dtdata_archive_url}",
+    "chef_debug_level": "debug"
+  },
+  "recipes": [
+    "sshkeys",
+    "rabbitmq"
+  ]
+}
