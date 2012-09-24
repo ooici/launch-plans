@@ -27,7 +27,6 @@ contextualization:
       - run
       retrieve_config:
         retrieve_method: ${retrieve_method}
-        archive_url: ${archive_url}
         git_repo: ${git_repo}
         git_reference: ${git_branch}
       install_config:

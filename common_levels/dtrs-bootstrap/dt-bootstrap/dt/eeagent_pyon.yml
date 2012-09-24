@@ -3,9 +3,9 @@ mappings:
   ec2.us-west-1:
     iaas_image: ami-05a78240
     iaas_allocation: m1.small
-  ec2.us-east-1:
-    iaas_image: ${epuworker_image_id}
-    iaas_allocation: m1.small
+  #ec2.us-east-1:
+  #  iaas_image: ami-b2dc7ddb
+  #  iaas_allocation: m1.small
   ooi.ucsd:
     iaas_image: r2-worker
     iaas_allocation: m1.large
@@ -38,11 +38,11 @@ contextualization:
         config:
           server:
             amqp:
-              host: ${broker_ip_address}
+              host: ${broker_host}
               username: ${broker_username}
               password: ${broker_password}
             amqp_priv:
-              host: ${broker_ip_address}
+              host: ${broker_host}
               username: ${broker_username}
               password: ${broker_password}
             couchdb:
