@@ -123,11 +123,11 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    procid="${process_definition_id}_`uuidgen`"
+    procid="`uuidgen`"
     restart_mode="NEVER"
     queueing_mode="ALWAYS"
 
-    upid=`$CEICTL $CEICTL_ARGS --json -d ${processdispatcher} process schedule ${procid} ${process_definition_id} bootconf.json --queueing-mode ${queueing_mode} --restart-mode ${restart_mode}`
+    upid=`$CEICTL $CEICTL_ARGS --json -d ${processdispatcher} process schedule ${procid} ${process_definition_id} --queueing-mode ${queueing_mode} --restart-mode ${restart_mode} bootconf.json`
     if [ $? -ne 0 ]; then
         exit 1
     fi

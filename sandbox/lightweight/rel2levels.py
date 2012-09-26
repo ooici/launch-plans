@@ -8,6 +8,7 @@ rel2levels path/to/rel/file [-f] [-h]
 
 import os
 import sys
+import uuid
 import yaml
 import json
 import shutil
@@ -106,6 +107,15 @@ def rel2levels(
 
     validate_apps(apps, ignore_bootlevels=ignore_bootlevels)
 
+    process_definition_dir = os.path.join( output_directory, "pd-bootstrap",
+            "pd-bootstrap", "process-definitions")
+
+    # ha agent is special case added as a process definition
+    haagent_definition_id = make_process_definition("haagent",
+            "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
+            pd_json_template, process_definition_dir)
+    app_names.append("haagent")
+
     # dictionary of lists of apps in each level. bootlevel numbers don't
     # necessarily need to be sequential.
     levels = defaultdict(list)
@@ -146,7 +156,13 @@ def rel2levels(
             process_config = app.get('config', {})
             process_config = json.dumps(process_config, indent=2)
 
-            conf_contents += conf_template.substitute(name=name) + "\n"
+            definition_id = make_process_definition(process_name,
+                    process_module, process_class, pd_json_template,
+                    process_definition_dir)
+
+            app_conf = conf_template.substitute(name=name,
+                    definition_id=definition_id)
+            conf_contents += app_conf + "\n"
             if old_pd_api:
                 app_json = json.dumps(app, indent=2)
                 json_contents = json_template.substitute(name=name, app_json=app_json)
@@ -158,9 +174,6 @@ def rel2levels(
             with open(json_path, "w") as json_file:
                 json_file.write(json_contents)
 
-            make_process_definition(process_name, process_module, process_class,
-                                    process_config, pd_json_template,
-                                    output_directory)
 
         conf_path = os.path.join(level_directory_path, conf_filename)
         with open(conf_path, "w") as conf_file:
@@ -170,6 +183,7 @@ def rel2levels(
         level_configs.append(level_config)
         level_index += 1
 
+    clean_process_definitions(app_names, process_definition_dir)
     tar_process_definitions(output_directory)
 
     if extra_level:
@@ -189,22 +203,41 @@ def remove_levels(level_directories):
     for level in level_directories:
         shutil.rmtree(level)
 
+def clean_process_definitions(app_names, definition_dir):
+    """Remove any process definition files not known to be apps
+    """
+    for f in os.listdir(definition_dir):
+        root, ext =  os.path.splitext(f)
+        if ext == ".yml" and root not in app_names:
+            os.remove(os.path.join(definition_dir, f))
 
-def make_process_definition(name, module, klass, config, pd_template, output_dir):
-    if not config:
-        config = {}
 
-    config_json = json.dumps(config, indent=2)
-    pd = pd_template.substitute(name=name, module=module, klass=klass,
-                                config=config_json)
+def make_process_definition(name, module, klass, pd_template, definition_dir):
+    """Create or update process definition file. Returns process definition ID
+    """
 
     process_definition_filename = "%s.yml" % name
-    process_definition_file_path = os.path.join(
-        output_dir, "pd-bootstrap", "pd-bootstrap",
-        "process-definitions", process_definition_filename)
+    process_definition_file_path = os.path.join(definition_dir,
+            process_definition_filename)
+
+    # first look for an existing definition file
+    try:
+        with open(process_definition_file_path) as f:
+            definition = yaml.load(f)
+            process_definition_id = definition.get("process_definition_id")
+    except Exception:
+        process_definition_id = None
+
+    if not process_definition_id:
+        process_definition_id = uuid.uuid4().hex
+
+    pd = pd_template.substitute(name=name, module=module, klass=klass,
+            process_definition_id=process_definition_id)
 
     with open(process_definition_file_path, "w") as pd_file:
         pd_file.write(pd)
+
+    return process_definition_id
 
 
 def tar_process_definitions(output_dir):

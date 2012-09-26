@@ -114,8 +114,8 @@ for pd_file in `ls $pddir/*.yml`; do
     pd_name=`basename $pd_file | sed 's/.yml//'`
     attempts=5
     for i in `eval echo {0..$attempts}` ; do
-        echo $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create -i $pd_name $pd_file
-        $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create -i $pd_name $pd_file
+        echo $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create $pd_file
+        $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create  $pd_file
         CEI_RET=$?
         echo "Got $CEI_RET when creating $pd_name"
         if [ $CEI_RET -eq 0 ]; then
