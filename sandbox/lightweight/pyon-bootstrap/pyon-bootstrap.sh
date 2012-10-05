@@ -13,4 +13,5 @@ CONFIG=`pwd`/bootconf.json
 
 #do pyon cleanup
 cd $PYON_PATH
-./bin/pycc -X system.auto_bootstrap=True --config $CONFIG
+# ./bin/pycc -X system.auto_bootstrap=True --config $CONFIG
+./bin/store_interfaces --config $CONFIG
