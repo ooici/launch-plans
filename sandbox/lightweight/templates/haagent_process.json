@@ -1,0 +1,16 @@
+{
+  "highavailability": {
+    "policy": {
+      "name": "${policy_name}",
+      "parameters": ${policy_parameters}
+    },
+    "dashi_messaging": true,
+    "dashi_name": "${haagent_dashi_name}",
+    "dashi_exchange": "$${rabbitmq_exchange}",
+    "process_definition_id": "${process_definition_id}",
+    "process_configuration": ${process_config}
+  },
+  "agent": {
+    "resource_id": "${resource_id}"
+  }
+}

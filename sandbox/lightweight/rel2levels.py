@@ -23,6 +23,7 @@ OLD_JSON_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon.json")
 JSON_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon_process_start.json")
 CONF_TEMPLATE = os.path.join(THIS_DIR, "templates", "pyon.conf")
 PD_TEMPLATE = os.path.join(THIS_DIR, "templates", "process_definition.json")
+HAAGENT_TEMPLATE = os.path.join(THIS_DIR, "templates", "haagent_process.json")
 PYONAPP_PREFIX = "pyonapp"
 
 TOP_LEVEL_CONF_MARKER = "########## Pyon Services ##########"
@@ -35,9 +36,9 @@ def error(msg, exit_code=1):
 
 def rel2levels(
         relpath, output_directory=None, json_template_path=None,
-        pd_template_path=None,
+        pd_template_path=None, haagent_template_path=None,
         conf_template_path=None, cloudinitd_config_path=None, force=False,
-        extra_level=None, ignore_bootlevels=False,
+        extra_level=None, ignore_bootlevels=False, no_ha=False,
         old_pd_api=False):
     """Convert a pyon rel file to a launch level for each app
 
@@ -52,41 +53,19 @@ def rel2levels(
         json_template_path = JSON_TEMPLATE
     conf_template_path = conf_template_path or CONF_TEMPLATE
     pd_template_path = pd_template_path or PD_TEMPLATE
+    haagent_template_path = haagent_template_path or HAAGENT_TEMPLATE
     cloudinitd_config_path = os.path.join(THIS_DIR, cloudinitd_config_path)
 
-    try:
-        with open(json_template_path) as jsonfile:
-            json_template = Template(jsonfile.read())
-    except:
-        error("Problem opening '%s'. Cannot proceed." % json_template_path)
-
-    try:
-        with open(conf_template_path) as conffile:
-            conf_template = Template(conffile.read())
-    except:
-        error("Problem opening '%s'. Cannot proceed." % conf_template_path)
-
-    try:
-        with open(pd_template_path) as jsonfile:
-            pd_json_template = Template(jsonfile.read())
-    except:
-        error("Problem opening '%s'. Cannot proceed." % pd_template_path)
+    json_template = load_template(json_template_path)
+    conf_template = load_template(conf_template_path)
+    pd_json_template = load_template(pd_template_path)
+    haagent_template = load_template(haagent_template_path)
 
     if relpath[0] != '/':
         relpath = os.path.normpath(os.path.join(os.getcwd(), relpath))
 
-    try:
-        with open(relpath) as relfile:
-            rel_yaml = relfile.read()
-    except:
-        raise
-        error("Problem opening '%s'. Cannot proceed." % relpath)
-
-    try:
-        with open(cloudinitd_config_path) as cidconffile:
-            cloudinitd_config = cidconffile.read()
-    except:
-        error("Problem opening '%s'. Cannot proceed." % cloudinitd_config_path)
+    rel_yaml = load_file(relpath)
+    cloudinitd_config = load_file(cloudinitd_config_path)
 
     generated_levels = get_generated_levels(output_directory)
     if generated_levels:
@@ -154,22 +133,52 @@ def rel2levels(
 
             process_name, process_module, process_class = app['processapp']
             process_config = app.get('config', {})
-            process_config = json.dumps(process_config, indent=2)
 
             definition_id = make_process_definition(process_name,
                     process_module, process_class, pd_json_template,
                     process_definition_dir)
 
-            app_conf = conf_template.substitute(name=name,
-                    definition_id=definition_id)
+            haagent_dashi_name = "ha_%s" % name
+            ha_block = app['deploy'].get('ha')
+            use_haagent = ha_block and not no_ha
+
+            # write cloudinitd [service] block for app -- with or without HA
+            if use_haagent:
+                app_conf = conf_template.substitute(name=name,
+                        definition_id=haagent_definition_id,
+                        haagent_dashi_name=haagent_dashi_name)
+            else:
+                app_conf = conf_template.substitute(name=name,
+                        definition_id=definition_id,
+                        haagent_dashi_name="")
             conf_contents += app_conf + "\n"
+
+            # now write the cloudinitd JSON bootconf for the app
             if old_pd_api:
                 app_json = json.dumps(app, indent=2)
                 json_contents = json_template.substitute(name=name, app_json=app_json)
-            else:
-                json_contents = json_template.substitute(process_config=process_config)
-            json_filename = "%s_%s.json" % (PYONAPP_PREFIX, name)
 
+            elif use_haagent:
+                try:
+                    policy_name = ha_block['policy']
+                    policy_params = ha_block['parameters']
+                except KeyError, e:
+                    error("ha block for app '%s' is missing '%s' value" % (name, e))
+
+                policy_params_json=json.dumps(policy_params, indent=8)
+                process_config_json = json.dumps(process_config, indent=4)
+                json_contents = haagent_template.substitute(policy_name=policy_name,
+                        policy_parameters=policy_params_json,
+                        haagent_dashi_name=haagent_dashi_name,
+                        process_definition_id=definition_id,
+                        process_config=process_config_json,
+                        resource_id=uuid.uuid4().hex)
+            else:
+                process_config_json = json.dumps(process_config, indent=2)
+                json_contents = json_template.substitute(process_config=process_config_json)
+
+
+            json_filename = "%s_%s.json" % (PYONAPP_PREFIX, name)
             json_path = os.path.join(level_directory_path, json_filename)
             with open(json_path, "w") as json_file:
                 json_file.write(json_contents)
@@ -198,6 +207,15 @@ def rel2levels(
     with open(cloudinitd_config_path, "w") as cidconfig:
         cidconfig.write(cloudinitd_config)
 
+def load_file(path):
+    try:
+        with open(path) as f:
+            return f.read()
+    except Exception, e:
+        error("Problem opening '%s'. Cannot proceed. Error: %s" % (path, str(e)))
+
+def load_template(path):
+    return Template(load_file(path))
 
 def remove_levels(level_directories):
     for level in level_directories:
@@ -362,6 +380,9 @@ parser.add_argument('-c', '--top-level-config', nargs=1, metavar='path/to/main.c
 parser.add_argument('-i', '--ignore-bootlevels', dest='ignore_bootlevels',
                     action='store_const', const=True,
                     help="ignore bootlevels in rel and generate one level per app")
+parser.add_argument('--no-ha', dest='no_ha',
+                    action='store_const', const=True,
+                    help="disable HA agents and launch one process per app")
 parser.add_argument('-o', '--old-pd-api', dest='old_pd_api',
                     action='store_const', const=True,
                     help="Use old PD API where processes definition and creation is one step")
@@ -372,5 +393,5 @@ rel2levels(
     extra_level=opts.append_level.pop(0), json_template_path=opts.json_template,
     conf_template_path=opts.conf_template,
     cloudinitd_config_path=opts.top_level_config.pop(0),
-    ignore_bootlevels=opts.ignore_bootlevels,
+    ignore_bootlevels=opts.ignore_bootlevels, no_ha=opts.no_ha,
     old_pd_api=opts.old_pd_api)

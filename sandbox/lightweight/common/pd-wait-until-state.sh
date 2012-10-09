@@ -4,10 +4,10 @@ ERROR=1
 USAGE="usage: $0 [options]
 
 Options:
-[-v|--virtualenv path/to/virtualenv]
 [-d|--processdispatcher pdname]
 [-i|--upid id]
 [-n|--name run]
+[-H|--haagent name]
 [-b|--host brokerhostname]
 [-u|--username username]
 [-p|--password password]
@@ -17,9 +17,6 @@ Options:
 # Parse command line arguments
 while [ "$1" != "" ]; do
     case $1 in
-        -v | --virtualenv )     shift
-                                virtualenv=$1
-                                ;;
         -b | --host )           shift
                                 host=$1
                                 ;;
@@ -43,6 +40,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -s | --sysname )        shift
                                 sysname=$1
+                                ;;
+        -H | --haagent )        shift
+                                haagent=$1
                                 ;;
         -h | --help )           echo "$USAGE"
                                 exit
@@ -89,17 +89,6 @@ if [ -z "$upid" ]; then
     fi
 fi
 
-if [ -n "$virtualenv" ]; then
-    ACTIVATE="${virtualenv}/bin/activate"
-
-    if [ ! -f "$ACTIVATE" ]; then
-        echo "'${ACTIVATE}' can't be accessed. Is your virtualenv set correctly?"
-        exit $ERROR
-    fi
-
-    source $ACTIVATE
-fi
-
 
 CEICTL="ceictl"
 if [ ! `which $CEICTL` ]; then
@@ -111,3 +100,15 @@ $CEICTL $CEICTL_ARGS -d $processdispatcher process wait $upid
 if [ $? -ne 0 ]; then
     exit $ERROR
 fi
+
+# also query HA Agent and wait for READY/STEADY state
+echo "process OK. polling HA"
+
+if [ -n "$haagent" ]; then
+    $CEICTL $CEICTL_ARGS -d $haagent ha wait
+    if [ $? -ne 0 ]; then
+        exit $ERROR
+    fi
+fi
+
+echo "HA ok!"
