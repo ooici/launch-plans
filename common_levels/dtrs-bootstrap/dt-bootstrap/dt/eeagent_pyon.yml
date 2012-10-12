@@ -64,12 +64,13 @@ contextualization:
         autorestart: true
         config:
           agent:
-            resource_id: eeagent_${node_id}
+            resource_id: eeagent_REPLACED_WITH_UUID
           eeagent:
-            name: eeagent_${node_id}
+            name: eeagent_REPLACED_WITH_UUID
+            node_id: ${node_id}
             heartbeat: 10
             heartbeat_queue: processdispatcher_heartbeats
-            slots: 80
+            slots: ${slots}
             launch_type:
               name: pyon
               pyon_directory: /home/cc/coi-services/
