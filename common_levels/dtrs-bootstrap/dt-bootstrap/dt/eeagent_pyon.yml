@@ -63,6 +63,7 @@ contextualization:
         supervisord_path: /home/cc/coi-services/bin/supervisord
         autorestart: true
         config:
+          replicas: ${replicas}
           agent:
             resource_id: eeagent_REPLACED_WITH_UUID
           eeagent:
