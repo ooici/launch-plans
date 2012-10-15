@@ -100,6 +100,8 @@ else
         fi
     fi
 fi
+# add dashi timeout
+CEICTL_ARGS="${CEICTL_ARGS} -t 15"
 
 CONFIG="`pwd`/$config"
 

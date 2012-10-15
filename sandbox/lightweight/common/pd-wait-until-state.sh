@@ -79,6 +79,9 @@ else
     fi
 fi
 
+# add dashi timeout
+CEICTL_ARGS="${CEICTL_ARGS} -t 15"
+
 if [ -z "$upid" ]; then
     #Try to get id from upid from bootout.json from readypgm
     upid=`cat bootout.json | awk '/upid/ {print $2}' | tr -d '",'`
