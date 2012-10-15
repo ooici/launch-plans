@@ -70,6 +70,7 @@
             "default": {
               "deployable_type": "${worker_deployable_type}",
               "slots": 100,
+              "replicas": 2,
               "base_need": 1
             }
           }
