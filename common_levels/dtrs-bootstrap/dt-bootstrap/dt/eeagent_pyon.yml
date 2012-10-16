@@ -49,6 +49,9 @@ contextualization:
               host:  ${couchdb_host}
               username: ${couchdb_username}
               password: ${couchdb_password}
+          endpoint:
+            recieve:
+              timeout: 60
           system:
             auto_bootstrap: False
             name: ${coi_services_system_name}
