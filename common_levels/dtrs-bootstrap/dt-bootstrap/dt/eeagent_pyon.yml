@@ -50,7 +50,7 @@ contextualization:
               username: ${couchdb_username}
               password: ${couchdb_password}
           endpoint:
-            recieve:
+            receive:
               timeout: 60
           system:
             auto_bootstrap: False
