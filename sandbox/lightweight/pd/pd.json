@@ -9,11 +9,14 @@
     "configure_config":{
       "logging_config_file": "/home/${epu_username}/coi-services/res/config/logging.local.yml",
       "logging_config":{
-        "loggers":{
-          "epu":{
-            "handlers": ["console", "file"],
-            "level": "DEBUG"
+        "handlers":{
+          "gray":{
+            "class": "graypy.GELFHandler",
+             "host": "${graylog_host}"
           }
+        },
+        "root":{
+          "handlers": ["gray", "console", "file"]
         }
       },
       "config_file": "/home/${epu_username}/coi-services/res/config/pyon.local.yml",
