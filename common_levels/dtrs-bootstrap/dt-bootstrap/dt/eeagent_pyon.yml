@@ -54,6 +54,9 @@ contextualization:
           endpoint:
             receive:
               timeout: 60
+          container:
+            sflow:
+              enabled: True
           system:
             auto_bootstrap: False
             name: ${coi_services_system_name}
