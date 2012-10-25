@@ -45,6 +45,7 @@
         },
         "container": {
           "sflow": {
+            "hsflowd_port": "36343",
             "enabled": "True"
           }
         },
@@ -90,7 +91,12 @@
       }
     }
   },
+  "hsflowd": {
+    "collector_ip": "69.196.58.199",
+    "json_port": "36343"
+  },
   "recipes": [
+    "hsflowd::config"
     "epu"
   ]
 }
