@@ -16,7 +16,7 @@
   },
   "nodes":{
     "pyonnode":{
-      "dt": "eeagent",
+      "engine": "default",
       "process-dispatcher": "${process_dispatcher_name}",
       "eeagents":{
         "eeagent_pyonnode":{
