@@ -45,7 +45,7 @@
         },
         "container": {
           "sflow": {
-            "hsflowd_port": "36343",
+            "hsflowd_port": 36343,
             "enabled": "True"
           }
         },
