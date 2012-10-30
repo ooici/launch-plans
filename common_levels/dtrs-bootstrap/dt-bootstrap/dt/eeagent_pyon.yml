@@ -1,7 +1,7 @@
 ---
 mappings:
   ec2.us-west-1:
-    iaas_image: ami-bd89acf8
+    iaas_image: ami-634d6b26
     iaas_allocation: m1.small
   #ec2.us-east-1:
   #  iaas_image: ami-b2dc7ddb
