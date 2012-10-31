@@ -4,8 +4,8 @@
     "auto_bootstrap": false
   },
   "endpoint": {
-    "recieve": {
-      "timeout": "60"
+    "receive": {
+      "timeout": 60
     }
   },
   "server": {
