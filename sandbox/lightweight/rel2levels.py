@@ -133,8 +133,7 @@ def rel2levels(
 
             process_name, process_module, process_class = app['processapp']
             process_config = app.get('config', {})
-
-            definition_id = make_process_definition(process_name,
+            definition_id = make_process_definition(name,
                     process_module, process_class, pd_json_template,
                     process_definition_dir)
 
