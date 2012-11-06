@@ -11,6 +11,5 @@ fi
 
 CONFIG=`pwd`/bootconf.json
 
-#do pyon cleanup
 cd $PYON_PATH
-./bin/pycc -X system.auto_bootstrap=True --config $CONFIG
+./bin/store_interfaces -fc --sysname=$coi_services_system_name --config $CONFIG

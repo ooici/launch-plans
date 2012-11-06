@@ -125,7 +125,7 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    procid="`uuidgen`"
+    procid="`uuidgen | tr '[A-Z]' '[a-z]' | tr -d -`"
     restart_mode="NEVER"
     queueing_mode="ALWAYS"
 
