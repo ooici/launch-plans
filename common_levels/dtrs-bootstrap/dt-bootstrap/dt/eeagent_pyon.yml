@@ -44,6 +44,8 @@ contextualization:
               level: DEBUG
             ion.services.dm.distribution.pubsub_management_service:
               level: DEBUG
+            pyon.datastore.couchdb.couchdb_datastore:
+              level: DEBUG
         config:
           server:
             amqp:
