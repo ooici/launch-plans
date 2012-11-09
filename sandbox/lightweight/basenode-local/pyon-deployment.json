@@ -3,7 +3,7 @@
     "process_dispatcher": {
       "config": {
         "system":{
-          "name": "${coi_services_system_name}"
+          "name": "${sysname}"
         },
         "pyon_directory": "${pyon_path}",
         "processdispatcher": {
@@ -39,12 +39,12 @@
   "pyon-nodes": {
     "pyonnode": {
       "dt": "${eeagent_dt}",
-      "process-dispatcher": "${coi_services_system_name}.dashi_process_dispatcher",
+      "process-dispatcher": "${sysname}.dashi_process_dispatcher",
       "eeagents": {
         "eeagent_pyonnode": {
           "config": {
             "system":{
-              "name": "${coi_services_system_name}"
+              "name": "${sysname}"
             },
             "agent": {
               "resource_id": "eeagent_pyonnode"

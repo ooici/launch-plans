@@ -42,7 +42,7 @@ contextualization:
               username: ${couchdb_username}
               password: ${couchdb_password}
           system:
-            name: ${coi_services_system_name}
+            name: ${sysname}
             autobootstrap: False
     epu:
       virtualenv:
@@ -79,7 +79,7 @@ contextualization:
             launch_type:
               name: pyon_single
               pyon_directory: /home/cc/coi-services/
-              container_args: --noshell -s ${coi_services_system_name}
+              container_args: --noshell -s ${sysname}
               supd_directory: /tmp/
           pd:
             name: processdispatcher

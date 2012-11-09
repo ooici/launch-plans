@@ -69,11 +69,11 @@ contextualization:
               enabled: True
           system:
             auto_bootstrap: False
-            name: ${coi_services_system_name}
+            name: ${sysname}
       run_config:
         program: eeagent
         name: eeagent
-        system_name: ${coi_services_system_name}
+        system_name: ${sysname}
         module: ion.agents.cei.execution_engine_agent
         class: ExecutionEngineAgent
         run_directory: /home/cc/coi-services

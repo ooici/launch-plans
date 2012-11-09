@@ -1,6 +1,6 @@
 {
   "system": {
-    "name": "${coi_services_system_name}",
+    "name": "${sysname}",
     "auto_bootstrap": false
   },
   "endpoint": {
