@@ -2,6 +2,7 @@
 
 import uuid
 import time
+import yaml
 import json
 import sys
 from epu.dashiproc.processdispatcher import ProcessDispatcherClient
@@ -10,12 +11,14 @@ from dashi.bootstrap.containers import DotDict
 
 
 def main():
-    f = open("bootconf.json", "r")
-    conf_dict = json.load(f)
+    with open("/home/epu/coi-services/res/config/pyon.local.yml", "r") as f:
+        conf_dict = yaml.load(f)
+    with open("bootconf.json", "r") as f:
+        run_conf_dict = json.load(f)
 
-    CFG = DotDict(conf_dict['pyon']["configure_config"]["config"])
+    CFG = DotDict(conf_dict)
     CFG.server.amqp.vhost = '/'
-    CFG.server.amqp.exchange = conf_dict['pyon']['run_config']['config']['processdispatcher']['dashi_exchange']
+    CFG.server.amqp.exchange = run_conf_dict['pyon']['run_config']['config']['processdispatcher']['dashi_exchange']
 
     client_topic = "pd_client_%s" % uuid.uuid4()
 

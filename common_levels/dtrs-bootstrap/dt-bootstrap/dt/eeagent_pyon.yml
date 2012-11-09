@@ -46,30 +46,18 @@ contextualization:
               level: DEBUG
             pyon.datastore.couchdb.couchdb_datastore:
               level: DEBUG
+
+        # only need very basic config. the rest is pulled from directory.
         config:
           server:
-            amqp:
-              host: ${broker_host}
-              username: ${broker_username}
-              password: ${broker_password}
-            amqp_priv:
-              host: ${broker_host}
-              username: ${broker_username}
-              password: ${broker_password}
             couchdb:
               host:  ${couchdb_host}
               username: ${couchdb_username}
               password: ${couchdb_password}
-          endpoint:
-            receive:
-              timeout: 60
-          container:
-            sflow:
-              hsflowd_port: 36343
-              enabled: True
           system:
             auto_bootstrap: False
             name: ${sysname}
+
       run_config:
         program: eeagent
         name: eeagent

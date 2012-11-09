@@ -27,23 +27,16 @@ contextualization:
         retrieve_directory: /home/cc/coi-services
         archive_url: ${coi_services_archive_url}
       configure_config:
+        # only need very basic config. the rest is pulled from directory.
         config:
           server:
-            amqp:
-              host: ${broker_host}
-              username: ${broker_username}
-              password: ${broker_password}
-            amqp_priv:
-              host: ${broker_host}
-              username: ${broker_username}
-              password: ${broker_password}
             couchdb:
               host:  ${couchdb_host}
               username: ${couchdb_username}
               password: ${couchdb_password}
           system:
+            auto_bootstrap: False
             name: ${sysname}
-            autobootstrap: False
     epu:
       virtualenv:
         path: /home/cc/eeagent-venv
