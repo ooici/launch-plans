@@ -25,10 +25,19 @@
             "host": "${couchdb_host}",
             "password": "${couchdb_password}",
             "username": "${couchdb_username}"
+        },
+        "erddap": {
+            "type": "erddap",
+            "host": "erddap-test.oceanobservatories.org",
+            "port": 8080
+        },
+        "elasticsearch": {
+            "host": "bc01.a.oceanobservatories.org"
         }
     },
     "system": {
         "auto_bootstrap": false,
-        "name": "${sysname}"
+        "name": "${sysname}",
+        "elasticsearch": true
     }
 }
