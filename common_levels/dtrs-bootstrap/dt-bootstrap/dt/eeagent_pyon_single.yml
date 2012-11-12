@@ -27,23 +27,16 @@ contextualization:
         retrieve_directory: /home/cc/coi-services
         archive_url: ${coi_services_archive_url}
       configure_config:
+        # only need very basic config. the rest is pulled from directory.
         config:
           server:
-            amqp:
-              host: ${broker_host}
-              username: ${broker_username}
-              password: ${broker_password}
-            amqp_priv:
-              host: ${broker_host}
-              username: ${broker_username}
-              password: ${broker_password}
             couchdb:
               host:  ${couchdb_host}
               username: ${couchdb_username}
               password: ${couchdb_password}
           system:
-            name: ${coi_services_system_name}
-            autobootstrap: False
+            auto_bootstrap: False
+            name: ${sysname}
     epu:
       virtualenv:
         path: /home/cc/eeagent-venv
@@ -79,7 +72,7 @@ contextualization:
             launch_type:
               name: pyon_single
               pyon_directory: /home/cc/coi-services/
-              container_args: --noshell -s ${coi_services_system_name}
+              container_args: --noshell -s ${sysname}
               supd_directory: /tmp/
           pd:
             name: processdispatcher

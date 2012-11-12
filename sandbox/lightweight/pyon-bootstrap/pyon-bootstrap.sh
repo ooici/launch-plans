@@ -6,10 +6,13 @@ set -e
 if [ -n "$1" ]; then
     PYON_PATH=$1
 else
-    PYON_PATH="/home/${epu_username}/coi-services/"
+    echo "Usage: $0 /path/to/pyon"
+    exit 1
 fi
 
 CONFIG=`pwd`/bootconf.json
 
+cp bootconf.json $PYON_PATH/res/config/pyon.local.yml
+
 cd $PYON_PATH
-./bin/store_interfaces -fc --sysname=$coi_services_system_name --config $CONFIG
+./bin/store_interfaces -fc --sysname=$sysname

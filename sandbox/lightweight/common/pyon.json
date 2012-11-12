@@ -1,0 +1,34 @@
+{
+    "container": {
+        "sflow": {
+            "enabled": true,
+            "hsflowd_port": 36343
+        }
+    },
+    "endpoint": {
+        "receive": {
+            "timeout": 60
+        }
+    },
+    "server": {
+        "amqp": {
+            "host": "${rabbitmq_host}",
+            "password": "${rabbitmq_password}",
+            "username": "${rabbitmq_username}"
+        },
+        "amqp_priv": {
+            "host": "${rabbitmq_host}",
+            "password": "${rabbitmq_password}",
+            "username": "${rabbitmq_username}"
+        },
+        "couchdb": {
+            "host": "${couchdb_host}",
+            "password": "${couchdb_password}",
+            "username": "${couchdb_username}"
+        }
+    },
+    "system": {
+        "auto_bootstrap": false,
+        "name": "${sysname}"
+    }
+}

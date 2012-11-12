@@ -78,7 +78,7 @@
             "coi_services_git_branch":"${coi_services_git_branch}",
             "coi_services_git_commit":"${coi_services_git_commit}",
             "coi_services_buildout_config":"${coi_services_buildout_config}",
-            "coi_services_system_name":"${coi_services_system_name}",
+            "sysname":"${sysname}",
             "coi_services_archive_url":"${coi_services_archive_url}",
             "dtdata_archive_url":"${dtdata_archive_url}",
             "python":"${python}",

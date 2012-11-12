@@ -22,7 +22,7 @@
         "eeagent_pyonnode":{
           "logfile": "/tmp/eeagent_pyonnode.log",
           "launch_type": "pyon_single",
-          "system_name": "${coi_services_system_name}",
+          "system_name": "${sysname}",
           "pyon_directory": "${pyon_path}",
           "slots": "100"
         }
