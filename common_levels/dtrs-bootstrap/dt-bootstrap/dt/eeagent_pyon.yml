@@ -37,15 +37,11 @@ contextualization:
               host: ${graylog_host}
           root:
             handlers: [gray, console, file]
-          loggers:
-            ion.services.sa.product.data_product_management_service:
-              level: DEBUG
-            pyon.ion.exchange:
-              level: DEBUG
-            ion.services.dm.distribution.pubsub_management_service:
-              level: DEBUG
-            pyon.datastore.couchdb.couchdb_datastore:
-              level: DEBUG
+
+# uncomment to include custom loglevels for particular packages
+#          loggers:
+#            ion.services.sa.product.data_product_management_service:
+#              level: DEBUG
 
         # only need very basic config. the rest is pulled from directory.
         config:
