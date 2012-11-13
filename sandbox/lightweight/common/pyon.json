@@ -38,7 +38,7 @@
     "system": {
         "auto_bootstrap": false,
         "name": "${sysname}",
-        "elasticsearch": true
+        "elasticsearch": false
     },
     "bootstrap": {
         "use_es": true
