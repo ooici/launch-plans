@@ -18,9 +18,6 @@
         "loggers":{
           "epu":{
             "level": "DEBUG"
-          },
-          "ion.services.cei":{
-            "level": "DEBUG"
           }
         },
         "root":{
