@@ -1,5 +1,11 @@
 {
   "highavailability": {
+      "aggregator": {
+        "type": "trafficsentinel",
+        "host": "trafficsentinel.oceanobservatories.org",
+        "username": "developer",
+        "password": "developer8"
+      },
     "policy": {
       "name": "${policy_name}",
       "parameters": ${policy_parameters}

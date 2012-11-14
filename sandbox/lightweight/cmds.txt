@@ -1,0 +1,5 @@
+ceictl -D -d $COI_SYSTEM_NAME.dashi_process_dispatcher -n $RUN process list
+
+ceictl -n $RUN -d ha_resource_registry ha status
+
+ceictl -n $RUN -d ha_resource_registry ha reconfigure policy_2_n.yml

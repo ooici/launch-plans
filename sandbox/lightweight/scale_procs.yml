@@ -1,0 +1,23 @@
+type: release
+name: r2deploy
+version: 0.2
+description: Release 2 deployment configuration
+ion: 2.0
+apps:
+  - name: resource_registry
+    processapp: [resource_registry, ion.services.coi.resource_registry_service, ResourceRegistryService]
+    deploy:
+      bootlevel: 5
+      ha:
+        policy: sensor
+        parameters:
+          metric: app_attributes:ps
+          sample_period: 60
+          sample_function: Average
+          cooldown_period: 20
+          scale_up_threshold: 101
+          scale_up_n_processes: 1
+          scale_down_threshold: -1
+          scale_down_n_processes: 1
+          maximum_processes: 5
+          minimum_processes: 1
