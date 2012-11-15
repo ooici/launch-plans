@@ -1,4 +1,4 @@
-#!/home/epu/app-venv/bin/python
+#!/home/cc/app-venv/bin/python
 
 import uuid
 import time
@@ -11,7 +11,7 @@ from dashi.bootstrap.containers import DotDict
 
 
 def main():
-    with open("/home/epu/coi-services/res/config/pyon.local.yml", "r") as f:
+    with open("/home/cc/coi-services/res/config/pyon.local.yml", "r") as f:
         conf_dict = yaml.load(f)
     with open("bootconf.json", "r") as f:
         run_conf_dict = json.load(f)
