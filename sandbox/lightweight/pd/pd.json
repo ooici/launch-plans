@@ -53,8 +53,8 @@
           "default_engine": "default",
           "engines": {
             "default": {
-              "slots": 50,
-              "replicas": 4,
+              "slots": 25,
+              "replicas": 8,
               "base_need": 1
             },
             "service_gateway": {
