@@ -43,6 +43,7 @@
   "recipes": [
     "sshkeys",
     "contextbroker",
+    "supervisord_shutdown",
     "epu"
   ]
 }

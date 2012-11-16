@@ -37,6 +37,7 @@
   },
   "recipes": [
     "sshkeys",
+    "supervisord_shutdown",
     "epu"
   ]
 }
