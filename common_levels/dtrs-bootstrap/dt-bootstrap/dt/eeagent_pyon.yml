@@ -39,9 +39,9 @@ contextualization:
             handlers: [gray, console, file]
 
 # uncomment to include custom loglevels for particular packages
-          loggers:
-            ion.services.ans.visualization_service:
-              level: DEBUG
+#          loggers:
+#            ion.services.sa.product.data_product_management_service:
+#              level: DEBUG
 
         # only need very basic config. the rest is pulled from directory.
         config:
