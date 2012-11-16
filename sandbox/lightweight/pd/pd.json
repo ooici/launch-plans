@@ -65,6 +65,15 @@
                 "unique_key": "ddns_hostname",
                 "unique_values": "${gateway_ddns_hosts}"
               }
+            },
+            "pydap": {
+              "slots": 1,
+              "replicas": 1,
+              "base_need": 1,
+              "config": {
+                "unique_key": "ddns_hostname",
+                "unique_values": "pydap.a.oceanobservatories.org"
+              }
             }
           }
         }

@@ -43,6 +43,10 @@
         },
         "elasticsearch": {
             "host": "bc01.a.oceanobservatories.org"
+        },
+        "pydap": {
+            "host": "pydap.a.oceanobservatories.org",
+            "port": 5000
         }
     },
     "system": {
