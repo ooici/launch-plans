@@ -1,0 +1,46 @@
+bootstrap:
+  use_es: false
+  use_pydap: true
+container:
+  filesystem:
+    cache: /ion-alpha/r2/data/ion/run/cache
+    force_clean: false
+    library: /ion-alpha/r2/data/ion/lib
+    log: /ion-alpha/r2/data/ion/run/log
+    resource: /ion-alpha/r2/data/ion/res
+    run: /ion-alpha/r2/data/ion/run
+    temp: /ion-alpha/r2/data/ion/tmp
+    users: /ion-alpha/r2/data/ion/usr
+  sflow:
+    enabled: true
+    hsflowd_port: 36343
+endpoint:
+  receive:
+    timeout: 60
+server:
+  amqp:
+    host: ${rabbitmq_host}
+    password: ${rabbitmq_password}
+    username: ${rabbitmq_username}
+  amqp_priv:
+    host: ${rabbitmq_host}
+    password: ${rabbitmq_password}
+    username: ${rabbitmq_username}
+  couchdb:
+    host: ${couchdb_host}
+    password: ${couchdb_password}
+    username: ${couchdb_username}
+  elasticsearch:
+    host: bc01.a.oceanobservatories.org
+  erddap:
+    host: erddap-test.oceanobservatories.org
+    port: 8080
+    type: erddap
+  pydap:
+    host: pydap.a.oceanobservatories.org
+    port: 5000
+system:
+  auto_bootstrap: false
+  elasticsearch: false
+  name: ${sysname}
+

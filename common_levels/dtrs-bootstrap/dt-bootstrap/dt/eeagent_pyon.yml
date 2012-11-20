@@ -88,5 +88,6 @@ contextualization:
     recipes:
     - hsflowd::config
     - sshkeys
+    - supervisord_shutdown
     - epu
     - ddns
