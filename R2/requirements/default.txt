@@ -1,0 +1,2 @@
+-e git+git://github.com/nimbusproject/cloudinit.d.git#egg=cloudinitd
+-e git+git://github.com/nimbusproject/ceiclient.git#egg=ceiclient

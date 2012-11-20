@@ -1,0 +1,80 @@
+---
+mappings:
+  ec2.us-east-1:
+    iaas_image: ami-b2dc7ddb
+    iaas_allocation: t1.micro
+  ec2-fake:
+    iaas_image: ami-fake
+    iaas_allocation: t1.micro
+  futuregrid.hotel:
+    iaas_image: sleeper.gz
+    iaas_allocation: m1.small
+contextualization:
+  method: chef-solo
+  chef_config:
+    dtdata:
+      retrieve_method: archive
+      archive_url: ${dtdata_archive_url}
+      chef_debug_level: debug
+    epu:
+      username: cc
+      groupname: users
+      virtualenv:
+        path: /home/cc/app-venv
+      action:
+      - retrieve
+      - install
+      - run
+      retrieve_config:
+        retrieve_method: ${retrieve_method}
+        git_repo: ${git_repo}
+        git_reference: ${git_branch}
+      install_config:
+        install_method: py_venv_setup
+        package_repo: ${package_repo}
+      run_config:
+        program: epu-worker
+        run_directory: /home/cc/app
+        run_method: supervised
+        autorestart: true
+        config:
+          server:
+            amqp:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+    epuagent:
+      username: cc
+      groupname: users
+      virtualenv:
+        path: /home/cc/app-venv
+      action:
+      - retrieve
+      - install
+      - run
+      retrieve_config:
+        retrieve_method: ${epuagent_retrieve_method}
+        git_repo: ${epuagent_git_repo}
+        git_reference: ${epuagent_git_branch}
+      install_config:
+        install_method: py_venv_setup
+        package_repo: ${package_repo}
+      run_config:
+        program: epu-agent
+        run_directory: /home/cc/app-monitor
+        run_method: supervised
+        autorestart: true
+        config:
+          server:
+            amqp:
+              host: ${broker_ip_address}
+              username: ${broker_username}
+              password: ${broker_password}
+          epuagent:
+            heartbeat_dest: ${heartbeat_dest}
+            heartbeat_op: ou_heartbeat
+            period_seconds: ${heartbeat_period_seconds}
+            node_id: ${node_id}
+    recipes:
+    - apt
+    - epu

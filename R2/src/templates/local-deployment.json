@@ -20,50 +20,12 @@
             }
           },
           "engines": {
-            "default": {
-              "deployable_type": "${eeagent_dt}",
-              "launch_type": {
-                "name": "pyon",
-                "pyon_directory": "${pyon_path}",
-                "container_args": "--noshell",
-                "supd_directory": "/tmp"
-              },
-              "slots": 100,
-              "base_need": 1
-            }
           }
         }
       }
     }
   },
   "pyon-nodes": {
-    "pyonnode": {
-      "dt": "${eeagent_dt}",
-      "process-dispatcher": "${sysname}.dashi_process_dispatcher",
-      "eeagents": {
-        "eeagent_pyonnode": {
-          "config": {
-            "system":{
-              "name": "${sysname}"
-            },
-            "agent": {
-              "resource_id": "eeagent_pyonnode"
-            },
-            "eeagent": {
-              "name": "eeagent_pyonnode",
-              "heartbeat": 10,
-              "heartbeat_queue": "processdispatcher_heartbeats",
-              "slots": 100,
-              "launch_type": {
-                "name": "pyon",
-                "pyon_directory": "${pyon_path}",
-                "persistence_directory": "${persistence_dir}"
-              }
-            }
-          }
-        }
-      }
-    }
   },
   "server": {
     "amqp": {

@@ -1,0 +1,694 @@
+#!/usr/bin/env python
+
+
+import os
+import sys
+import uuid
+import tempfile
+import errno
+import yaml
+import json
+import shutil
+import argparse
+from string import Template
+from collections import defaultdict
+from subprocess import check_call
+from copy import deepcopy
+
+THIS_DIR = os.path.abspath(os.path.dirname(__file__))
+ROOT_DIR = os.path.dirname(THIS_DIR)
+BASEPLAN_DIR = os.path.join(ROOT_DIR, "src", "baseplan")
+
+PYONAPP_PREFIX = "pyonapp"
+
+
+class PathFinder(object):
+    """Utility object used to find launch plan component files
+    """
+
+    def get_baseplan_path(self):
+        """Returns path to baseplan directory
+        """
+        return BASEPLAN_DIR
+
+    def get_template_path(self, template):
+        """Returns path to specified template file
+
+        Raises PlanError if template doesn't exist
+        """
+        path = os.path.join(ROOT_DIR, "src", "templates", template)
+
+        if not os.path.exists(path):
+            raise PlanError("template file does not exist: %s" % path)
+        return path
+
+    def get_template_string(self, template):
+        path = self.get_template_path(template)
+        try:
+            with open(path) as f:
+                return f.read()
+
+        except Exception, e:
+            raise PlanError(
+                "Problem opening '%s'. Cannot proceed. Error: %s" %
+                (path, str(e)))
+
+    def get_template(self, template):
+        return Template(self.get_template_string(template))
+
+
+class BaseProfile(object):
+
+    PLAN_CONFIG_TEMPLATE = None
+
+    def __init__(self, pathfinder):
+        self.pathfinder = pathfinder
+
+    def write_plan_config(self, output_path, bootlevel_config_paths):
+        assert self.PLAN_CONFIG_TEMPLATE is not None
+
+        plan_config = self.pathfinder.get_template_string(self.PLAN_CONFIG_TEMPLATE)
+        last_level = get_last_level(plan_config)
+
+        for bootlevel_config in bootlevel_config_paths:
+            plan_config += "\nlevel%s: %s" % (last_level, bootlevel_config)
+            last_level += 1
+
+        with open(output_path, 'w') as f:
+            f.write(plan_config)
+
+    def write_engine_config(self, deployment, output_dir):
+        raise NotImplementedError()
+
+
+def _set_deployment_pd_config(deployment, pd_config):
+    pd_config['engines'] = deepcopy(deployment.execution_engines)
+    pd_config['default_engine'] = deployment.default_execution_engine_id
+
+
+class BaseVMProfile(BaseProfile):
+    def write_engine_config(self, deployment, output_dir):
+        pd_dict = json.loads(self.pathfinder.get_template_string("pd.json"))
+
+        pd_cfg = pd_dict['pyon']['run_config']['config']['processdispatcher']
+
+        _set_deployment_pd_config(deployment, pd_cfg)
+
+        pd_dir = os.path.join(output_dir, "pd")
+        if not os.path.exists(pd_dir):
+            raise PlanError("Expected Process Dispatcher bootlevel directory does not exist: %s" % pd_dir)
+        pd_json_path = os.path.join(pd_dir, "pd.json")
+
+        with open(pd_json_path, 'w') as f:
+            json.dump(pd_dict, f, sort_keys=True, indent=2)
+
+
+class LocalProfile(BaseProfile):
+    """Lightweight launch on local system (no VMs)
+    """
+    PLAN_CONFIG_TEMPLATE = "local.conf"
+
+    # prototype eeagent definition copied and filled in for each agent
+    _EEAGENT_PROTOTYPE = {
+        "config": {
+            "eeagent": {
+                "heartbeat": 10,
+                "heartbeat_queue": "processdispatcher_heartbeats",
+                "launch_type": {
+                    "name": "pyon",
+                    "pyon_directory": "${pyon_path}",
+                    "persistence_directory": "${persistence_dir}"
+                }
+            }
+        }
+    }
+
+    def write_engine_config(self, deployment, output_dir):
+        tmpl_name = "local-deployment.json"
+        tmpl = self.pathfinder.get_template_string(tmpl_name)
+        deployment_dict = json.loads(tmpl)
+
+        # need to write some deployment information in two places for
+        # lightweight launch. First, the usual PD engine config:
+
+        process_dispatchers = deployment_dict['pyon-process-dispatchers']
+        if len(process_dispatchers) != 1:
+            raise PlanError("only a single process dispatcher is supported. %s has %d"
+                % (tmpl_name, len(process_dispatchers)))
+        process_dispatcher_name = process_dispatchers.keys()[0]
+        if process_dispatcher_name != "process_dispatcher":
+            # we can relax this once we fixup the dashi queue naming for PD
+            raise PlanError("process dispatcher name must be 'process_dispatcher'")
+        process_dispatcher = process_dispatchers[process_dispatcher_name]
+        pd_cfg = process_dispatcher['config']['processdispatcher']
+
+        _set_deployment_pd_config(deployment, pd_cfg)
+
+        # additionally we create fake nodes and eeagents in the config
+
+        nodes = deployment_dict['pyon-nodes'] = {}
+        node_index = 0
+        for engine_id, engine in deployment.execution_engines.iteritems():
+            for _ in range(engine['base_need']):
+                nodename = "node%s" % node_index
+                node_index += 1
+
+                eeagents = {}
+                node = {
+                    'engine': engine_id,
+                    # PD dashi name is hardcoded for now
+                    'process-dispatcher': "${sysname}.dashi_process_dispatcher",
+                    'eeagents': eeagents
+                }
+                nodes[nodename] = node
+
+                for replica_index in range(engine.get('replicas', 1)):
+                    eeagent_name = "%s_eeagent%s" % (nodename, replica_index)
+                    # start with a prototype eeagent config and fill in
+                    eeagent = deepcopy(self._EEAGENT_PROTOTYPE)
+
+                    eeagent_cfg = eeagent['config']
+                    eeagent_cfg['agent'] = {'resource_id': eeagent_name}
+                    eeagent_cfg['eeagent']['name'] = eeagent_name
+                    eeagent_cfg['eeagent']['slots'] = engine['slots']
+
+                    eeagents[eeagent_name] = eeagent
+
+        basenode_dir = os.path.join(output_dir, "basenode-local")
+        if not os.path.exists(basenode_dir):
+            raise PlanError("Expected local basenode directory does not exist: %s" % basenode_dir)
+        deployment_path = os.path.join(basenode_dir, "pyon-deployment.json")
+
+        with open(deployment_path, 'w') as f:
+            json.dump(deployment_dict, f, sort_keys=True, indent=2)
+
+
+class EC2DynamicProfile(BaseVMProfile):
+    """Complete launch on EC2 us-west-1
+    """
+    PLAN_CONFIG_TEMPLATE = "ec2-dynamic.conf"
+
+
+class EC2StaticProfile(BaseVMProfile):
+    """Launch on EC2 us-west-1 with external dependencies
+    """
+    PLAN_CONFIG_TEMPLATE = "ec2-static.conf"
+
+
+class OOINimbusDynamicProfile(BaseVMProfile):
+    """Complete launch on OOI Nimbus cloud
+    """
+    PLAN_CONFIG_TEMPLATE = "ooinimbus-dynamic.conf"
+
+
+class OOINimbusStaticProfile(BaseVMProfile):
+    """Launch on OOI Nimbus cloud with external dependencies
+    """
+    PLAN_CONFIG_TEMPLATE = "ooinimbus-static.conf"
+
+
+LAUNCH_PROFILES = {
+    'local': LocalProfile,
+    'ooinimbus-dynamic': OOINimbusDynamicProfile,
+    'ooinimbus-static': OOINimbusStaticProfile,
+    'ec2-dynamic': EC2DynamicProfile,
+    'ec2-static': EC2StaticProfile
+}
+
+
+def make_process_definition(process_definition_id, name, module, klass,
+    pd_template, definition_dir):
+    """Create or update process definition file. Returns process definition ID
+    """
+
+    process_definition_filename = "%s.yml" % name
+    process_definition_file_path = os.path.join(definition_dir,
+            process_definition_filename)
+
+    pd = pd_template.substitute(name=name, module=module, klass=klass,
+            process_definition_id=process_definition_id)
+
+    with open(process_definition_file_path, "w") as pd_file:
+        pd_file.write(pd)
+
+    return process_definition_id
+
+
+def tar_process_definitions(output_dir):
+    make_tarball_exe = os.path.join(
+        output_dir, "pd-bootstrap", "prepare-tarball.sh")
+
+    check_call(make_tarball_exe)
+
+
+def get_last_level(cloudinitd_conf):
+    """Get the number of the last level defined in a cloudinitd launch plan
+    """
+
+    i = 1
+    while True:
+        level = "level%s" % i
+        if level not in cloudinitd_conf:
+            if i == 1:
+                msg = "There don't seem to be any levels in your launch plan. "
+                msg += "There is probably something wrong with your config."
+                raise PlanError(msg)
+            else:
+                return i
+        else:
+            i += 1
+
+
+class PlanError(Exception):
+    """Generic error raised by plan generator
+    """
+
+
+class App(object):
+    def __init__(self, name, process_definition_id, processapp, config,
+        bootlevel, ha_config=None):
+        self.name = name
+        self.process_definition_id = process_definition_id
+        self.processapp = processapp
+        self.config = config
+
+        self.bootlevel = bootlevel
+        self.ha_config = ha_config
+
+
+class Deployment(object):
+    def __init__(self, bootlevels, execution_engines, default_execution_engine_id):
+        self.bootlevels = bootlevels
+        self.execution_engines = execution_engines
+        self.default_execution_engine_id = default_execution_engine_id
+
+
+def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
+    """Load app and launch information to produce a deployment map
+    """
+
+    try:
+        rel_apps = rel['apps']
+    except KeyError, e:
+        raise PlanError("REL file missing '%s' block" % str(e))
+
+    launch_apps = launch.get('apps')
+    launch_app_defaults = launch.get('app_defaults')
+
+    # sort apps into bootlevels and assemble process definitions
+
+    apps = {}
+    bootlevel_apps = defaultdict(list)
+    for ndex, app_dict in enumerate(rel_apps):
+        app_name = app_dict.get('name')
+        if not app_name:
+            raise PlanError("REL app %d has no name" % ndex)
+
+        if app_name in apps:
+            raise PlanError("REL file contains duplicate app '%s'" % app_name)
+
+        processapp = app_dict.get('processapp')
+        if processapp is None:
+            raise PlanError("app '%s' in REL missing processapp" % (app_name))
+        if len(processapp) != 3:
+            raise PlanError("app '%s' processapp is invalid" % (app_name))
+
+        config = app_dict.get('config', {})
+
+        if ignore_bootlevels:
+            bootlevel = ndex + 1
+        else:
+            try:
+                bootlevel = int(app_dict['bootlevel'])
+            except KeyError:
+                raise PlanError("app '%s' missing bootlevel in REL" % app_name)
+            except ValueError, e:
+                raise PlanError("app '%s' bootlevel value in REL is invalid: %s" %
+                    (app_name, e))
+
+        # now grab deploy information from the launch file
+        launch_app = launch_apps.get(app_name)
+        if launch_app is None:
+            if launch_app_defaults:
+                launch_app = deepcopy(launch_app_defaults)
+            else:
+                raise PlanError("app '%s' not in launch and there are no app_defaults"
+                    % app_name)
+
+        if not launch_app.get('include', True):
+            # skip this app if launch file has include=False
+            continue
+
+        if app_name == "process_dispatcher":
+            # always skip the process dispatcher. it is started out of band
+            continue
+
+        if no_ha:
+            ha_config = None
+        else:
+            ha_config = launch_app.get('ha')
+
+        # just make up an definition ID. this could come from somewhere?
+        process_definition_id = uuid.uuid4().hex
+
+        app = App(app_name, process_definition_id, processapp, config,
+            bootlevel, ha_config)
+        apps[app_name] = app
+        bootlevel_apps[bootlevel].append(app)
+
+    # pick out execution engine definitions from launch file
+    try:
+        engines = launch['execution_engines']
+        default_engine_id = launch['default_execution_engine']
+    except KeyError, e:
+        raise PlanError("Launch file missing '%s' block" % str(e))
+
+    if not engines:
+        raise PlanError("Launch file must have at least one execution engine")
+
+    if not default_engine_id in engines:
+        raise PlanError("default execution engine '%s' definition missing" %
+            default_engine_id)
+
+    bootlevels = [bootlevel_apps[lvl] for lvl in sorted(bootlevel_apps.keys())]
+
+    return Deployment(bootlevels, engines, default_engine_id)
+
+
+def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
+    use_links=False, no_cleanup=False, pyon_config_path=None):
+    """Creates a launch plan from a deployment description, in a directory
+    """
+    output_dir = os.path.normpath(output_dir)
+    output_parent_dir = os.path.dirname(output_dir)
+
+    # create temp directory to build plan in. Create in the same directory
+    # as the output path so we can rename it into place
+    tmpdir = tempfile.mkdtemp(prefix="tmpPlan", dir=output_parent_dir)
+
+    try:
+        _inner_generate_plan(pathfinder, profile, deployment, tmpdir,
+            use_links=use_links, pyon_config_path=pyon_config_path)
+
+        # move the tmpdir into place
+        try:
+            os.rename(tmpdir, output_dir)
+        except OSError, e:
+            if e.errno == errno.ENOTEMPTY and force:
+                # if output dir exists and force is enabled, remove and retry
+
+                shutil.rmtree(output_dir)
+                os.rename(tmpdir, output_dir)
+            else:
+                raise
+
+    finally:
+        # make sure tmpdir is cleaned up
+        if not no_cleanup and os.path.exists(tmpdir):
+            try:
+                shutil.rmtree(tmpdir)
+            except Exception:
+                pass
+
+
+def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
+    use_links, pyon_config_path):
+
+    _write_base_files(pathfinder, profile, output_dir, use_links)
+
+    # write and tar process definitions
+    pd_json_template = pathfinder.get_template("process_definition.json")
+    process_definition_dir = os.path.join(output_dir, "pd-bootstrap",
+            "pd-bootstrap", "process-definitions")
+
+    # ha agent is special case added as a process definition
+    haagent_definition_id = make_process_definition(uuid.uuid4().hex, "haagent",
+            "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
+            pd_json_template, process_definition_dir)
+
+    for level in deployment.bootlevels:
+        for app in level:
+            _, module, cls = app.processapp
+            make_process_definition(app.process_definition_id, app.name,
+                module, cls, pd_json_template, process_definition_dir)
+
+    tar_process_definitions(output_dir)
+
+    # TODO write and tar DTs
+
+    # write boot levels
+    level_config_paths = _write_boot_levels(pathfinder, deployment.bootlevels,
+        output_dir, haagent_definition_id)
+
+    # write engine conf
+    profile.write_engine_config(deployment, output_dir)
+
+    # write top level plan file
+    planfile = os.path.join(output_dir, "launch.conf")
+    profile.write_plan_config(planfile, level_config_paths)
+
+    # write pyon config if specified
+    if pyon_config_path:
+        shutil.copy2(pyon_config_path, os.path.join(output_dir, "common", "pyon.yml"))
+
+
+def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id):
+
+    json_template = pathfinder.get_template("process.json")
+    conf_template = pathfinder.get_template("pyon.conf")
+    haagent_template = pathfinder.get_template("haagent_process.json")
+
+    level_index = 0
+    level_configs = []
+
+    for level in bootlevels:
+        if len(level) == 1:
+            name = level[0].name
+            level_name = "%s%02d_%s" % (PYONAPP_PREFIX, level_index, name)
+        else:
+            level_name = "%s%02d" % (PYONAPP_PREFIX, level_index)
+
+        level_directory = level_name
+        conf_filename = "%s.conf" % level_name
+        conf_relative_path = os.path.join(level_directory, conf_filename)
+        level_directory_path = os.path.join(output_dir, level_directory)
+        os.mkdir(level_directory_path)
+
+        conf_contents = ""
+        for app in level:
+            name = app.name
+
+            haagent_dashi_name = "ha_%s" % name
+            ha_config = app.ha_config
+
+            # write cloudinitd bootconf and [service] block for app --
+            # with or without HA
+            if ha_config:
+                app_conf = conf_template.substitute(name=name,
+                        definition_id=haagent_definition_id,
+                        haagent_dashi_name=haagent_dashi_name)
+
+                policy_name = ha_config['policy']
+                policy_params = ha_config['parameters']
+
+                policy_params_json = json.dumps(policy_params, indent=8)
+                process_config_json = json.dumps(app.config, indent=4)
+                json_contents = haagent_template.substitute(
+                    policy_name=policy_name,
+                    policy_parameters=policy_params_json,
+                    haagent_dashi_name=haagent_dashi_name,
+                    process_definition_id=app.process_definition_id,
+                    process_config=process_config_json,
+                    resource_id=uuid.uuid4().hex)
+
+            else:
+                app_conf = conf_template.substitute(
+                    name=name,
+                    definition_id=app.process_definition_id,
+                    haagent_dashi_name="")
+                process_config_json = json.dumps(app.config, indent=2)
+                json_contents = json_template.substitute(
+                    process_config=process_config_json)
+
+            conf_contents += app_conf + "\n"
+
+            json_filename = "%s_%s.json" % (PYONAPP_PREFIX, name)
+            json_path = os.path.join(level_directory_path, json_filename)
+            with open(json_path, "w") as json_file:
+                json_file.write(json_contents)
+
+        conf_path = os.path.join(level_directory_path, conf_filename)
+        with open(conf_path, "w") as conf_file:
+            conf_file.write(conf_contents)
+
+        level_configs.append(conf_relative_path)
+        level_index += 1
+
+    return level_configs
+
+
+def _write_base_files(pathfinder, profile, output_dir, use_links):
+
+    # profile is included but unused so far. Thinking that we may want to
+    # selectively write only a portion of the base files which are needed
+    # for the chosen profile.
+
+    baseplan_path = pathfinder.get_baseplan_path()
+    for f in os.listdir(baseplan_path):
+        src = os.path.join(baseplan_path, f)
+        dst = os.path.join(output_dir, f)
+        if use_links:
+            os.symlink(src, dst)
+        elif os.path.isdir(src):
+            shutil.copytree(src, dst, symlinks=True)
+        elif os.path.islink(src):
+            os.symlink(os.readlink(src), dst)
+        else:
+            shutil.copy2(src, dst)
+
+
+##############################################################################
+# CLI-specific
+##############################################################################
+
+
+def error(msg, exit_code=1):
+    print >> sys.stderr, "\nFATAL ERROR:"
+    print >> sys.stderr, msg
+    sys.exit(exit_code)
+
+
+def _inner_main(opts):
+    plandir = os.path.normpath(opts.plandir)
+    plandir_parent = os.path.dirname(plandir)
+
+    # bail out early if output dir exists and force=false
+    if os.path.exists(plandir):
+        if not opts.force:
+            raise PlanError("plan output path exists: %s - use --force to overwrite" % plandir)
+
+        elif not os.path.isdir(plandir):
+            raise PlanError("plan output path exists and is not a directory: %s" % plandir)
+
+    elif not os.path.exists(plandir_parent):
+        raise PlanError("plan output directory parent does not exist: %s" % plandir_parent)
+
+
+    # ensure pyon config exists if specified
+    if opts.pyon_config:
+        try:
+            yaml.load(opts.pyon_config)
+            opts.pyon_config.close()
+        except Exception, e:
+            raise PlanError("failed to read pyon config: %s" % str(e))
+        pyon_config_path = opts.pyon_config.name
+    else:
+        pyon_config_path = None
+
+    # read and validate rel and launch files
+    try:
+        rel = yaml.load(opts.relfile)
+        opts.relfile.close()
+    except Exception, e:
+        raise PlanError("failed to read rel file: %s" % str(e))
+
+    try:
+        launch = yaml.load(opts.launchfile)
+        opts.launchfile.close()
+    except Exception, e:
+        raise PlanError("failed to read launch file: %s" % str(e))
+
+    deployment = parse_deployment(rel, launch, opts.ignore_bootlevels, opts.no_ha)
+
+    pathfinder = PathFinder()
+    profile = LAUNCH_PROFILES[opts.profile](pathfinder)
+
+    generate_plan(pathfinder, profile, deployment, plandir, force=opts.force,
+        no_cleanup=opts.no_cleanup, pyon_config_path=pyon_config_path)
+
+
+def _get_profile_descriptions():
+    lines = []
+
+    for profile_name in sorted(LAUNCH_PROFILES.keys()):
+        profile_cls = LAUNCH_PROFILES[profile_name]
+        helpstr = profile_cls.__doc__
+        if helpstr:
+            helpstr = helpstr.strip()
+        if helpstr:
+            lines.append("  %s - %s" % (profile_name, helpstr))
+        else:
+            lines.append("  %s" % profile_name)
+
+    return "\n".join(lines)
+
+
+_USAGE = """
+%(prog)s [opts] --profile PROFILE --rel rel.yml --launch launch.yml plandir
+"""
+
+_USAGE_DESCRIPTION = """
+
+Generates OOICI launch plans
+
+PROFILE is one of:
+""" + _get_profile_descriptions() + """
+
+plandir is the path to which the generated plan is written. If the path
+exists and the --force flag is used, the directory will be deleted and
+replaced.
+
+"""
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=_USAGE_DESCRIPTION, usage=_USAGE)
+
+    ##########################################################################
+    # GENERATE COMMAND
+    ##########################################################################
+
+    required_group = parser.add_argument_group('required arguments')
+    required_group.add_argument('--profile', '-p', choices=LAUNCH_PROFILES,
+        help="Launch profile", metavar="PROFILE", required=True)
+    required_group.add_argument('--rel', '-r', metavar='rel.yml',
+        dest="relfile", type=argparse.FileType('r'), required=True)
+    required_group.add_argument('--launch', '-l', metavar='launch.yml',
+        dest="launchfile", type=argparse.FileType('r'), required=True)
+    required_group.add_argument('plandir', metavar='output path',
+        help="plan output directory")
+
+    parser.add_argument('-f', '--force', action='store_const',
+        const=True, help="overwrite plan directory if it exists")
+    parser.add_argument('--pyon-config', '-P', metavar="pyon.yml",
+        help="alternate pyon.yml config file", dest='pyon_config',
+        type=argparse.FileType('r'))
+    parser.add_argument('-i', '--ignore-bootlevels',
+        dest='ignore_bootlevels', action='store_const', const=True,
+        help="ignore bootlevels in rel and generate one level per app")
+    parser.add_argument('--no-ha', dest='no_ha', action='store_const',
+        const=True, help="disable HA agents and launch one process per app")
+    parser.add_argument('-u', "--use-links", action='store_const',
+        const=True,
+        help="link base files instead of copying. For plan development.")
+    parser.add_argument('--no-cleanup', dest='no_cleanup',
+        action='store_const', const=True, default=False,
+        help="Don't clean up temp files on Error. For development.")
+
+    opts = parser.parse_args()
+
+    try:
+
+        _inner_main(opts)
+
+    except PlanError, e:
+        error(str(e))
+
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == '__main__':
+    main()
