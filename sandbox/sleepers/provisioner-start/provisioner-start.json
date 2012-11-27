@@ -19,6 +19,11 @@
             "host": "${rabbitmq_host}",
             "username": "${rabbitmq_username}",
             "password": "${rabbitmq_password}"
+          },
+          "zookeeper": {
+            "hosts": "${zookeeper0}:2181",
+            "path": "/provisioner",
+            "timeout": 5
           }
         },
         "logging": {
@@ -37,11 +42,6 @@
               "syslog"
             ]
           }
-        },
-        "zookeeper": {
-          "hosts": "${zookeeper0}:2181",
-          "provisioner_path": "/provisioner",
-          "timeout": 5
         },
         "context": {
           "uri": "https://svc.uc.futuregrid.org:8446/ContextBroker/ctx/",
