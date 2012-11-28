@@ -111,6 +111,9 @@ class LocalProfile(BaseProfile):
     # prototype eeagent definition copied and filled in for each agent
     _EEAGENT_PROTOTYPE = {
         "config": {
+            "system": {
+              "name": "${sysname}"
+            },
             "eeagent": {
                 "heartbeat": 10,
                 "heartbeat_queue": "processdispatcher_heartbeats",
@@ -604,7 +607,8 @@ def _inner_main(opts):
     profile = LAUNCH_PROFILES[opts.profile](pathfinder)
 
     generate_plan(pathfinder, profile, deployment, plandir, force=opts.force,
-        no_cleanup=opts.no_cleanup, pyon_config_path=pyon_config_path)
+        no_cleanup=opts.no_cleanup, pyon_config_path=pyon_config_path,
+        use_links=opts.use_links)
 
 
 def _get_profile_descriptions():
