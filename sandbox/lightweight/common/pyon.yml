@@ -39,13 +39,8 @@ server:
   pydap:
     host: pydap.a.oceanobservatories.org
     port: 5000
-  smtp:
-    host: smtp.gmail.com
-    port: 25
-    sender: ooici777@gmail.com
-    password: ooici777
 system:
   auto_bootstrap: false
   elasticsearch: false
   name: ${sysname}
-  smtp: true
+
