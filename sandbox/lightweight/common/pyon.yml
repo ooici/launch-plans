@@ -1,5 +1,5 @@
 bootstrap:
-  use_es: false
+  use_es: true
   use_pydap: true
 container:
   filesystem:
@@ -41,6 +41,6 @@ server:
     port: 5000
 system:
   auto_bootstrap: false
-  elasticsearch: false
+  elasticsearch: true
   name: ${sysname}
 
