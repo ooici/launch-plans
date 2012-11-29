@@ -58,21 +58,12 @@
               "base_need": 2
             },
             "service_gateway": {
-              "slots": 1,
+              "slots": 2,
               "replicas": 1,
               "base_need": 4,
               "config": {
                 "unique_key": "ddns_hostname",
                 "unique_values": "${gateway_ddns_hosts}"
-              }
-            },
-            "pydap": {
-              "slots": 1,
-              "replicas": 1,
-              "base_need": 1,
-              "config": {
-                "unique_key": "ddns_hostname",
-                "unique_values": "pydap.a.oceanobservatories.org"
               }
             }
           }

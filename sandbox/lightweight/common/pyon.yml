@@ -37,8 +37,8 @@ server:
     port: 8080
     type: erddap
   pydap:
-    host: pydap.a.oceanobservatories.org
-    port: 5000
+    host: sg.a.oceanobservatories.org
+    port: 10999
 system:
   auto_bootstrap: false
   elasticsearch: true
