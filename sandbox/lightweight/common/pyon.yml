@@ -22,3 +22,7 @@ server:
 system:
   auto_bootstrap: false
   name: ${sysname}
+device:
+  sbe37:
+    port_agent_data_port: 4011
+    port_agent_cmd_port: 4021
