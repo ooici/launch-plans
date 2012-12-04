@@ -14,6 +14,10 @@ container:
   sflow:
     enabled: true
     hsflowd_port: 36343
+  pydap_gateway:
+    web_server:
+      host: 0.0.0.0
+      port: 10999
 endpoint:
   receive:
     timeout: 60
@@ -43,7 +47,3 @@ system:
   auto_bootstrap: false
   elasticsearch: true
   name: ${sysname}
-pydap_gateway:
-  web_server:
-    host: 0.0.0.0
-    port: 10999
