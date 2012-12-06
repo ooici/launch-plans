@@ -38,13 +38,7 @@ contextualization:
           root:
             handlers: [gray, console, file]
           loggers:
-            ion.services.sa.product.data_product_management_service:
-              level: DEBUG
-            pyon.ion.exchange:
-              level: DEBUG
-            ion.services.dm.distribution.pubsub_management_service:
-              level: DEBUG
-            pyon.datastore.couchdb.couchdb_datastore:
+            rpc:
               level: DEBUG
 
         # only need very basic config. the rest is pulled from directory.
