@@ -8,7 +8,7 @@ mappings:
   #  iaas_allocation: m1.small
   ooi.ucsd:
     iaas_image: r2-worker
-    iaas_allocation: m1.large
+    iaas_allocation: m1.xlarge
 contextualization:
   method: chef-solo
   chef_config:
