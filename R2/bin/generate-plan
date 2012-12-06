@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import os
 import sys
 import uuid
@@ -14,12 +13,18 @@ from string import Template
 from collections import defaultdict
 from subprocess import check_call
 from copy import deepcopy
+from urlparse import urlparse
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(THIS_DIR)
 BASEPLAN_DIR = os.path.join(ROOT_DIR, "src", "baseplan")
 
 PYONAPP_PREFIX = "pyonapp"
+
+
+class PlanError(Exception):
+    """Generic error raised by plan generator
+    """
 
 
 class PathFinder(object):
@@ -56,29 +61,75 @@ class PathFinder(object):
     def get_template(self, template):
         return Template(self.get_template_string(template))
 
+    def get_dt_path(self):
+        """Returns path to deployable types directory
+        """
+        return os.path.join(ROOT_DIR, "src", "dt")
+
+
+##############################################################################
+# LAUNCH PROFILES
+##############################################################################
+
+def _get_or_bail(config, key, prefix=""):
+    if prefix:
+        prefix = "%s." % prefix
+    if not key in config:
+        raise PlanError("Profile config missing '%s%s'" % (prefix, key))
+    value = config[key]
+
+    if not value:
+        raise PlanError("Profile config value '%s%s' is empty" % (prefix, key))
+
+    return value
+
 
 class BaseProfile(object):
+    # file within plan where top level config is written
+    PLAN_CONFIG_FILENAME = "launch.conf"
 
+    # overriden in subclasses. name for top-level plan config template
     PLAN_CONFIG_TEMPLATE = None
 
     def __init__(self, pathfinder):
         self.pathfinder = pathfinder
 
-    def write_plan_config(self, output_path, bootlevel_config_paths):
+    def load_config(self, config):
+        """Load profile configuration
+        """
+
+    def write_plan(self, deployment, output_dir, bootlevel_config_paths):
+        raise NotImplementedError()
+
+    def _write_plan_config(self, output_dir, bootlevel_config_paths, global_vars=None, extra_vars=None):
         assert self.PLAN_CONFIG_TEMPLATE is not None
 
-        plan_config = self.pathfinder.get_template_string(self.PLAN_CONFIG_TEMPLATE)
-        last_level = get_last_level(plan_config)
+        plan_config_tmpl = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        last_level = get_last_level(plan_config_tmpl.template)
 
+        new_levels_lines = [""]  # blank line to start with
         for bootlevel_config in bootlevel_config_paths:
-            plan_config += "\nlevel%s: %s" % (last_level, bootlevel_config)
+            new_levels_lines.append("level%s: %s" % (last_level,
+                bootlevel_config))
             last_level += 1
 
+        new_levels = "\n".join(new_levels_lines)
+
+        global_vars = global_vars or {}
+        global_vars_lines = []
+        for key in sorted(global_vars.keys()):
+            global_vars_lines.append("%s: %s" % (key, global_vars[key]))
+        global_vars_str = "\n".join(global_vars_lines)
+
+        tmpl_vars = {"levels": new_levels, "globals": global_vars_str}
+
+        if extra_vars:
+            tmpl_vars.update(extra_vars)
+
+        plan_config = plan_config_tmpl.substitute(tmpl_vars)
+        output_path = os.path.join(output_dir, self.PLAN_CONFIG_FILENAME)
         with open(output_path, 'w') as f:
             f.write(plan_config)
-
-    def write_engine_config(self, deployment, output_dir):
-        raise NotImplementedError()
 
 
 def _set_deployment_pd_config(deployment, pd_config):
@@ -86,21 +137,51 @@ def _set_deployment_pd_config(deployment, pd_config):
     pd_config['default_engine'] = deployment.default_execution_engine_id
 
 
-class BaseVMProfile(BaseProfile):
-    def write_engine_config(self, deployment, output_dir):
-        pd_dict = json.loads(self.pathfinder.get_template_string("pd.json"))
+def _get_rabbitmq_global_vars(config, need_host=False):
+    rabbitmq = _get_or_bail(config, "rabbitmq")
 
-        pd_cfg = pd_dict['pyon']['run_config']['config']['processdispatcher']
+    global_vars = {}
+    global_vars['rabbitmq_username'] = _get_or_bail(rabbitmq, "username", "rabbitmq")
+    global_vars['rabbitmq_password'] = _get_or_bail(rabbitmq, "password", "rabbitmq")
+    if need_host:
+        global_vars['rabbitmq_host'] = _get_or_bail(rabbitmq, "host", "rabbitmq")
 
-        _set_deployment_pd_config(deployment, pd_cfg)
+    return global_vars
 
-        pd_dir = os.path.join(output_dir, "pd")
-        if not os.path.exists(pd_dir):
-            raise PlanError("Expected Process Dispatcher bootlevel directory does not exist: %s" % pd_dir)
-        pd_json_path = os.path.join(pd_dir, "pd.json")
 
-        with open(pd_json_path, 'w') as f:
-            json.dump(pd_dict, f, sort_keys=True, indent=2)
+def _get_couchdb_global_vars(config, need_host=False):
+    couchdb = _get_or_bail(config, "couchdb")
+
+    global_vars = {}
+    global_vars['couchdb_username'] = _get_or_bail(couchdb, "username", "couchdb")
+    global_vars['couchdb_password'] = _get_or_bail(couchdb, "password", "couchdb")
+    if need_host:
+        global_vars['couchdb_host'] = _get_or_bail(couchdb, "host", "couchdb")
+
+    return global_vars
+
+
+def _get_common_global_vars(config):
+    global_vars = {}
+    pyon_config_path = config.get('pyon_config_path')
+    if pyon_config_path:
+        pyon_config_path = os.path.expanduser(pyon_config_path)
+        global_vars['pyon_config_path'] = pyon_config_path
+    else:
+        global_vars['pyon_config_path'] = ""
+
+    gateway_ddns_hosts = config.get('gateway_ddns_hosts', "")
+    if gateway_ddns_hosts and isinstance(gateway_ddns_hosts, (list, tuple)):
+        gateway_ddns_hosts = ",".join(gateway_ddns_hosts)
+    global_vars['gateway_ddns_hosts'] = gateway_ddns_hosts
+
+    graylog_host = ""
+    graylog_config = config.get('graylog')
+    if graylog_config:
+        graylog_host = graylog_config.get('host', "")
+    global_vars['graylog_host'] = graylog_host
+
+    return global_vars
 
 
 class LocalProfile(BaseProfile):
@@ -126,7 +207,21 @@ class LocalProfile(BaseProfile):
         }
     }
 
-    def write_engine_config(self, deployment, output_dir):
+    def load_config(self, config):
+        global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
+        global_vars.update(_get_couchdb_global_vars(config, need_host=True))
+        pyon_path = _get_or_bail(config, 'pyon_path')
+        global_vars['pyon_path'] = os.path.expanduser(pyon_path)
+
+        self.global_vars = global_vars
+
+    def write_plan(self, deployment, output_dir, bootlevel_config_paths):
+        self._write_engine_config(deployment, output_dir)
+        self._write_plan_config(output_dir, bootlevel_config_paths,
+            global_vars=self.global_vars)
+
+    def _write_engine_config(self, deployment, output_dir):
         tmpl_name = "local-deployment.json"
         tmpl = self.pathfinder.get_template_string(tmpl_name)
         deployment_dict = json.loads(tmpl)
@@ -186,62 +281,218 @@ class LocalProfile(BaseProfile):
             json.dump(deployment_dict, f, sort_keys=True, indent=2)
 
 
-class EC2DynamicProfile(BaseVMProfile):
-    """Complete launch on EC2 us-west-1
-    """
-    PLAN_CONFIG_TEMPLATE = "ec2-dynamic.conf"
+class BaseVMProfile(BaseProfile):
+
+    def _write_engine_config(self, deployment, output_dir):
+        pd_dict = json.loads(self.pathfinder.get_template_string("pd.json"))
+
+        pd_cfg = pd_dict['pyon']['run_config']['config']['processdispatcher']
+
+        _set_deployment_pd_config(deployment, pd_cfg)
+
+        pd_dir = os.path.join(output_dir, "pd")
+        if not os.path.exists(pd_dir):
+            raise PlanError("Expected Process Dispatcher bootlevel directory does not exist: %s" % pd_dir)
+        pd_json_path = os.path.join(pd_dir, "pd.json")
+
+        with open(pd_json_path, 'w') as f:
+            json.dump(pd_dict, f, sort_keys=True, indent=2)
+
+    def _write_dtrs_bootstrap(self, output_dir, site, creds, base_image, allocation):
+
+        dt_bootstrap_dir = os.path.join(output_dir, "dtrs-bootstrap", "dt-bootstrap")
+
+        site_name = str(site['name'])
+        site_path = os.path.join(dt_bootstrap_dir, 'sites', site_name + ".yml")
+        with open(site_path, 'w') as f:
+            yaml.dump(site, f)
+
+        creds_path = os.path.join(dt_bootstrap_dir, 'credentials', site_name + ".yml")
+        with open(creds_path, 'w') as f:
+            yaml.dump(creds, f)
+
+        dt_path = self.pathfinder.get_dt_path()
+        for dt_file in os.listdir(dt_path):
+            if os.path.splitext(dt_file)[1].lower() == ".yml":
+                with open(os.path.join(dt_path, dt_file)) as f:
+                    dt = yaml.load(f)
+
+                mappings = {site_name: {'iaas_image': base_image, 'iaas_allocation': allocation}}
+                dt['mappings'] = mappings
+
+                with open(os.path.join(dt_bootstrap_dir, "dt", dt_file), 'w') as f:
+                    yaml.dump(dt, f)
+
+        make_tarball_exe = os.path.join(output_dir, "dtrs-bootstrap",
+            "prepare-tarball.sh")
+        check_call(make_tarball_exe)
 
 
-class EC2StaticProfile(BaseVMProfile):
-    """Launch on EC2 us-west-1 with external dependencies
-    """
-    PLAN_CONFIG_TEMPLATE = "ec2-static.conf"
+class BaseNimbusProfile(BaseVMProfile):
+
+    def load_config(self, config):
+
+        # validate and parse profile config. pull out top level plan variables
+        # and site/cred objects
+        iaas_config = _get_or_bail(config, 'iaas')
+        site_name = _get_or_bail(iaas_config, 'site', 'iaas')
+        url = _get_or_bail(iaas_config, 'url', 'iaas')
+        key = _get_or_bail(iaas_config, 'key', 'iaas')
+        secret = _get_or_bail(iaas_config, 'secret', 'iaas')
+        sshkey = _get_or_bail(iaas_config, 'sshkeyname', 'iaas')
+        baseimage = _get_or_bail(iaas_config, 'base-image', 'iaas')
+        baseallocation = _get_or_bail(iaas_config, 'base-allocation', 'iaas')
+
+        try:
+            url_parts = urlparse(url)
+        except Exception, e:
+            raise PlanError("Failed to parse IaaS url '%s': %s", url, e)
+
+        host = url_parts.hostname
+        port = url_parts.port
+
+        # build site object
+        self.site = {'name': site_name, 'description': '',
+            'driver_class': 'libcloud.compute.drivers.ec2.NimbusNodeDriver',
+            'driver_kwargs': {'host': host, 'port': port}}
+
+        # build creds object
+        self.creds = {'access_key': key, 'secret_key': secret, 'key_name': sshkey}
+
+        # build plan template vars
+        self.plan_vars = {'iaas_key': key, 'iaas_secret': secret,
+            'iaas_url': url, 'image': baseimage, 'allocation': baseallocation,
+            'sshkeyname': sshkey}
+
+        self.baseimage = baseimage
+        self.baseallocation = baseallocation
+
+        global_vars = self._get_base_global_vars(config)
+        global_vars['ctxbroker_host'] = host
+        global_vars['ctxbroker_key'] = key
+        global_vars['ctxbroker_secret'] = secret
+        global_vars['iaas_site'] = site_name
+
+        self.global_vars = global_vars
+
+    def write_plan(self, deployment, output_dir, bootlevel_config_paths):
+        self._write_engine_config(deployment, output_dir)
+        self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
+            self.baseimage, self.baseallocation)
+        self._write_plan_config(output_dir, bootlevel_config_paths,
+            extra_vars=self.plan_vars, global_vars=self.global_vars)
 
 
-class OOINimbusDynamicProfile(BaseVMProfile):
-    """Complete launch on OOI Nimbus cloud
+class NimbusDynamicProfile(BaseNimbusProfile):
+    """Complete launch on Nimbus cloud
     """
     PLAN_CONFIG_TEMPLATE = "ooinimbus-dynamic.conf"
 
+    def _get_base_global_vars(self, config):
+        global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
+        global_vars.update(_get_couchdb_global_vars(config, need_host=False))
+        return global_vars
 
-class OOINimbusStaticProfile(BaseVMProfile):
-    """Launch on OOI Nimbus cloud with external dependencies
+
+class NimbusStaticProfile(BaseNimbusProfile):
+    """Launch on Nimbus cloud with external dependencies
     """
     PLAN_CONFIG_TEMPLATE = "ooinimbus-static.conf"
 
+    def _get_base_global_vars(self, config):
+        global_vars = {}
+        global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
+        global_vars.update(_get_couchdb_global_vars(config, need_host=False))
+        return global_vars
 
-LAUNCH_PROFILES = {
+
+class BaseEC2Profile(BaseVMProfile):
+
+    #TODO add others. Or better yet, lift this mapping into the provisioner/dtrs?
+    _LIBCLOUD_EC2_REGION_DRIVERS = {
+        "us-west-1": "libcloud.compute.drivers.ec2.EC2NodeDriver",
+        "us-east-1": "libcloud.compute.drivers.ec2.EC2USWestNodeDriver",
+    }
+
+    def load_config(self, config):
+
+        # validate and parse profile config. pull out top level plan variables
+        # and site/cred objects
+        iaas_config = _get_or_bail(config, 'iaas')
+        site_name = _get_or_bail(iaas_config, 'site', 'iaas')
+        region = _get_or_bail(iaas_config, 'region', 'iaas')
+        key = _get_or_bail(iaas_config, 'key', 'iaas')
+        secret = _get_or_bail(iaas_config, 'secret', 'iaas')
+        sshkey = _get_or_bail(iaas_config, 'sshkeyname', 'iaas')
+        baseimage = _get_or_bail(iaas_config, 'base-image', 'iaas')
+        baseallocation = _get_or_bail(iaas_config, 'base-allocation', 'iaas')
+
+        driver_class = self._LIBCLOUD_EC2_REGION_DRIVERS.get(region)
+        if not driver_class:
+            raise PlanError("EC2 region unknown! It may need to be added to the (hardcoded) mapping.")
+
+        # build site object
+        self.site = {'name': site_name, 'description': 'EC2 %s region' % region,
+            'driver_class': driver_class}
+
+        # build creds object
+        self.creds = {'access_key': key, 'secret_key': secret, 'key_name': sshkey}
+
+        # build plan template vars
+        self.plan_vars = {'iaas_key': key, 'iaas_secret': secret,
+            'region': region, 'image': baseimage, 'allocation': baseallocation,
+            'sshkeyname': sshkey}
+
+        self.baseimage = baseimage
+        self.baseallocation = baseallocation
+
+        global_vars = self._get_base_global_vars(self, config)
+        global_vars['ctxbroker_key'] = key
+        global_vars['ctxbroker_secret'] = secret
+        global_vars['iaas_site'] = site_name
+
+        self.global_vars = global_vars
+
+    def write_plan(self, deployment, output_dir, bootlevel_config_paths):
+        self._write_engine_config(deployment, output_dir)
+        self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
+            self.baseimage, self.baseallocation)
+        self._write_plan_config(output_dir, bootlevel_config_paths,
+            extra_vars=self.plan_vars)
+
+
+class EC2DynamicProfile(BaseVMProfile):
+    """Complete launch on EC2
+    """
+    PLAN_CONFIG_TEMPLATE = "ec2-dynamic.conf"
+
+    def _get_base_global_vars(self, config):
+        global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
+        global_vars.update(_get_couchdb_global_vars(config, need_host=False))
+        return global_vars
+
+
+class EC2StaticProfile(BaseVMProfile):
+    """Launch on EC2 with external dependencies
+    """
+    PLAN_CONFIG_TEMPLATE = "ec2-static.conf"
+
+    def _get_base_global_vars(self, config):
+        global_vars = {}
+        global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
+        global_vars.update(_get_couchdb_global_vars(config, need_host=True))
+        return global_vars
+
+
+LAUNCH_PROFILE_TYPES = {
     'local': LocalProfile,
-    'ooinimbus-dynamic': OOINimbusDynamicProfile,
-    'ooinimbus-static': OOINimbusStaticProfile,
+    'nimbus-dynamic': NimbusDynamicProfile,
+    'nimbus-static': NimbusStaticProfile,
     'ec2-dynamic': EC2DynamicProfile,
     'ec2-static': EC2StaticProfile
 }
-
-
-def make_process_definition(process_definition_id, name, module, klass,
-    pd_template, definition_dir):
-    """Create or update process definition file. Returns process definition ID
-    """
-
-    process_definition_filename = "%s.yml" % name
-    process_definition_file_path = os.path.join(definition_dir,
-            process_definition_filename)
-
-    pd = pd_template.substitute(name=name, module=module, klass=klass,
-            process_definition_id=process_definition_id)
-
-    with open(process_definition_file_path, "w") as pd_file:
-        pd_file.write(pd)
-
-    return process_definition_id
-
-
-def tar_process_definitions(output_dir):
-    make_tarball_exe = os.path.join(
-        output_dir, "pd-bootstrap", "prepare-tarball.sh")
-
-    check_call(make_tarball_exe)
 
 
 def get_last_level(cloudinitd_conf):
@@ -262,10 +513,9 @@ def get_last_level(cloudinitd_conf):
             i += 1
 
 
-class PlanError(Exception):
-    """Generic error raised by plan generator
-    """
-
+##############################################################################
+# DEPLOYMENT PARSING
+##############################################################################
 
 class App(object):
     def __init__(self, name, process_definition_id, processapp, config,
@@ -378,6 +628,10 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
     return Deployment(bootlevels, engines, default_engine_id)
 
 
+##############################################################################
+# PLAN GENERATION
+##############################################################################
+
 def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
     use_links=False, no_cleanup=False, pyon_config_path=None):
     """Creates a launch plan from a deployment description, in a directory
@@ -425,30 +679,24 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
             "pd-bootstrap", "process-definitions")
 
     # ha agent is special case added as a process definition
-    haagent_definition_id = make_process_definition(uuid.uuid4().hex, "haagent",
+    haagent_definition_id = _make_process_definition(uuid.uuid4().hex, "haagent",
             "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
             pd_json_template, process_definition_dir)
 
     for level in deployment.bootlevels:
         for app in level:
             _, module, cls = app.processapp
-            make_process_definition(app.process_definition_id, app.name,
+            _make_process_definition(app.process_definition_id, app.name,
                 module, cls, pd_json_template, process_definition_dir)
 
-    tar_process_definitions(output_dir)
-
-    # TODO write and tar DTs
+    _tar_process_definitions(output_dir)
 
     # write boot levels
     level_config_paths = _write_boot_levels(pathfinder, deployment.bootlevels,
         output_dir, haagent_definition_id)
 
-    # write engine conf
-    profile.write_engine_config(deployment, output_dir)
-
-    # write top level plan file
-    planfile = os.path.join(output_dir, "launch.conf")
-    profile.write_plan_config(planfile, level_config_paths)
+    # write profile-specific config and top level plan
+    profile.write_plan(deployment, output_dir, level_config_paths)
 
     # write pyon config if specified
     if pyon_config_path:
@@ -550,10 +798,34 @@ def _write_base_files(pathfinder, profile, output_dir, use_links):
             shutil.copy2(src, dst)
 
 
+def _make_process_definition(process_definition_id, name, module, klass,
+    pd_template, definition_dir):
+    """Create or update process definition file. Returns process definition ID
+    """
+
+    process_definition_filename = "%s.yml" % name
+    process_definition_file_path = os.path.join(definition_dir,
+            process_definition_filename)
+
+    pd = pd_template.substitute(name=name, module=module, klass=klass,
+            process_definition_id=process_definition_id)
+
+    with open(process_definition_file_path, "w") as pd_file:
+        pd_file.write(pd)
+
+    return process_definition_id
+
+
+def _tar_process_definitions(output_dir):
+    make_tarball_exe = os.path.join(
+        output_dir, "pd-bootstrap", "prepare-tarball.sh")
+
+    check_call(make_tarball_exe)
+
+
 ##############################################################################
 # CLI-specific
 ##############################################################################
-
 
 def error(msg, exit_code=1):
     print >> sys.stderr, "\nFATAL ERROR:"
@@ -562,6 +834,7 @@ def error(msg, exit_code=1):
 
 
 def _inner_main(opts):
+    pathfinder = PathFinder()
     plandir = os.path.normpath(opts.plandir)
     plandir_parent = os.path.dirname(plandir)
 
@@ -576,7 +849,6 @@ def _inner_main(opts):
     elif not os.path.exists(plandir_parent):
         raise PlanError("plan output directory parent does not exist: %s" % plandir_parent)
 
-
     # ensure pyon config exists if specified
     if opts.pyon_config:
         try:
@@ -588,7 +860,7 @@ def _inner_main(opts):
     else:
         pyon_config_path = None
 
-    # read and validate rel and launch files
+    # read and validate input files
     try:
         rel = yaml.load(opts.relfile)
         opts.relfile.close()
@@ -601,21 +873,37 @@ def _inner_main(opts):
     except Exception, e:
         raise PlanError("failed to read launch file: %s" % str(e))
 
+    try:
+        profile_config = yaml.load(opts.profile)
+        opts.profile.close()
+    except Exception, e:
+        raise PlanError("failed to read profile: %s" % str(e))
+
+    # parse profile and instantiate the appropriate profile object
+    try:
+        profile_type = profile_config.pop('profile_type')
+    except Exception, e:
+        raise PlanError("profile is missing profile_type")
+
+    profile_cls = LAUNCH_PROFILE_TYPES.get(profile_type)
+    if not profile_cls:
+        raise PlanError("profile has invalid type '%s'. See --help for valid types." % profile_type)
+    profile = profile_cls(pathfinder)
+    profile.load_config(profile_config)
+
+    # parse the Deployment object from the rel and launch configs
     deployment = parse_deployment(rel, launch, opts.ignore_bootlevels, opts.no_ha)
 
-    pathfinder = PathFinder()
-    profile = LAUNCH_PROFILES[opts.profile](pathfinder)
-
+    # now generate the actual plan
     generate_plan(pathfinder, profile, deployment, plandir, force=opts.force,
-        no_cleanup=opts.no_cleanup, pyon_config_path=pyon_config_path,
-        use_links=opts.use_links)
+        no_cleanup=opts.no_cleanup, pyon_config_path=pyon_config_path)
 
 
-def _get_profile_descriptions():
+def _get_profile_type_descriptions():
     lines = []
 
-    for profile_name in sorted(LAUNCH_PROFILES.keys()):
-        profile_cls = LAUNCH_PROFILES[profile_name]
+    for profile_name in sorted(LAUNCH_PROFILE_TYPES.keys()):
+        profile_cls = LAUNCH_PROFILE_TYPES[profile_name]
         helpstr = profile_cls.__doc__
         if helpstr:
             helpstr = helpstr.strip()
@@ -628,15 +916,15 @@ def _get_profile_descriptions():
 
 
 _USAGE = """
-%(prog)s [opts] --profile PROFILE --rel rel.yml --launch launch.yml plandir
+%(prog)s [opts] --profile profile.yml --rel rel.yml --launch launch.yml plandir
 """
 
 _USAGE_DESCRIPTION = """
 
 Generates OOICI launch plans
 
-PROFILE is one of:
-""" + _get_profile_descriptions() + """
+The profile document contains a profile_type value. Supported types are:
+""" + _get_profile_type_descriptions() + """
 
 plandir is the path to which the generated plan is written. If the path
 exists and the --force flag is used, the directory will be deleted and
@@ -650,13 +938,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=_USAGE_DESCRIPTION, usage=_USAGE)
 
-    ##########################################################################
-    # GENERATE COMMAND
-    ##########################################################################
-
     required_group = parser.add_argument_group('required arguments')
-    required_group.add_argument('--profile', '-p', choices=LAUNCH_PROFILES,
-        help="Launch profile", metavar="PROFILE", required=True)
+    required_group.add_argument('--profile', '-p', metavar="profile.yml",
+        dest="profile", type=argparse.FileType('r'), required=True)
     required_group.add_argument('--rel', '-r', metavar='rel.yml',
         dest="relfile", type=argparse.FileType('r'), required=True)
     required_group.add_argument('--launch', '-l', metavar='launch.yml',
@@ -674,9 +958,11 @@ def main():
         help="ignore bootlevels in rel and generate one level per app")
     parser.add_argument('--no-ha', dest='no_ha', action='store_const',
         const=True, help="disable HA agents and launch one process per app")
-    parser.add_argument('-u', "--use-links", action='store_const',
-        const=True,
-        help="link base files instead of copying. For plan development.")
+    # TODO this is disabled. some dirs get written too after being copied,
+    # so we might need to "deep" link these dirs instead.
+    # parser.add_argument('-u', "--use-links", action='store_const',
+    #     const=True,
+    #     help="link base files instead of copying. For plan development.")
     parser.add_argument('--no-cleanup', dest='no_cleanup',
         action='store_const', const=True, default=False,
         help="Don't clean up temp files on Error. For development.")
