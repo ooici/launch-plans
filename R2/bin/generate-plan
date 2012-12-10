@@ -386,7 +386,7 @@ class BaseNimbusProfile(BaseVMProfile):
 class NimbusDynamicProfile(BaseNimbusProfile):
     """Complete launch on Nimbus cloud
     """
-    PLAN_CONFIG_TEMPLATE = "ooinimbus-dynamic.conf"
+    PLAN_CONFIG_TEMPLATE = "nimbus-dynamic.conf"
 
     def _get_base_global_vars(self, config):
         global_vars = _get_common_global_vars(config)
@@ -398,7 +398,7 @@ class NimbusDynamicProfile(BaseNimbusProfile):
 class NimbusStaticProfile(BaseNimbusProfile):
     """Launch on Nimbus cloud with external dependencies
     """
-    PLAN_CONFIG_TEMPLATE = "ooinimbus-static.conf"
+    PLAN_CONFIG_TEMPLATE = "nimbus-static.conf"
 
     def _get_base_global_vars(self, config):
         global_vars = {}
