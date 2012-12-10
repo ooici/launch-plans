@@ -47,3 +47,4 @@ system:
   auto_bootstrap: false
   elasticsearch: true
   name: ${sysname}
+  smtp: true
