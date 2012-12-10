@@ -1,0 +1,18 @@
+profile_type: nimbus-dynamic
+iaas:
+  site: ooi.ucsd
+  key: REPLACE_WITH_NIMBUS_KEY
+  secret: REPLACE_WITH_NIMBUS_SECRET
+  url: https://nimbus-dev0.oceanobservatories.org:8444
+  base-image: r2-worker
+  base-allocation: m1.large
+  sshkeyname: ooi
+rabbitmq:
+  username: REPLACE_WITH_RABBITMQ_USERNAME
+  password: REPLACE_WITH_RABBITMQ_PASSWORD
+couchdb:
+  username: REPLACE_WITH_COUCHDB_USERNAME
+  password: REPLACE_WITH_COUCHDB_PASSWORD
+graylog:
+  host: logging-dev.oceanobservatories.org
+

@@ -1,0 +1,20 @@
+profile_type: ec2-static
+iaas:
+  site: ec2.us-west-1
+  region: us-west-1
+  key: REPLACE_WITH_EC2_ACCESS_ID
+  secret: REPLACE_WITH_EC2_SECRET
+  base-image: r2-worker
+  base-allocation: t1.micro
+  sshkeyname: ooi
+rabbitmq:
+  host: REPLACE_WITH_RABBITMQ_HOSTNAME
+  username: REPLACE_WITH_RABBITMQ_USERNAME
+  password: REPLACE_WITH_RABBITMQ_PASSWORD
+couchdb:
+  host: REPLACE_WITH_COUCHDB_HOSTNAME
+  username: REPLACE_WITH_COUCHDB_USERNAME
+  password: REPLACE_WITH_COUCHDB_PASSWORD
+graylog:
+  host: logging-dev.oceanobservatories.org
+

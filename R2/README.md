@@ -41,8 +41,8 @@ launch _profiles_, configuration files describing where you want to launch and
 including any required credentials. These files contain secrets so be careful
 not to commit them to a public repository. Example profiles are available in
 the ``profiles/`` directory. Copy one of them, removing the ``.example`` suffix
-and edit it to add your credentials. You'll need to maintain a profile for each
-site you want to launch on.
+and edit it to add your credentials. You may have multiple profiles from each
+example file. You'll need to maintain a profile for each site you want to use.
 
     $ cp profiles/nimbus-dynamic.yml.example profiles/nimbus-dynamic.yml
     $ vi profiles-dynamic.yml
@@ -51,11 +51,13 @@ Note that there are different profile examples available. Each corresponds to
 a different launch type and may require slightly different values. Currently
 the available examples are:
 
-* ``local`` - lightweight launch run on your machine only
-* ``nimbus-dynamic`` - self-contained launch on OOI Nimbus cloud
-* ``nimbus-static`` - Nimbus cloud with external RabbitMQ and CouchDB services.
-* ``ec2-dynamic`` - self-contained launch on Amazon EC2
-* ``ec2-static`` - EC2 launch with external RabbitMQ and CouchDB services.
+* ``local.yml.example`` - lightweight launch run on your machine only
+* ``nimbus-dynamic.yml.example`` - self-contained launch on OOI Nimbus cloud
+* ``nimbus-static.yml.example`` - Nimbus cloud with external RabbitMQ and
+  CouchDB services.
+* ``ec2-dynamic.yml.example`` - self-contained launch on Amazon EC2
+* ``ec2-static.yml.example`` - EC2 launch with external RabbitMQ and
+  CouchDB services.
 
 
 Generating Launch Plans
@@ -98,7 +100,26 @@ the file ``src/baseplan/common/pyon.yml`` will be used.
 Booting Launch Plans
 --------------------
 
-TODO (same as before, for now. source envs and run cloudinitd)
+Once a plan is generated, you can boot it with the ``cloudinitd`` command-line
+tool. Use the ``boot`` command and pass in the path to the generated top level
+plan. For example, if you generated a plan into the ``plans/test/`` directory,
+you can boot it with:
+
+    $ cloudinitd -vvv -n RUN_NAME boot plans/test/launch.conf
+
+In this example, the ``-vvv`` flags are optional but usually recommended. They
+enable verbose console output. The ``-n RUN_NAME`` parameter is also optional.
+It specifies the name for the launch, which is also used as the ION system
+name. If you do not specify a run name, cloudinitd will generate one for you.
+
+Once your system is running, you can interrogate it with the
+``cloudinitd status`` command:
+
+    $ cloudinitd status RUN_NAME
+
+Terminate launches with:
+
+    $ cloudinitd terminate RUN_NAME
 
 
 Development

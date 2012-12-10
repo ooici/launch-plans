@@ -1,0 +1,12 @@
+profile_type: local
+rabbitmq:
+  host: REPLACE_WITH_RABBITMQ_HOSTNAME
+  username: REPLACE_WITH_RABBITMQ_USERNAME
+  password: REPLACE_WITH_RABBITMQ_PASSWORD
+couchdb:
+  host: REPLACE_WITH_COUCHDB_HOSTNAME
+  username: REPLACE_WITH_COUCHDB_USERNAME
+  password: REPLACE_WITH_COUCHDB_PASSWORD
+graylog:
+  host: logging-dev.oceanobservatories.org
+
