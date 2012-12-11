@@ -9,4 +9,5 @@ couchdb:
   password: REPLACE_WITH_COUCHDB_PASSWORD
 graylog:
   host: logging-dev.oceanobservatories.org
+pyon_path: /path/to/coi-services
 

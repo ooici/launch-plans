@@ -447,7 +447,7 @@ class BaseEC2Profile(BaseVMProfile):
         self.baseimage = baseimage
         self.baseallocation = baseallocation
 
-        global_vars = self._get_base_global_vars(self, config)
+        global_vars = self._get_base_global_vars(config)
         global_vars['ctxbroker_key'] = key
         global_vars['ctxbroker_secret'] = secret
         global_vars['iaas_site'] = site_name
@@ -459,10 +459,10 @@ class BaseEC2Profile(BaseVMProfile):
         self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
             self.baseimage, self.baseallocation)
         self._write_plan_config(output_dir, bootlevel_config_paths,
-            extra_vars=self.plan_vars)
+            extra_vars=self.plan_vars, global_vars=self.global_vars)
 
 
-class EC2DynamicProfile(BaseVMProfile):
+class EC2DynamicProfile(BaseEC2Profile):
     """Complete launch on EC2
     """
     PLAN_CONFIG_TEMPLATE = "ec2-dynamic.conf"
@@ -474,7 +474,7 @@ class EC2DynamicProfile(BaseVMProfile):
         return global_vars
 
 
-class EC2StaticProfile(BaseVMProfile):
+class EC2StaticProfile(BaseEC2Profile):
     """Launch on EC2 with external dependencies
     """
     PLAN_CONFIG_TEMPLATE = "ec2-static.conf"
