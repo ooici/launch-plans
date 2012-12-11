@@ -71,14 +71,14 @@ class PathFinder(object):
 # LAUNCH PROFILES
 ##############################################################################
 
-def _get_or_bail(config, key, prefix=""):
+def _get_or_bail(config, key, prefix="", empty_ok=False):
     if prefix:
         prefix = "%s." % prefix
     if not key in config:
         raise PlanError("Profile config missing '%s%s'" % (prefix, key))
     value = config[key]
 
-    if not value:
+    if not empty_ok and not value:
         raise PlanError("Profile config value '%s%s' is empty" % (prefix, key))
 
     return value
@@ -153,8 +153,8 @@ def _get_couchdb_global_vars(config, need_host=False):
     couchdb = _get_or_bail(config, "couchdb")
 
     global_vars = {}
-    global_vars['couchdb_username'] = _get_or_bail(couchdb, "username", "couchdb")
-    global_vars['couchdb_password'] = _get_or_bail(couchdb, "password", "couchdb")
+    global_vars['couchdb_username'] = _get_or_bail(couchdb, "username", "couchdb", empty_ok=True)
+    global_vars['couchdb_password'] = _get_or_bail(couchdb, "password", "couchdb", empty_ok=True)
     if need_host:
         global_vars['couchdb_host'] = _get_or_bail(couchdb, "host", "couchdb")
 

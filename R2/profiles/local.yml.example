@@ -1,13 +1,11 @@
 profile_type: local
 rabbitmq:
-  host: REPLACE_WITH_RABBITMQ_HOSTNAME
-  username: REPLACE_WITH_RABBITMQ_USERNAME
-  password: REPLACE_WITH_RABBITMQ_PASSWORD
+  host: localhost
+  username: guest
+  password: guest
 couchdb:
-  host: REPLACE_WITH_COUCHDB_HOSTNAME
-  username: REPLACE_WITH_COUCHDB_USERNAME
-  password: REPLACE_WITH_COUCHDB_PASSWORD
-graylog:
-  host: logging-dev.oceanobservatories.org
+  host: localhost
+  username: ""
+  password: ""
 pyon_path: /path/to/coi-services
 
