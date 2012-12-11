@@ -1,14 +1,5 @@
 ---
-mappings:
-  ec2.us-west-1:
-    iaas_image: ami-634d6b26
-    iaas_allocation: m1.small
-  #ec2.us-east-1:
-  #  iaas_image: ami-b2dc7ddb
-  #  iaas_allocation: m1.small
-  ooi.ucsd:
-    iaas_image: r2-worker
-    iaas_allocation: m1.large
+mappings: {} # these are filled in by plan generation
 contextualization:
   method: chef-solo
   chef_config:

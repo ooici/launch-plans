@@ -59,6 +59,30 @@ the available examples are:
 * ``ec2-static.yml.example`` - EC2 launch with external RabbitMQ and
   CouchDB services.
 
+So for example the nimbus-dynamic example looks something like:
+
+    profile_type: nimbus-dynamic
+    iaas:
+      site: ooi.ucsd
+      key: REPLACE_WITH_NIMBUS_KEY
+      secret: REPLACE_WITH_NIMBUS_SECRET
+      url: https://nimbus-dev0.oceanobservatories.org:8444
+      base-image: r2-worker
+      base-allocation: m1.large
+      sshkeyname: ooi
+    rabbitmq:
+      username: REPLACE_WITH_RABBITMQ_USERNAME
+      password: REPLACE_WITH_RABBITMQ_PASSWORD
+    couchdb:
+      username: REPLACE_WITH_COUCHDB_USERNAME
+      password: REPLACE_WITH_COUCHDB_PASSWORD
+    graylog:
+      host: logging-dev.oceanobservatories.org
+
+You obviously need to replace the various credential fields with your own
+values but you can also change any other setting to suit your deployment.
+For example you could change the Nimbus URL to point to a different cloud.
+
 
 Generating Launch Plans
 -----------------------

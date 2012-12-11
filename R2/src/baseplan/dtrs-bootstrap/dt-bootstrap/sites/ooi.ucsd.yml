@@ -1,7 +1,0 @@
----
-name: ooi.ucsd
-description: Nimbus cloud on the OOI UCSD infrastructure
-driver_class: libcloud.compute.drivers.ec2.NimbusNodeDriver
-driver_kwargs:
-  host: nimbus-dev0.oceanobservatories.org
-  port: 8444

@@ -1,2 +1,2 @@
--e git+git://github.com/nimbusproject/cloudinit.d.git#egg=cloudinitd
--e git+git://github.com/nimbusproject/ceiclient.git#egg=ceiclient
+cloudinitd
+https://github.com/nimbusproject/ceiclient/tarball/master#egg=ceiclient-0.1
