@@ -5,7 +5,7 @@ iaas:
   secret: REPLACE_WITH_NIMBUS_SECRET
   url: https://nimbus-dev0.oceanobservatories.org:8444
   base-image: r2-worker
-  base-allocation: m1.large
+  base-allocation: m1.xlarge
   sshkeyname: ooi
 rabbitmq:
   host: REPLACE_WITH_RABBITMQ_HOSTNAME
@@ -17,4 +17,9 @@ couchdb:
   password: REPLACE_WITH_COUCHDB_PASSWORD
 graylog:
   host: logging-dev.oceanobservatories.org
+
+# if desired, include a list of hostnames here which will be DDNS-assigned
+# to the service gateway VMs. Ensure you have at least as many hostnames
+# as there will ever be VMs.
+gateway_ddns_hosts: []
 

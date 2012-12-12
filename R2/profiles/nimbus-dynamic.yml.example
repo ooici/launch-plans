@@ -16,3 +16,8 @@ couchdb:
 graylog:
   host: logging-dev.oceanobservatories.org
 
+# if desired, include a list of hostnames here which will be DDNS-assigned
+# to the service gateway VMs. Ensure you have at least as many hostnames
+# as there will ever be VMs.
+gateway_ddns_hosts: []
+
