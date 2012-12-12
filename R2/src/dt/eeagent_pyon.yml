@@ -1,0 +1,88 @@
+---
+mappings: {} # these are filled in by plan generation
+contextualization:
+  method: chef-solo
+  chef_config:
+    dtdata:
+      retrieve_method: archive
+      archive_url: ${dtdata_archive_url}
+      chef_debug_level: debug
+    pyon:
+      virtualenv:
+        path: /home/cc/app-venv
+      username: cc
+      groupname: users
+      action:
+      - retrieve
+      - configure
+      - run
+      retrieve_config:
+        retrieve_method: archive
+        retrieve_directory: /home/cc/coi-services
+        archive_url: ${coi_services_archive_url}
+      configure_config:
+        logging_config:
+          handlers:
+            gray:
+              class: graypy.GELFHandler
+              host: ${graylog_host}
+          root:
+            handlers: [gray, console, file]
+          loggers:
+            ion.services.sa.product.data_product_management_service:
+              level: DEBUG
+            pyon.ion.exchange:
+              level: DEBUG
+            ion.services.dm.distribution.pubsub_management_service:
+              level: DEBUG
+            pyon.datastore.couchdb.couchdb_datastore:
+              level: DEBUG
+
+        # only need very basic config. the rest is pulled from directory.
+        config:
+          server:
+            couchdb:
+              host:  ${couchdb_host}
+              username: ${couchdb_username}
+              password: ${couchdb_password}
+          system:
+            auto_bootstrap: False
+            name: ${sysname}
+
+      run_config:
+        program: eeagent
+        name: eeagent
+        system_name: ${sysname}
+        module: ion.agents.cei.execution_engine_agent
+        class: ExecutionEngineAgent
+        run_directory: /home/cc/coi-services
+        run_method: supervised
+        supervisord_path: /home/cc/coi-services/bin/supervisord
+        autorestart: true
+        replicas: ${replicas}
+        config:
+          agent:
+            resource_id: eeagent_REPLACED_WITH_UUID
+          eeagent:
+            name: eeagent_REPLACED_WITH_UUID
+            node_id: ${node_id}
+            heartbeat: 10
+            heartbeat_queue: processdispatcher_heartbeats
+            slots: ${slots}
+            launch_type:
+              name: pyon
+              pyon_directory: /home/cc/coi-services/
+              persistence_directory: /tmp/
+          pd:
+            name: processdispatcher
+    ddns:
+      hostname: ${ddns_hostname}
+    hsflowd:
+      collector_ip: 69.196.58.199
+      json_port: 36343
+    recipes:
+    - hsflowd::config
+    - sshkeys
+    - supervisord_shutdown
+    - epu
+    - ddns

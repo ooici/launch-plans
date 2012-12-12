@@ -1,0 +1,2 @@
+cloudinitd
+https://github.com/nimbusproject/ceiclient/tarball/master#egg=ceiclient-0.1
