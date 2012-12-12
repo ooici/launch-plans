@@ -104,9 +104,9 @@ be a nonexistent directory. If you want to overwrite an existing generated
 plan, use the ``--force`` option (carefully!).
 
 For example, here is a command that creates a launch plan using the
-ooinimbus-dynamic profile:
+ooinimbus-dynamic profile (using REL and deploy files from the ION checkout):
 
-    $ bin/generate-plan --profile nimbus-dynamic.yml --rel r2deploy.yml --launch alpha.yml plans/alpha
+    $ bin/generate-plan --profile profiles/nimbus-dynamic.yml --rel $PYON_PATH/res/deploy/r2deploy.yml --launch $PYON_PATH/res/launch/alpha.yml plans/alpha
 
 This will generate a plan into the ``plans/alpha/`` directory. Conventionally,
 plans are placed into this ``plans/`` directory but you can provide any path. The
@@ -114,7 +114,7 @@ generated plan is self-contained, so you can move it elsewhere at will.
 
 Generating a lightweight launch plan might look like:
 
-    $ bin/generate-plan --profile local.yml --rel r2deploy.yml --launch lightweight.yml plans/lightweight
+    $ bin/generate-plan --profile profiles/local.yml --rel $PYON_PATH/res/deploy/r2deploy.yml --launch $PYON_PATH/res/launch/lightweight.yml plans/lightweight
 
 If needed, you can specify an alternate pyon config file (that will be loaded
 into the directory on boot) with the ``--pyon-config`` argument. By default
