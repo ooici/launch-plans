@@ -21,3 +21,13 @@ graylog:
 # as there will ever be VMs.
 gateway_ddns_hosts: []
 
+# the launch populates a pyon.yml template file and injects it into the
+# launched containers in the system. If you set this value to a local
+# path, the launch will also write the pyon config there. This is useful
+# for running tests or preload steps against a launched environment.
+# For example you might write directly to pyon.local.yml in a coi-services
+# source tree:
+#
+#     pyon_config_output: ~/code/coi-services/res/config/pyon.local.yml
+
+pyon_config_output: ""

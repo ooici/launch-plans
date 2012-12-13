@@ -7,5 +7,19 @@ couchdb:
   host: localhost
   username: ""
   password: ""
+
+# The local launch relies on a local installation of coi-services. It must
+# be built and interfaces must be generated. Put the path to this directory
+# in this variable. You may use ~, but not environment variables in the path.
 pyon_path: /path/to/coi-services
 
+# the launch populates a pyon.yml template file and injects it into the
+# launched containers in the system. If you set this value to a local
+# path, the launch will also write the pyon config there. This is useful
+# for running tests or preload steps against a launched environment.
+# For example you might write directly to pyon.local.yml in a coi-services
+# source tree:
+#
+#     pyon_config_output: ~/code/coi-services/res/config/pyon.local.yml
+
+pyon_config_output: ""

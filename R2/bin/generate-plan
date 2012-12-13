@@ -163,15 +163,15 @@ def _get_couchdb_global_vars(config, need_host=False):
 
 def _get_common_global_vars(config):
     global_vars = {}
-    pyon_config_path = config.get('pyon_config_path')
-    if pyon_config_path:
-        pyon_config_path = os.path.expanduser(pyon_config_path)
-        global_vars['pyon_config_path'] = pyon_config_path
+    pyon_config_output = config.get('pyon_config_output')
+    if pyon_config_output:
+        pyon_config_output = os.path.expanduser(pyon_config_output)
+        global_vars['pyon_config_output'] = pyon_config_output
     else:
-        global_vars['pyon_config_path'] = ""
+        global_vars['pyon_config_output'] = ""
 
     gateway_ddns_hosts = config.get('gateway_ddns_hosts', "")
-    if gateway_ddns_hosts and isinstance(gateway_ddns_hosts, (list, tuple)):
+    if gateway_ddns_hosts != "" and isinstance(gateway_ddns_hosts, (list, tuple)):
         gateway_ddns_hosts = ",".join(gateway_ddns_hosts)
     global_vars['gateway_ddns_hosts'] = gateway_ddns_hosts
 
