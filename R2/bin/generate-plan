@@ -678,6 +678,9 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
     process_definition_dir = os.path.join(output_dir, "pd-bootstrap",
             "pd-bootstrap", "process-definitions")
 
+    # ensure process definition output directory exists
+    os.mkdir(process_definition_dir)
+
     # ha agent is special case added as a process definition
     haagent_definition_id = _make_process_definition(uuid.uuid4().hex, "haagent",
             "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
