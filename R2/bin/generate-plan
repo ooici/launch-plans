@@ -817,8 +817,9 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
             # with or without HA
             if ha_config:
                 app_conf = conf_template.substitute(name=name,
-                        definition_id=haagent_definition_id,
-                        haagent_dashi_name=haagent_dashi_name)
+                    definition_id=haagent_definition_id,
+                    haagent_dashi_name=haagent_dashi_name,
+                    restart_mode="ALWAYS")
 
                 policy_name = ha_config['policy']
                 policy_params = ha_config['parameters']
@@ -837,7 +838,8 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
                 app_conf = conf_template.substitute(
                     name=name,
                     definition_id=app.process_definition_id,
-                    haagent_dashi_name="")
+                    haagent_dashi_name="",
+                    restart_mode="ABNORMAL")
                 process_config_json = json.dumps(app.config, indent=2)
                 json_contents = json_template.substitute(
                     process_config=process_config_json)

@@ -9,6 +9,7 @@ Options:
 [-i|--upid id]
 [-d|--processdispatcher pdname]
 [-c|--config cfg.yml]
+[-r|--restart ALWAYS|NEVER|ABNORMAL]
 [-n|--name run]
 [-b|--host brokerhostname]
 [-u|--username username]
@@ -41,6 +42,9 @@ while [ "$1" != "" ]; do
                                 ;;
         -i | --upid )           shift
                                 upid=$1
+                                ;;
+        -r | --restart )        shift
+                                restart_mode=$1
                                 ;;
         -c | --config )         shift
                                 config=$1
@@ -100,6 +104,11 @@ else
         fi
     fi
 fi
+
+if [ -z "$restart_mode" ]; then
+    restart_mode="NEVER"
+fi
+
 # add dashi timeout
 CEICTL_ARGS="${CEICTL_ARGS} -t 15"
 
@@ -126,7 +135,7 @@ fi
 
 if [ "$action" = "start" ]; then
     procid="`uuidgen | tr '[A-Z]' '[a-z]' | tr -d -`"
-    restart_mode="NEVER"
+
     queueing_mode="ALWAYS"
 
     upid=`$CEICTL $CEICTL_ARGS --json -d ${processdispatcher} process schedule ${procid} ${process_definition_id} --queueing-mode ${queueing_mode} --restart-mode ${restart_mode} bootconf.json`
