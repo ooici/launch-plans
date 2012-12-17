@@ -72,7 +72,7 @@ contextualization:
     ddns:
       hostname: ${ddns_hostname}
     hsflowd:
-      collector_ip: 69.196.58.199
+      collector_ip: ${hsflow_collector_host}
       json_port: 36343
     recipes:
     - hsflowd::config

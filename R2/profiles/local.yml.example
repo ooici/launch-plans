@@ -1,8 +1,10 @@
 profile_type: local
+
 rabbitmq:
   host: localhost
   username: guest
   password: guest
+
 couchdb:
   host: localhost
   username: ""

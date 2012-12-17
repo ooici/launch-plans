@@ -9,6 +9,7 @@ import yaml
 import json
 import shutil
 import argparse
+import collections
 from string import Template
 from collections import defaultdict
 from subprocess import check_call
@@ -65,6 +66,24 @@ class PathFinder(object):
         """Returns path to deployable types directory
         """
         return os.path.join(ROOT_DIR, "src", "dt")
+
+    def get_profile_defaults(self):
+        path = os.path.join(ROOT_DIR, "src", "profile_defaults.yml")
+        try:
+            with file(path) as f:
+                return yaml.load(f)
+        except Exception, e:
+            raise PlanError("Problem reading profile config defaults file '%s': %s" %
+                (path, str(e)))
+
+    def get_pyon_config(self):
+        path = os.path.join(ROOT_DIR, "src", "pyon.yml")
+        try:
+            with file(path) as f:
+                return yaml.load(f)
+        except Exception, e:
+            raise PlanError("Problem reading pyon config defaults '%s': %s" %
+                (path, str(e)))
 
 
 ##############################################################################
@@ -169,6 +188,21 @@ def _get_common_global_vars(config):
         global_vars['pyon_config_output'] = pyon_config_output
     else:
         global_vars['pyon_config_output'] = ""
+
+    trafficsentinel = config.get('trafficsentinel')
+    if trafficsentinel:
+        trafficsentinel_host = trafficsentinel.get('host')
+        if trafficsentinel_host:
+            global_vars['hsflow_collector_host'] = trafficsentinel_host
+
+    return global_vars
+
+
+def _get_common_vm_global_vars(config):
+    global_vars = {}
+    packages = _get_or_bail(config, 'packages')
+    for package, url in packages.items():
+        global_vars["%s_archive_url" % package] = url
 
     gateway_ddns_hosts = config.get('gateway_ddns_hosts', "")
     if gateway_ddns_hosts != "" and isinstance(gateway_ddns_hosts, (list, tuple)):
@@ -305,11 +339,11 @@ class BaseVMProfile(BaseProfile):
         site_name = str(site['name'])
         site_path = os.path.join(dt_bootstrap_dir, 'sites', site_name + ".yml")
         with open(site_path, 'w') as f:
-            yaml.dump(site, f)
+            yaml.dump(site, f, default_flow_style=False)
 
         creds_path = os.path.join(dt_bootstrap_dir, 'credentials', site_name + ".yml")
         with open(creds_path, 'w') as f:
-            yaml.dump(creds, f)
+            yaml.dump(creds, f, default_flow_style=False)
 
         dt_path = self.pathfinder.get_dt_path()
         for dt_file in os.listdir(dt_path):
@@ -321,7 +355,7 @@ class BaseVMProfile(BaseProfile):
                 dt['mappings'] = mappings
 
                 with open(os.path.join(dt_bootstrap_dir, "dt", dt_file), 'w') as f:
-                    yaml.dump(dt, f)
+                    yaml.dump(dt, f, default_flow_style=False)
 
         make_tarball_exe = os.path.join(output_dir, "dtrs-bootstrap",
             "prepare-tarball.sh")
@@ -390,6 +424,7 @@ class NimbusDynamicProfile(BaseNimbusProfile):
 
     def _get_base_global_vars(self, config):
         global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
         global_vars.update(_get_couchdb_global_vars(config, need_host=False))
         return global_vars
@@ -469,6 +504,7 @@ class EC2DynamicProfile(BaseEC2Profile):
 
     def _get_base_global_vars(self, config):
         global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
         global_vars.update(_get_couchdb_global_vars(config, need_host=False))
         return global_vars
@@ -513,6 +549,32 @@ def get_last_level(cloudinitd_conf):
             i += 1
 
 
+# dict_merge from: http://appdelegateinc.com/blog/2011/01/12/merge-deeply-nested-dicts-in-python/
+def quacks_like_dict(object):
+    """Check if object is dict-like"""
+    return isinstance(object, collections.Mapping)
+
+
+def dict_merge(a, b):
+    assert quacks_like_dict(a)
+    assert quacks_like_dict(b)
+
+    dst = a.copy()
+
+    stack = [(dst, b)]
+    while stack:
+        current_dst, current_src = stack.pop()
+        for key in current_src:
+            if key not in current_dst:
+                current_dst[key] = current_src[key]
+            else:
+                if quacks_like_dict(current_src[key]) and quacks_like_dict(current_dst[key]):
+                    stack.append((current_dst[key], current_src[key]))
+                else:
+                    current_dst[key] = current_src[key]
+    return dst
+
+
 ##############################################################################
 # DEPLOYMENT PARSING
 ##############################################################################
@@ -530,10 +592,12 @@ class App(object):
 
 
 class Deployment(object):
-    def __init__(self, bootlevels, execution_engines, default_execution_engine_id):
+    def __init__(self, bootlevels, execution_engines,
+        default_execution_engine_id, pyon_config):
         self.bootlevels = bootlevels
         self.execution_engines = execution_engines
         self.default_execution_engine_id = default_execution_engine_id
+        self.pyon_config = pyon_config
 
 
 def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
@@ -625,7 +689,15 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
 
     bootlevels = [bootlevel_apps[lvl] for lvl in sorted(bootlevel_apps.keys())]
 
-    return Deployment(bootlevels, engines, default_engine_id)
+    # pick out pyon config block from launch file
+    pyon_config = launch.get('config')
+    if pyon_config:
+        if not isinstance(pyon_config, collections.Mapping):
+            raise PlanError("Launch file has invalid config value. Must be a dictionary.")
+    else:
+        pyon_config = None
+
+    return Deployment(bootlevels, engines, default_engine_id, pyon_config)
 
 
 ##############################################################################
@@ -633,7 +705,7 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
 ##############################################################################
 
 def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
-    use_links=False, no_cleanup=False, pyon_config_path=None):
+    use_links=False, no_cleanup=False):
     """Creates a launch plan from a deployment description, in a directory
     """
     output_dir = os.path.normpath(output_dir)
@@ -645,7 +717,7 @@ def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
 
     try:
         _inner_generate_plan(pathfinder, profile, deployment, tmpdir,
-            use_links=use_links, pyon_config_path=pyon_config_path)
+            use_links=use_links)
 
         # move the tmpdir into place
         try:
@@ -669,7 +741,7 @@ def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
 
 
 def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
-    use_links, pyon_config_path):
+    use_links):
 
     _write_base_files(pathfinder, profile, output_dir, use_links)
 
@@ -701,9 +773,13 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
     # write profile-specific config and top level plan
     profile.write_plan(deployment, output_dir, level_config_paths)
 
-    # write pyon config if specified
-    if pyon_config_path:
-        shutil.copy2(pyon_config_path, os.path.join(output_dir, "common", "pyon.yml"))
+    # deep merge pyon configs and write to plan
+    pyon_config = pathfinder.get_pyon_config()
+    if deployment.pyon_config:
+        pyon_config = dict_merge(pyon_config, deployment.pyon_config)
+    pyon_config_path = os.path.join(output_dir, "common", "pyon.yml")
+    with open(pyon_config_path, 'w') as f:
+        yaml.dump(pyon_config, f, default_flow_style=False)
 
 
 def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id):
@@ -852,17 +928,6 @@ def _inner_main(opts):
     elif not os.path.exists(plandir_parent):
         raise PlanError("plan output directory parent does not exist: %s" % plandir_parent)
 
-    # ensure pyon config exists if specified
-    if opts.pyon_config:
-        try:
-            yaml.load(opts.pyon_config)
-            opts.pyon_config.close()
-        except Exception, e:
-            raise PlanError("failed to read pyon config: %s" % str(e))
-        pyon_config_path = opts.pyon_config.name
-    else:
-        pyon_config_path = None
-
     # read and validate input files
     try:
         rel = yaml.load(opts.relfile)
@@ -882,6 +947,10 @@ def _inner_main(opts):
     except Exception, e:
         raise PlanError("failed to read profile: %s" % str(e))
 
+    # load base profile config and merge user config into it
+    base_profile_config = pathfinder.get_profile_defaults()
+    profile_config = dict_merge(base_profile_config, profile_config)
+
     # parse profile and instantiate the appropriate profile object
     try:
         profile_type = profile_config.pop('profile_type')
@@ -899,7 +968,7 @@ def _inner_main(opts):
 
     # now generate the actual plan
     generate_plan(pathfinder, profile, deployment, plandir, force=opts.force,
-        no_cleanup=opts.no_cleanup, pyon_config_path=pyon_config_path)
+        no_cleanup=opts.no_cleanup)
 
 
 def _get_profile_type_descriptions():
@@ -953,9 +1022,6 @@ def main():
 
     parser.add_argument('-f', '--force', action='store_const',
         const=True, help="overwrite plan directory if it exists")
-    parser.add_argument('--pyon-config', '-P', metavar="pyon.yml",
-        help="alternate pyon.yml config file", dest='pyon_config',
-        type=argparse.FileType('r'))
     parser.add_argument('-i', '--ignore-bootlevels',
         dest='ignore_bootlevels', action='store_const', const=True,
         help="ignore bootlevels in rel and generate one level per app")

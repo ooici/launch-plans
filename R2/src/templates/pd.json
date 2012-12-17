@@ -53,24 +53,14 @@
                 "deployable_type": "${worker_deployable_type}"
             }
           },
-          "default_engine": "default",
           "engines": {
-            "default": {
-              "slots": 100,
-              "replicas": 2,
-              "base_need": 1,
-              "config": {
-                "unique_key": "ddns_hostname",
-                "unique_values": "${gateway_ddns_hosts}"
-              }
-            }
           }
         }
       }
     }
   },
   "hsflowd": {
-    "collector_ip": "69.196.58.199",
+    "collector_ip": "${hsflow_collector_host}",
     "json_port": "36343"
   },
   "recipes": [

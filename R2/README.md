@@ -83,6 +83,9 @@ You obviously need to replace the various credential fields with your own
 values but you can also change any other setting to suit your deployment.
 For example you could change the Nimbus URL to point to a different cloud.
 
+Profiles have a number of default values which can be overridden. You can
+see all of the defaults in the ``src/profile_defaults.yml`` file.
+
 
 Generating Launch Plans
 -----------------------
@@ -106,7 +109,8 @@ plan, use the ``--force`` option (carefully!).
 For example, here is a command that creates a launch plan using the
 ooinimbus-dynamic profile (using REL and deploy files from the ION checkout):
 
-    $ bin/generate-plan --profile profiles/nimbus-dynamic.yml --rel $PYON_PATH/res/deploy/r2deploy.yml --launch $PYON_PATH/res/launch/alpha.yml plans/alpha
+    $ bin/generate-plan --profile profiles/nimbus-dynamic.yml --rel $PYON_PATH/res/deploy/r2deploy.yml \
+    --launch $PYON_PATH/res/launch/alpha.yml plans/alpha
 
 This will generate a plan into the ``plans/alpha/`` directory. Conventionally,
 plans are placed into this ``plans/`` directory but you can provide any path. The
@@ -114,11 +118,11 @@ generated plan is self-contained, so you can move it elsewhere at will.
 
 Generating a lightweight launch plan might look like:
 
-    $ bin/generate-plan --profile profiles/local.yml --rel $PYON_PATH/res/deploy/r2deploy.yml --launch $PYON_PATH/res/launch/lightweight.yml plans/lightweight
+    $ bin/generate-plan --profile profiles/local.yml --rel $PYON_PATH/res/deploy/r2deploy.yml \
+    --launch $PYON_PATH/res/launch/lightweight.yml plans/lightweight
 
-If needed, you can specify an alternate pyon config file (that will be loaded
-into the directory on boot) with the ``--pyon-config`` argument. By default
-the file ``src/baseplan/common/pyon.yml`` will be used.
+REL and launch files are documented more fully on the OOI confluence:
+[CEI Deployment Configuration](https://confluence.oceanobservatories.org/display/CIDev/CEI+Deployment+Configuration).
 
 
 Booting Launch Plans

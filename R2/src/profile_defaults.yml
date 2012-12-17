@@ -1,0 +1,19 @@
+# PROFILE DEFAULTS
+#
+# This file contains default values for all profiles. User-supplied profile
+# configs are deep-merged into this data
+
+
+packages:
+  dt_data: http://sddevrepo.oceanobservatories.org/releases/dt-data-develop.tar.gz
+  coi_services: http://sddevrepo.oceanobservatories.org/releases/coi-services-ooici-master.tar.gz
+  epu: http://sddevrepo.oceanobservatories.org/releases/epu-venv-ooici-master.tar.gz
+  epuagent: http://sddevrepo.oceanobservatories.org/releases/epuagent-venv-ooici-master.tar.gz
+
+graylog:
+  logging-dev.oceanobservatories.org
+
+gateway_ddns_hosts: []
+
+trafficsentinel:
+    host: 69.196.58.199

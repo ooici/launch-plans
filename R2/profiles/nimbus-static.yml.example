@@ -1,4 +1,5 @@
 profile_type: nimbus-static
+
 iaas:
   site: ooi.ucsd
   key: REPLACE_WITH_NIMBUS_KEY
@@ -7,14 +8,17 @@ iaas:
   base-image: r2-worker
   base-allocation: m1.xlarge
   sshkeyname: ooi
+
 rabbitmq:
   host: REPLACE_WITH_RABBITMQ_HOSTNAME
   username: REPLACE_WITH_RABBITMQ_USERNAME
   password: REPLACE_WITH_RABBITMQ_PASSWORD
+
 couchdb:
   host: REPLACE_WITH_COUCHDB_HOSTNAME
   username: REPLACE_WITH_COUCHDB_USERNAME
   password: REPLACE_WITH_COUCHDB_PASSWORD
+
 graylog:
   host: logging-dev.oceanobservatories.org
 
@@ -22,6 +26,18 @@ graylog:
 # to the service gateway VMs. Ensure you have at least as many hostnames
 # as there will ever be VMs.
 gateway_ddns_hosts: []
+
+
+# if desired, you can specify a custom URL for any of the packages used in
+# the launch. Uncomment this block and adjust the desired URL. Any unspecified
+# package URL falls back to the default.
+
+packages:
+#  coi_services: http://some/url.tar.gz
+#  dt_data: http://some/url.tar.gz
+#  epu: http://some/url.tar.gz
+#  epuagent: http://some/url.tar.gz
+
 
 # the launch populates a pyon.yml template file and injects it into the
 # launched containers in the system. If you set this value to a local
