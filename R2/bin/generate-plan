@@ -436,9 +436,10 @@ class NimbusStaticProfile(BaseNimbusProfile):
     PLAN_CONFIG_TEMPLATE = "nimbus-static.conf"
 
     def _get_base_global_vars(self, config):
-        global_vars = {}
-        global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
-        global_vars.update(_get_couchdb_global_vars(config, need_host=False))
+        global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_common_vm_global_vars(config))
+        global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
+        global_vars.update(_get_couchdb_global_vars(config, need_host=True))
         return global_vars
 
 
@@ -516,7 +517,8 @@ class EC2StaticProfile(BaseEC2Profile):
     PLAN_CONFIG_TEMPLATE = "ec2-static.conf"
 
     def _get_base_global_vars(self, config):
-        global_vars = {}
+        global_vars = _get_common_global_vars(config)
+        global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
         global_vars.update(_get_couchdb_global_vars(config, need_host=True))
         return global_vars

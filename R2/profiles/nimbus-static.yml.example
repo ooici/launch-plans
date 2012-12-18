@@ -32,7 +32,7 @@ gateway_ddns_hosts: []
 # the launch. Uncomment this block and adjust the desired URL. Any unspecified
 # package URL falls back to the default.
 
-packages:
+#packages:
 #  coi_services: http://some/url.tar.gz
 #  dt_data: http://some/url.tar.gz
 #  epu: http://some/url.tar.gz
