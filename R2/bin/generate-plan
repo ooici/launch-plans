@@ -109,6 +109,10 @@ def _write_plan_configs(template, output_dir, bootlevel_config_paths,
 
     last_level = get_last_level(template.template)
 
+    # make a copy and append the finalize level to the end
+    bootlevel_config_paths = list(bootlevel_config_paths)
+    bootlevel_config_paths.append("finalize/finalize.conf")
+
     new_levels_lines = [""]  # blank line to start with
     for bootlevel_config in bootlevel_config_paths:
         new_levels_lines.append("level%s: %s" % (last_level,
