@@ -1,4 +1,5 @@
 ---
+bootmode: ${bootmode}
 container:
   sflow:
     enabled: true

@@ -103,52 +103,43 @@ def _get_or_bail(config, key, prefix="", empty_ok=False):
     return value
 
 
-class BaseProfile(object):
-    # file within plan where top level config is written
-    PLAN_CONFIG_FILENAME = "launch.conf"
+def _write_plan_configs(template, output_dir, bootlevel_config_paths,
+    global_vars=None, extra_vars=None, initial_filename="launch.conf",
+    restart_filename="restart.conf"):
 
-    # overriden in subclasses. name for top-level plan config template
-    PLAN_CONFIG_TEMPLATE = None
+    last_level = get_last_level(template.template)
 
-    def __init__(self, pathfinder):
-        self.pathfinder = pathfinder
+    new_levels_lines = [""]  # blank line to start with
+    for bootlevel_config in bootlevel_config_paths:
+        new_levels_lines.append("level%s: %s" % (last_level,
+            bootlevel_config))
+        last_level += 1
 
-    def load_config(self, config):
-        """Load profile configuration
-        """
+    new_levels = "\n".join(new_levels_lines)
 
-    def write_plan(self, deployment, output_dir, bootlevel_config_paths):
-        raise NotImplementedError()
+    global_vars = deepcopy(global_vars) if global_vars else {}
 
-    def _write_plan_config(self, output_dir, bootlevel_config_paths, global_vars=None, extra_vars=None):
-        assert self.PLAN_CONFIG_TEMPLATE is not None
+    def _get_global_vars_str(vars):
+        return "\n".join("%s: %s" % (key, vars[key])
+            for key in sorted(vars.keys()))
 
-        plan_config_tmpl = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
-        last_level = get_last_level(plan_config_tmpl.template)
+    global_vars['bootmode'] = "initial"
+    initial_global_vars_str = _get_global_vars_str(global_vars)
+    global_vars['bootmode'] = "restart"
+    restart_global_vars_str = _get_global_vars_str(global_vars)
 
-        new_levels_lines = [""]  # blank line to start with
-        for bootlevel_config in bootlevel_config_paths:
-            new_levels_lines.append("level%s: %s" % (last_level,
-                bootlevel_config))
-            last_level += 1
+    tmpl_vars = {"levels": new_levels}
+    if extra_vars:
+        tmpl_vars.update(extra_vars)
 
-        new_levels = "\n".join(new_levels_lines)
+    # write out a launch.conf and restart.conf
+    tmpl_vars['globals'] = initial_global_vars_str
+    with open(os.path.join(output_dir, initial_filename), 'w') as f:
+        f.write(template.substitute(tmpl_vars))
 
-        global_vars = global_vars or {}
-        global_vars_lines = []
-        for key in sorted(global_vars.keys()):
-            global_vars_lines.append("%s: %s" % (key, global_vars[key]))
-        global_vars_str = "\n".join(global_vars_lines)
-
-        tmpl_vars = {"levels": new_levels, "globals": global_vars_str}
-
-        if extra_vars:
-            tmpl_vars.update(extra_vars)
-
-        plan_config = plan_config_tmpl.substitute(tmpl_vars)
-        output_path = os.path.join(output_dir, self.PLAN_CONFIG_FILENAME)
-        with open(output_path, 'w') as f:
-            f.write(plan_config)
+    tmpl_vars['globals'] = restart_global_vars_str
+    with open(os.path.join(output_dir, restart_filename), 'w') as f:
+        f.write(template.substitute(tmpl_vars))
 
 
 def _set_deployment_pd_config(deployment, pd_config):
@@ -218,7 +209,7 @@ def _get_common_vm_global_vars(config):
     return global_vars
 
 
-class LocalProfile(BaseProfile):
+class LocalProfile(object):
     """Lightweight launch on local system (no VMs)
     """
     PLAN_CONFIG_TEMPLATE = "local.conf"
@@ -241,6 +232,9 @@ class LocalProfile(BaseProfile):
         }
     }
 
+    def __init__(self, pathfinder):
+        self.pathfinder = pathfinder
+
     def load_config(self, config):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
@@ -252,7 +246,9 @@ class LocalProfile(BaseProfile):
 
     def write_plan(self, deployment, output_dir, bootlevel_config_paths):
         self._write_engine_config(deployment, output_dir)
-        self._write_plan_config(output_dir, bootlevel_config_paths,
+
+        template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        _write_plan_configs(template, output_dir, bootlevel_config_paths,
             global_vars=self.global_vars)
 
     def _write_engine_config(self, deployment, output_dir):
@@ -314,7 +310,10 @@ class LocalProfile(BaseProfile):
             json.dump(deployment_dict, f, sort_keys=True, indent=2)
 
 
-class BaseVMProfile(BaseProfile):
+class BaseVMProfile(object):
+
+    def __init__(self, pathfinder):
+        self.pathfinder = pathfinder
 
     def _write_engine_config(self, deployment, output_dir):
         pd_dict = json.loads(self.pathfinder.get_template_string("pd.json"))
@@ -412,7 +411,8 @@ class BaseNimbusProfile(BaseVMProfile):
         self._write_engine_config(deployment, output_dir)
         self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
             self.baseimage, self.baseallocation)
-        self._write_plan_config(output_dir, bootlevel_config_paths,
+        template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        _write_plan_configs(template, output_dir, bootlevel_config_paths,
             extra_vars=self.plan_vars, global_vars=self.global_vars)
 
 
@@ -493,7 +493,8 @@ class BaseEC2Profile(BaseVMProfile):
         self._write_engine_config(deployment, output_dir)
         self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
             self.baseimage, self.baseallocation)
-        self._write_plan_config(output_dir, bootlevel_config_paths,
+        template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        _write_plan_configs(template, output_dir, bootlevel_config_paths,
             extra_vars=self.plan_vars, global_vars=self.global_vars)
 
 
