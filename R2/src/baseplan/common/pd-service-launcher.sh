@@ -6,7 +6,6 @@ USAGE="usage: $0 [options]
 Options:
 [-v|--virtualenv path/to/virtualenv]
 [-a|--action stop|start]
-[-i|--upid id]
 [-d|--processdispatcher pdname]
 [-c|--config cfg.yml]
 [-r|--restart ALWAYS|NEVER|ABNORMAL]
@@ -40,9 +39,6 @@ while [ "$1" != "" ]; do
         -d | --processdispatcher )       shift
                                 processdispatcher=$1
                                 ;;
-        -i | --upid )           shift
-                                upid=$1
-                                ;;
         -r | --restart )        shift
                                 restart_mode=$1
                                 ;;
@@ -52,8 +48,8 @@ while [ "$1" != "" ]; do
         -s | --sysname )        shift
                                 sysname=$1
                                 ;;
-        -j | --process-definition-id ) shift
-                                process_definition_id=$1
+        -j | --process-definition-name ) shift
+                                process_definition_name=$1
                                 ;;
         -n | --name )           shift
                                 run_name=$1
@@ -67,8 +63,8 @@ while [ "$1" != "" ]; do
     shift
 done
 
-if [ -z "$process_definition_id" ]; then
-    echo "Your process definition id must be set"
+if [ -z "$process_definition_name" ]; then
+    echo "Your process definition name must be set"
     echo $USAGE
     exit $ERROR
 fi
@@ -138,11 +134,9 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 if [ "$action" = "start" ]; then
-    procid="`uuidgen | tr '[A-Z]' '[a-z]' | tr -d -`"
-
     queueing_mode="ALWAYS"
 
-    upid=`$CEICTL $CEICTL_ARGS --json process schedule ${procid} ${process_definition_id} --queueing-mode ${queueing_mode} --restart-mode ${restart_mode} bootconf.json`
+    upid=`$CEICTL $CEICTL_ARGS --json process schedule --definition-name ${process_definition_name} --queueing-mode ${queueing_mode} --restart-mode ${restart_mode} --config bootconf.json`
     if [ $? -ne 0 ]; then
         exit 1
     fi

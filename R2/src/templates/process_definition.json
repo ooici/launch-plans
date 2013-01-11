@@ -1,4 +1,3 @@
-process_definition_id: ${process_definition_id}
 name: ${name}
 executable:
   module: ${module}

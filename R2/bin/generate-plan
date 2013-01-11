@@ -21,6 +21,7 @@ ROOT_DIR = os.path.dirname(THIS_DIR)
 BASEPLAN_DIR = os.path.join(ROOT_DIR, "src", "baseplan")
 
 PYONAPP_PREFIX = "pyonapp"
+HAAGENT_DEFINITION_NAME = "haagent"
 
 
 class PlanError(Exception):
@@ -586,10 +587,8 @@ def dict_merge(a, b):
 ##############################################################################
 
 class App(object):
-    def __init__(self, name, process_definition_id, processapp, config,
-        bootlevel, ha_config=None):
+    def __init__(self, name, processapp, config, bootlevel, ha_config=None):
         self.name = name
-        self.process_definition_id = process_definition_id
         self.processapp = processapp
         self.config = config
 
@@ -671,11 +670,7 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
         else:
             ha_config = launch_app.get('ha')
 
-        # just make up an definition ID. this could come from somewhere?
-        process_definition_id = uuid.uuid4().hex
-
-        app = App(app_name, process_definition_id, processapp, config,
-            bootlevel, ha_config)
+        app = App(app_name, processapp, config, bootlevel, ha_config)
         apps[app_name] = app
         bootlevel_apps[bootlevel].append(app)
 
@@ -760,21 +755,22 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
     os.mkdir(process_definition_dir)
 
     # ha agent is special case added as a process definition
-    haagent_definition_id = _make_process_definition(uuid.uuid4().hex, "haagent",
+    _make_process_definition(
+            HAAGENT_DEFINITION_NAME,
             "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
             pd_json_template, process_definition_dir)
 
     for level in deployment.bootlevels:
         for app in level:
             _, module, cls = app.processapp
-            _make_process_definition(app.process_definition_id, app.name,
+            _make_process_definition(app.name,
                 module, cls, pd_json_template, process_definition_dir)
 
     _tar_process_definitions(output_dir)
 
     # write boot levels
     level_config_paths = _write_boot_levels(pathfinder, deployment.bootlevels,
-        output_dir, haagent_definition_id)
+        output_dir, HAAGENT_DEFINITION_NAME)
 
     # write profile-specific config and top level plan
     profile.write_plan(deployment, output_dir, level_config_paths)
@@ -788,7 +784,7 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
         yaml.dump(pyon_config, f, default_flow_style=False)
 
 
-def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id):
+def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_name):
 
     json_template = pathfinder.get_template("process.json")
     conf_template = pathfinder.get_template("pyon.conf")
@@ -821,7 +817,7 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
             # with or without HA
             if ha_config:
                 app_conf = conf_template.substitute(name=name,
-                    definition_id=haagent_definition_id,
+                    definition_name=haagent_definition_name,
                     haagent_dashi_name=haagent_dashi_name,
                     restart_mode="ALWAYS")
 
@@ -834,14 +830,14 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
                     policy_name=policy_name,
                     policy_parameters=policy_params_json,
                     haagent_dashi_name=haagent_dashi_name,
-                    process_definition_id=app.process_definition_id,
+                    process_definition_name=app.name,
                     process_config=process_config_json,
                     resource_id=uuid.uuid4().hex)
 
             else:
                 app_conf = conf_template.substitute(
                     name=name,
-                    definition_id=app.process_definition_id,
+                    definition_name=app.name,
                     haagent_dashi_name="",
                     restart_mode="ABNORMAL")
                 process_config_json = json.dumps(app.config, indent=2)
@@ -866,7 +862,6 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
 
 
 def _write_base_files(pathfinder, profile, output_dir, use_links):
-
     # profile is included but unused so far. Thinking that we may want to
     # selectively write only a portion of the base files which are needed
     # for the chosen profile.
@@ -885,22 +880,18 @@ def _write_base_files(pathfinder, profile, output_dir, use_links):
             shutil.copy2(src, dst)
 
 
-def _make_process_definition(process_definition_id, name, module, klass,
-    pd_template, definition_dir):
-    """Create or update process definition file. Returns process definition ID
+def _make_process_definition(name, module, klass, pd_template, definition_dir):
+    """Create or update process definition file.
     """
 
     process_definition_filename = "%s.yml" % name
     process_definition_file_path = os.path.join(definition_dir,
             process_definition_filename)
 
-    pd = pd_template.substitute(name=name, module=module, klass=klass,
-            process_definition_id=process_definition_id)
+    pd = pd_template.substitute(name=name, module=module, klass=klass)
 
     with open(process_definition_file_path, "w") as pd_file:
         pd_file.write(pd)
-
-    return process_definition_id
 
 
 def _tar_process_definitions(output_dir):

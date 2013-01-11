@@ -110,7 +110,6 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 # Add all pds
-echo $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create $pddir/*.yml
-$CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create $pddir/*.yml
+$CEICTL $CEICTL_ARGS -d $process_dispatcher process-definition sync $pddir/*.yml
 
 exit
