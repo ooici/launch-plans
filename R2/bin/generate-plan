@@ -104,6 +104,19 @@ def _get_or_bail(config, key, prefix="", empty_ok=False):
     return value
 
 
+def _make_csv_list(value):
+    if isinstance(value, basestring):
+        return value
+
+    if value is None:
+        return ""
+
+    if isinstance(value, (list, tuple)):
+        return ",".join(value)
+
+    raise PlanError("Expected sequence value, got: %s" % value)
+
+
 def _write_plan_configs(template, output_dir, bootlevel_config_paths,
     global_vars=None, extra_vars=None, initial_filename="launch.conf",
     restart_filename="restart.conf"):
@@ -176,6 +189,20 @@ def _get_couchdb_global_vars(config, need_host=False):
     return global_vars
 
 
+def _get_zookeeper_global_vars(config):
+    global_vars = {}
+
+    zookeeper = config.get('zookeeper')
+    if zookeeper:
+        zookeeper_hosts = _get_or_bail(zookeeper, 'hosts', 'zookeeper')
+        global_vars['zookeeper_hosts'] = _make_csv_list(zookeeper_hosts)
+        global_vars['zookeeper_enabled'] = str(bool(zookeeper.get('enabled', True)))
+    else:
+        global_vars['zookeeper_hosts'] = ""
+        global_vars['zookeeper_enabled'] = str(False)
+    return global_vars
+
+
 def _get_common_global_vars(config):
     global_vars = {}
     pyon_config_output = config.get('pyon_config_output')
@@ -191,6 +218,8 @@ def _get_common_global_vars(config):
         if trafficsentinel_host:
             global_vars['hsflow_collector_host'] = trafficsentinel_host
 
+    global_vars.update(_get_zookeeper_global_vars(config))
+
     return global_vars
 
 
@@ -200,10 +229,8 @@ def _get_common_vm_global_vars(config):
     for package, url in packages.items():
         global_vars["%s_archive_url" % package] = url
 
-    gateway_ddns_hosts = config.get('gateway_ddns_hosts', "")
-    if gateway_ddns_hosts != "" and isinstance(gateway_ddns_hosts, (list, tuple)):
-        gateway_ddns_hosts = ",".join(gateway_ddns_hosts)
-    global_vars['gateway_ddns_hosts'] = gateway_ddns_hosts
+    global_vars['gateway_ddns_hosts'] = _make_csv_list(
+        config.get('gateway_ddns_hosts', ""))
 
     graylog_host = ""
     graylog_config = config.get('graylog')

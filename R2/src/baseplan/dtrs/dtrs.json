@@ -23,6 +23,11 @@
             "username": "${rabbitmq_username}",
             "password": "${rabbitmq_password}",
             "exchange": "${rabbitmq_exchange}"
+          },
+          "zookeeper": {
+            "hosts": "${zookeeper_hosts}",
+            "path": "/${sysname}/dtrs",
+            "enabled": "${zookeeper_enabled}"
           }
         },
         "dashi": {

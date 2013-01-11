@@ -2,6 +2,13 @@
   "pyon-process-dispatchers": {
     "process_dispatcher": {
       "config": {
+        "server": {
+          "zookeeper": {
+            "hosts": "${zookeeper_hosts}",
+            "path": "/${sysname}/pd",
+            "enabled": "${zookeeper_enabled}"
+          }
+        },
         "system":{
           "name": "${sysname}"
         },
