@@ -12,6 +12,9 @@ while [ "$1" != "" ]; do
         -v | --virtualenv )     shift
                                 virtualenv=$1
                                 ;;
+        -m | --bootmode )       shift
+                                bootmode=$1
+                                ;;
         -h | --help )           echo "$USAGE"
                                 exit
                                 ;;
@@ -20,7 +23,6 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
-
 
 if [ -n "$virtualenv" ]; then
     ACTIVATE="${virtualenv}/bin/activate"
@@ -33,4 +35,13 @@ if [ -n "$virtualenv" ]; then
     source $ACTIVATE
 fi
 
-exec epu-zktool --config bootconf.json setup
+# if initial bootmode, clean out ZK first
+if [ -n "$bootmode" ]; then
+    if [ "$bootmode" == "initial" ]; then
+        clean="--clean"
+    else
+        clean=""
+    fi
+fi
+
+exec epu-zktool --config bootconf.json setup $clean

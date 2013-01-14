@@ -1,4 +1,7 @@
 {
+  "process": {
+    "nosystemrestart": true
+  },
   "highavailability": {
     "policy": {
       "name": "${policy_name}",
