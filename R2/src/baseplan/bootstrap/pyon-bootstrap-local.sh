@@ -13,4 +13,4 @@ fi
 CONFIG=`pwd`/bootconf.json
 
 cd $PYON_PATH
-./bin/store_interfaces --sysname=$sysname --config $CONFIG
+./bin/store_interfaces -fc --sysname=$sysname --config $CONFIG
