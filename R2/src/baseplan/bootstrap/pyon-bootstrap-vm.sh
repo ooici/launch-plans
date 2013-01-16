@@ -15,4 +15,4 @@ CONFIG=`pwd`/bootconf.json
 cp bootconf.json $PYON_PATH/res/config/pyon.local.yml
 
 cd $PYON_PATH
-./bin/store_interfaces -fc --sysname=$sysname
+su cc -c "./bin/store_interfaces -fc --sysname=$sysname"
