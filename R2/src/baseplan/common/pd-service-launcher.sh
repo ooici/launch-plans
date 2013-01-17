@@ -102,6 +102,10 @@ else
         if [ -n "$sysname" ]; then
             CEICTL_ARGS="$CEICTL_ARGS -s $sysname"
         fi
+
+        if [ -n "$processdispatcher" ]; then
+            CEICTL_ARGS="$CEICTL_ARGS -d $processdispatcher"
+        fi
     fi
 fi
 
@@ -138,7 +142,7 @@ if [ "$action" = "start" ]; then
 
     queueing_mode="ALWAYS"
 
-    upid=`$CEICTL $CEICTL_ARGS --json -d ${processdispatcher} process schedule ${procid} ${process_definition_id} --queueing-mode ${queueing_mode} --restart-mode ${restart_mode} bootconf.json`
+    upid=`$CEICTL $CEICTL_ARGS --json process schedule ${procid} ${process_definition_id} --queueing-mode ${queueing_mode} --restart-mode ${restart_mode} bootconf.json`
     if [ $? -ne 0 ]; then
         exit 1
     fi
