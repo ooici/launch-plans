@@ -18,7 +18,6 @@ def main():
     client_topic = "dtrs_client_%s" % uuid.uuid4()
 
     client_dashi = bootstrap.dashi_connect(client_topic, CFG=CFG)
-    print "PDA: sysname: %s" % client_dashi.sysname
 
     dtrs_client = DTRSClient(dashi=client_dashi)
     for i in range(0, 3):

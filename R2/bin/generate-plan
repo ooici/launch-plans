@@ -229,9 +229,6 @@ class LocalProfile(BaseProfile):
             "system": {
               "name": "${sysname}"
             },
-            "dashi": {
-              "sysname": "${sysname}_cei"
-            },
             "eeagent": {
                 "heartbeat": 10,
                 "heartbeat_queue": "processdispatcher_heartbeats",
