@@ -45,7 +45,7 @@ and edit it to add your credentials. You may have multiple profiles from each
 example file. You'll need to maintain a profile for each site you want to use.
 
     $ cp profiles/nimbus-dynamic.yml.example profiles/nimbus-dynamic.yml
-    $ vi profiles-dynamic.yml
+    $ vi profiles/nimbus-dynamic.yml
 
 Note that there are different profile examples available. Each corresponds to
 a different launch type and may require slightly different values. Currently
