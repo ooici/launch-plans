@@ -5,6 +5,9 @@
         "system":{
           "name": "${sysname}"
         },
+        "dashi":{
+          "sysname": "${sysname}_cei"
+        },
         "pyon_directory": "${pyon_path}",
         "processdispatcher": {
           "static_resources": true,
@@ -38,6 +41,7 @@
   "virtualenv": "${virtualenv}",
   "persistence_dir": "${persistence_dir}",
   "rabbitmq_exchange": "${rabbitmq_exchange}",
+  "dashi_sysname": "${sysname}_cei",
   "couchdb_username": "${couchdb_username}",
   "couchdb_password": "${couchdb_password}",
   "couchdb_host": "${couchdb_host}"

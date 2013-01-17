@@ -28,6 +28,7 @@ else
     VENV="$3"
 fi
 EXCHANGE="${rabbitmq_exchange}"
+SYSNAME="${dashi_sysname}"
 
 ACTIVATE="${VENV}/bin/activate"
 
@@ -58,6 +59,12 @@ else
     exchangearg=""
 fi
 
+if [ -n "${SYSNAME}" ]; then
+    sysnamearg="-s ${SYSNAME}"
+else
+    sysnamearg=""
+fi
+
 if [ -n "${persistence_dir}" ]; then
     if [ "${ACTION}" = "start" ]; then
         mkdir -p ${persistence_dir}
@@ -67,8 +74,8 @@ if [ -n "${persistence_dir}" ]; then
 fi
 
 echo "${ACTION}ing epu-harness"
-echo epu-harness $exchangearg -c $CONFIG $ACTION $EXTRA 
-epu-harness $exchangearg -c $CONFIG $ACTION $EXTRA 
+echo epu-harness $exchangearg $sysnamearg -c $CONFIG $ACTION $EXTRA
+epu-harness $exchangearg $sysnamearg -c $CONFIG $ACTION $EXTRA
 if [ $? -ne 0 ]; then
   exit 1
 fi

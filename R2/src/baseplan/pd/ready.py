@@ -26,7 +26,8 @@ def main():
 
     sysname = CFG.system.name
     # SUCKS. copied from hardcode in PD.
-    pd_name = "%s.dashi_process_dispatcher" % sysname
+    pd_name = "process_dispatcher"
+    print "connecting to %s on sysname %s" % (pd_name, CFG.dashi.sysname)
 
     pd_client = ProcessDispatcherClient(client_dashi, topic=pd_name)
     for i in range(0, 3):

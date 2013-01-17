@@ -99,6 +99,7 @@ if [ ! `which $CEICTL` ]; then
     exit $ERROR
 fi
 
+echo $CEICTL $CEICTL_ARGS -d $processdispatcher process wait $upid
 $CEICTL $CEICTL_ARGS -d $processdispatcher process wait $upid
 if [ $? -ne 0 ]; then
     exit $ERROR

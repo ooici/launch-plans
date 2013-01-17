@@ -25,6 +25,9 @@
             "exchange": "${rabbitmq_exchange}"
           }
         },
+        "dashi": {
+          "sysname": "${dashi_sysname}"
+        },
         "logging": {
           "handlers": {
             "syslog": {

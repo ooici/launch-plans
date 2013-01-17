@@ -12,6 +12,7 @@ Options:
 [-u|--username username]
 [-p|--password password]
 [-x|--exchange exchange]
+[-s|--sysname sysname]
 "
 echo "args: $@"
 # Parse command line arguments
@@ -63,7 +64,7 @@ if [ -z "$pddir" ]; then
 fi
 
 if [ -z "$process_dispatcher" ]; then
-    process_dispatcher="processdispatcher"
+    process_dispatcher="process_dispatcher"
 fi
 
 if [ -n "$run_name" ]; then
@@ -109,6 +110,7 @@ if [ ! `which $CEICTL` ]; then
 fi
 
 # Add all pds
+echo $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create $pddir/*.yml
 $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml process-definition create $pddir/*.yml
 
 exit
