@@ -22,6 +22,8 @@ server:
 system:
   auto_bootstrap: false
   name: ${sysname}
+dashi:
+  sysname: ${sysname}_cei
 device:
   sbe37:
     port_agent_data_port: 4011

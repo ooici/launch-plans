@@ -25,6 +25,9 @@
             "exchange": "${rabbitmq_exchange}"
           }
         },
+        "dashi": {
+          "sysname": "${sysname}_cei"
+        },
         "logging": {
           "formatters" : {
              "default": {

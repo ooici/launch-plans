@@ -229,6 +229,9 @@ class LocalProfile(BaseProfile):
             "system": {
               "name": "${sysname}"
             },
+            "dashi": {
+              "sysname": "${sysname}_cei"
+            },
             "eeagent": {
                 "heartbeat": 10,
                 "heartbeat_queue": "processdispatcher_heartbeats",
@@ -288,8 +291,7 @@ class LocalProfile(BaseProfile):
                 eeagents = {}
                 node = {
                     'engine': engine_id,
-                    # PD dashi name is hardcoded for now
-                    'process-dispatcher': "${sysname}.dashi_process_dispatcher",
+                    'process-dispatcher': process_dispatcher_name,
                     'eeagents': eeagents
                 }
                 nodes[nodename] = node
