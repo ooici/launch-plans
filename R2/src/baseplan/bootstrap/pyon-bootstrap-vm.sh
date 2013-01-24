@@ -11,7 +11,7 @@ Options:
 while [ "$1" != "" ]; do
     case $1 in
         -p | --pyon-path )          shift
-                                    PYON_PATH=$1
+                                    pyon_path=$1
                                     ;;
         -m | --bootmode )           shift
                                     bootmode=$1

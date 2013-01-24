@@ -5,6 +5,7 @@ USAGE="usage: $0 [options]
 
 Options:
 [-v|--virtualenv path/to/virtualenv]
+[-m|--bootmode initial|restart]
 "
 # Parse command line arguments
 while [ "$1" != "" ]; do
