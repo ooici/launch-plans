@@ -1,6 +1,6 @@
 {
   "process": {
-    "nosystemrestart": true
+    "omit_from_system_restart": true
   },
   "highavailability": {
     "policy": {
