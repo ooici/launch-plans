@@ -41,7 +41,8 @@ if [ -n "$bootmode" ]; then
     if [ "$bootmode" == "initial" ]; then
         clean="--clean"
     else
-        clean=""
+        # always at least clean out EPU data
+        clean="--clean-epu"
     fi
 fi
 
