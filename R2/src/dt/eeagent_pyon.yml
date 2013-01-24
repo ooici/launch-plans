@@ -34,6 +34,7 @@ contextualization:
 
         # only need very basic config. the rest is pulled from directory.
         config:
+          bootmode: ${bootmode}
           server:
             couchdb:
               host:  ${couchdb_host}
