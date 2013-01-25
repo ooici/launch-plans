@@ -10,6 +10,13 @@ couchdb:
   username: ""
   password: ""
 
+# uncomment this section and provide hostnames if ZooKeeper is to be
+# used -- this is required for supporting multiple instances of CEI
+# services.
+#
+#zookeeper:
+#  hosts: [zk1:2181, zk2:2181, zk3:2181]
+
 # The local launch relies on a local installation of coi-services. It must
 # be built and interfaces must be generated. Put the path to this directory
 # in this variable. You may use ~, but not environment variables in the path.

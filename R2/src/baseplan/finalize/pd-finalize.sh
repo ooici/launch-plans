@@ -4,9 +4,7 @@ ERROR=1
 USAGE="usage: $0 [options]
 
 Options:
-[-v|--virtualenv path/to/virtualenv]
 [-d|--process-dispatcher pdname]
-[-t|--pddir pddirectory]
 [-n|--name run]
 [-b|--host brokerhostname]
 [-u|--username username]
@@ -14,16 +12,9 @@ Options:
 [-x|--exchange exchange]
 [-s|--sysname sysname]
 "
-echo "args: $@"
 # Parse command line arguments
 while [ "$1" != "" ]; do
     case $1 in
-        -v | --virtualenv )         shift
-                                    virtualenv=$1
-                                    ;;
-        -t | --pddir )              shift
-                                    pddir=$1
-                                    ;;
         -n | --name )               shift
                                     run_name=$1
                                     ;;
@@ -54,15 +45,6 @@ while [ "$1" != "" ]; do
     shift
 done
 
-
-set +e
-. bootenv.sh 2>/dev/null
-set -e
-
-if [ -z "$pddir" ]; then
-    pddir="process-definitions"
-fi
-
 if [ -z "$process_dispatcher" ]; then
     process_dispatcher="process_dispatcher"
 fi
@@ -90,18 +72,6 @@ fi
 # Move to script dir
 cd `dirname $0`
 
-
-if [ -n "$virtualenv" ]; then
-    ACTIVATE="${virtualenv}/bin/activate"
-
-    if [ ! -f "$ACTIVATE" ]; then
-        echo "'${ACTIVATE}' can't be accessed. Is your virtualenv set correctly?"
-        exit $ERROR
-    fi
-
-    source $ACTIVATE
-fi
-
 CEICTL="ceictl"
 if [ ! `which $CEICTL` ]; then
 
@@ -109,7 +79,5 @@ if [ ! `which $CEICTL` ]; then
     exit $ERROR
 fi
 
-# Add all pds
-$CEICTL $CEICTL_ARGS -d $process_dispatcher process-definition sync $pddir/*.yml
-
-exit
+# Disable system boot mode
+exec $CEICTL $CEICTL_ARGS -d $process_dispatcher --yaml system-boot off

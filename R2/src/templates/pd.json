@@ -39,6 +39,13 @@
       "supervisord_path": "/home/${epu_username}/coi-services/bin/supervisord",
       "autorestart": true,
       "config": {
+        "server": {
+          "zookeeper": {
+            "hosts": "${zookeeper_hosts}",
+            "path": "/${sysname}/pd",
+            "enabled": "${zookeeper_enabled}"
+          }
+        },
         "processdispatcher": {
           "heartbeat_queue" : "processdispatcher_heartbeats",
           "backend": "native",

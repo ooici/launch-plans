@@ -1,0 +1,9 @@
+{
+  "server": {
+    "zookeeper": {
+      "hosts": "${zookeeper_hosts}",
+      "enabled": "${zookeeper_enabled}",
+      "path": "/${sysname}"
+    }
+  }
+}

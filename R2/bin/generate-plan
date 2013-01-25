@@ -21,6 +21,7 @@ ROOT_DIR = os.path.dirname(THIS_DIR)
 BASEPLAN_DIR = os.path.join(ROOT_DIR, "src", "baseplan")
 
 PYONAPP_PREFIX = "pyonapp"
+HAAGENT_DEFINITION_NAME = "haagent"
 
 
 class PlanError(Exception):
@@ -103,52 +104,60 @@ def _get_or_bail(config, key, prefix="", empty_ok=False):
     return value
 
 
-class BaseProfile(object):
-    # file within plan where top level config is written
-    PLAN_CONFIG_FILENAME = "launch.conf"
+def _make_csv_list(value):
+    if isinstance(value, basestring):
+        return value
 
-    # overriden in subclasses. name for top-level plan config template
-    PLAN_CONFIG_TEMPLATE = None
+    if value is None:
+        return ""
 
-    def __init__(self, pathfinder):
-        self.pathfinder = pathfinder
+    if isinstance(value, (list, tuple)):
+        return ",".join(value)
 
-    def load_config(self, config):
-        """Load profile configuration
-        """
+    raise PlanError("Expected sequence value, got: %s" % value)
 
-    def write_plan(self, deployment, output_dir, bootlevel_config_paths):
-        raise NotImplementedError()
 
-    def _write_plan_config(self, output_dir, bootlevel_config_paths, global_vars=None, extra_vars=None):
-        assert self.PLAN_CONFIG_TEMPLATE is not None
+def _write_plan_configs(template, output_dir, bootlevel_config_paths,
+    global_vars=None, extra_vars=None, initial_filename="launch.conf",
+    restart_filename="restart.conf"):
 
-        plan_config_tmpl = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
-        last_level = get_last_level(plan_config_tmpl.template)
+    last_level = get_last_level(template.template)
 
-        new_levels_lines = [""]  # blank line to start with
-        for bootlevel_config in bootlevel_config_paths:
-            new_levels_lines.append("level%s: %s" % (last_level,
-                bootlevel_config))
-            last_level += 1
+    # make a copy and append the finalize level to the end
+    bootlevel_config_paths = list(bootlevel_config_paths)
+    bootlevel_config_paths.append("finalize/finalize.conf")
 
-        new_levels = "\n".join(new_levels_lines)
+    new_levels_lines = [""]  # blank line to start with
+    for bootlevel_config in bootlevel_config_paths:
+        new_levels_lines.append("level%s: %s" % (last_level,
+            bootlevel_config))
+        last_level += 1
 
-        global_vars = global_vars or {}
-        global_vars_lines = []
-        for key in sorted(global_vars.keys()):
-            global_vars_lines.append("%s: %s" % (key, global_vars[key]))
-        global_vars_str = "\n".join(global_vars_lines)
+    new_levels = "\n".join(new_levels_lines)
 
-        tmpl_vars = {"levels": new_levels, "globals": global_vars_str}
+    global_vars = deepcopy(global_vars) if global_vars else {}
 
-        if extra_vars:
-            tmpl_vars.update(extra_vars)
+    def _get_global_vars_str(vars):
+        return "\n".join("%s: %s" % (key, vars[key])
+            for key in sorted(vars.keys()))
 
-        plan_config = plan_config_tmpl.substitute(tmpl_vars)
-        output_path = os.path.join(output_dir, self.PLAN_CONFIG_FILENAME)
-        with open(output_path, 'w') as f:
-            f.write(plan_config)
+    global_vars['bootmode'] = "initial"
+    initial_global_vars_str = _get_global_vars_str(global_vars)
+    global_vars['bootmode'] = "restart"
+    restart_global_vars_str = _get_global_vars_str(global_vars)
+
+    tmpl_vars = {"levels": new_levels}
+    if extra_vars:
+        tmpl_vars.update(extra_vars)
+
+    # write out a launch.conf and restart.conf
+    tmpl_vars['globals'] = initial_global_vars_str
+    with open(os.path.join(output_dir, initial_filename), 'w') as f:
+        f.write(template.substitute(tmpl_vars))
+
+    tmpl_vars['globals'] = restart_global_vars_str
+    with open(os.path.join(output_dir, restart_filename), 'w') as f:
+        f.write(template.substitute(tmpl_vars))
 
 
 def _set_deployment_pd_config(deployment, pd_config):
@@ -180,6 +189,20 @@ def _get_couchdb_global_vars(config, need_host=False):
     return global_vars
 
 
+def _get_zookeeper_global_vars(config):
+    global_vars = {}
+
+    zookeeper = config.get('zookeeper')
+    if zookeeper:
+        zookeeper_hosts = _get_or_bail(zookeeper, 'hosts', 'zookeeper')
+        global_vars['zookeeper_hosts'] = _make_csv_list(zookeeper_hosts)
+        global_vars['zookeeper_enabled'] = str(bool(zookeeper.get('enabled', True)))
+    else:
+        global_vars['zookeeper_hosts'] = ""
+        global_vars['zookeeper_enabled'] = str(False)
+    return global_vars
+
+
 def _get_common_global_vars(config):
     global_vars = {}
     pyon_config_output = config.get('pyon_config_output')
@@ -195,6 +218,8 @@ def _get_common_global_vars(config):
         if trafficsentinel_host:
             global_vars['hsflow_collector_host'] = trafficsentinel_host
 
+    global_vars.update(_get_zookeeper_global_vars(config))
+
     return global_vars
 
 
@@ -204,10 +229,8 @@ def _get_common_vm_global_vars(config):
     for package, url in packages.items():
         global_vars["%s_archive_url" % package] = url
 
-    gateway_ddns_hosts = config.get('gateway_ddns_hosts', "")
-    if gateway_ddns_hosts != "" and isinstance(gateway_ddns_hosts, (list, tuple)):
-        gateway_ddns_hosts = ",".join(gateway_ddns_hosts)
-    global_vars['gateway_ddns_hosts'] = gateway_ddns_hosts
+    global_vars['gateway_ddns_hosts'] = _make_csv_list(
+        config.get('gateway_ddns_hosts', ""))
 
     graylog_host = ""
     graylog_config = config.get('graylog')
@@ -218,7 +241,7 @@ def _get_common_vm_global_vars(config):
     return global_vars
 
 
-class LocalProfile(BaseProfile):
+class LocalProfile(object):
     """Lightweight launch on local system (no VMs)
     """
     PLAN_CONFIG_TEMPLATE = "local.conf"
@@ -241,6 +264,9 @@ class LocalProfile(BaseProfile):
         }
     }
 
+    def __init__(self, pathfinder):
+        self.pathfinder = pathfinder
+
     def load_config(self, config):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
@@ -252,7 +278,9 @@ class LocalProfile(BaseProfile):
 
     def write_plan(self, deployment, output_dir, bootlevel_config_paths):
         self._write_engine_config(deployment, output_dir)
-        self._write_plan_config(output_dir, bootlevel_config_paths,
+
+        template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        _write_plan_configs(template, output_dir, bootlevel_config_paths,
             global_vars=self.global_vars)
 
     def _write_engine_config(self, deployment, output_dir):
@@ -314,7 +342,10 @@ class LocalProfile(BaseProfile):
             json.dump(deployment_dict, f, sort_keys=True, indent=2)
 
 
-class BaseVMProfile(BaseProfile):
+class BaseVMProfile(object):
+
+    def __init__(self, pathfinder):
+        self.pathfinder = pathfinder
 
     def _write_engine_config(self, deployment, output_dir):
         pd_dict = json.loads(self.pathfinder.get_template_string("pd.json"))
@@ -412,7 +443,8 @@ class BaseNimbusProfile(BaseVMProfile):
         self._write_engine_config(deployment, output_dir)
         self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
             self.baseimage, self.baseallocation)
-        self._write_plan_config(output_dir, bootlevel_config_paths,
+        template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        _write_plan_configs(template, output_dir, bootlevel_config_paths,
             extra_vars=self.plan_vars, global_vars=self.global_vars)
 
 
@@ -493,7 +525,8 @@ class BaseEC2Profile(BaseVMProfile):
         self._write_engine_config(deployment, output_dir)
         self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
             self.baseimage, self.baseallocation)
-        self._write_plan_config(output_dir, bootlevel_config_paths,
+        template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
+        _write_plan_configs(template, output_dir, bootlevel_config_paths,
             extra_vars=self.plan_vars, global_vars=self.global_vars)
 
 
@@ -581,10 +614,8 @@ def dict_merge(a, b):
 ##############################################################################
 
 class App(object):
-    def __init__(self, name, process_definition_id, processapp, config,
-        bootlevel, ha_config=None):
+    def __init__(self, name, processapp, config, bootlevel, ha_config=None):
         self.name = name
-        self.process_definition_id = process_definition_id
         self.processapp = processapp
         self.config = config
 
@@ -666,11 +697,7 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
         else:
             ha_config = launch_app.get('ha')
 
-        # just make up an definition ID. this could come from somewhere?
-        process_definition_id = uuid.uuid4().hex
-
-        app = App(app_name, process_definition_id, processapp, config,
-            bootlevel, ha_config)
+        app = App(app_name, processapp, config, bootlevel, ha_config)
         apps[app_name] = app
         bootlevel_apps[bootlevel].append(app)
 
@@ -755,21 +782,22 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
     os.mkdir(process_definition_dir)
 
     # ha agent is special case added as a process definition
-    haagent_definition_id = _make_process_definition(uuid.uuid4().hex, "haagent",
+    _make_process_definition(
+            HAAGENT_DEFINITION_NAME,
             "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
             pd_json_template, process_definition_dir)
 
     for level in deployment.bootlevels:
         for app in level:
             _, module, cls = app.processapp
-            _make_process_definition(app.process_definition_id, app.name,
+            _make_process_definition(app.name,
                 module, cls, pd_json_template, process_definition_dir)
 
     _tar_process_definitions(output_dir)
 
     # write boot levels
     level_config_paths = _write_boot_levels(pathfinder, deployment.bootlevels,
-        output_dir, haagent_definition_id)
+        output_dir, HAAGENT_DEFINITION_NAME)
 
     # write profile-specific config and top level plan
     profile.write_plan(deployment, output_dir, level_config_paths)
@@ -783,7 +811,7 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
         yaml.dump(pyon_config, f, default_flow_style=False)
 
 
-def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id):
+def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_name):
 
     json_template = pathfinder.get_template("process.json")
     conf_template = pathfinder.get_template("pyon.conf")
@@ -816,7 +844,7 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
             # with or without HA
             if ha_config:
                 app_conf = conf_template.substitute(name=name,
-                    definition_id=haagent_definition_id,
+                    definition_name=haagent_definition_name,
                     haagent_dashi_name=haagent_dashi_name,
                     restart_mode="ALWAYS")
 
@@ -829,14 +857,14 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
                     policy_name=policy_name,
                     policy_parameters=policy_params_json,
                     haagent_dashi_name=haagent_dashi_name,
-                    process_definition_id=app.process_definition_id,
+                    process_definition_name=app.name,
                     process_config=process_config_json,
                     resource_id=uuid.uuid4().hex)
 
             else:
                 app_conf = conf_template.substitute(
                     name=name,
-                    definition_id=app.process_definition_id,
+                    definition_name=app.name,
                     haagent_dashi_name="",
                     restart_mode="ABNORMAL")
                 process_config_json = json.dumps(app.config, indent=2)
@@ -861,7 +889,6 @@ def _write_boot_levels(pathfinder, bootlevels, output_dir, haagent_definition_id
 
 
 def _write_base_files(pathfinder, profile, output_dir, use_links):
-
     # profile is included but unused so far. Thinking that we may want to
     # selectively write only a portion of the base files which are needed
     # for the chosen profile.
@@ -880,22 +907,18 @@ def _write_base_files(pathfinder, profile, output_dir, use_links):
             shutil.copy2(src, dst)
 
 
-def _make_process_definition(process_definition_id, name, module, klass,
-    pd_template, definition_dir):
-    """Create or update process definition file. Returns process definition ID
+def _make_process_definition(name, module, klass, pd_template, definition_dir):
+    """Create or update process definition file.
     """
 
     process_definition_filename = "%s.yml" % name
     process_definition_file_path = os.path.join(definition_dir,
             process_definition_filename)
 
-    pd = pd_template.substitute(name=name, module=module, klass=klass,
-            process_definition_id=process_definition_id)
+    pd = pd_template.substitute(name=name, module=module, klass=klass)
 
     with open(process_definition_file_path, "w") as pd_file:
         pd_file.write(pd)
-
-    return process_definition_id
 
 
 def _tar_process_definitions(output_dir):

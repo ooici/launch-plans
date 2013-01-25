@@ -1,4 +1,7 @@
 {
+  "process": {
+    "omit_from_system_restart": true
+  },
   "highavailability": {
     "policy": {
       "name": "${policy_name}",
@@ -7,7 +10,7 @@
     "dashi_messaging": true,
     "dashi_name": "${haagent_dashi_name}",
     "dashi_exchange": "$${rabbitmq_exchange}",
-    "process_definition_id": "${process_definition_id}",
+    "process_definition_name": "${process_definition_name}",
     "process_configuration": ${process_config}
   },
   "agent": {

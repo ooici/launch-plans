@@ -23,6 +23,11 @@
             "username": "${rabbitmq_username}",
             "password": "${rabbitmq_password}",
             "exchange": "${rabbitmq_exchange}"
+          },
+          "zookeeper": {
+            "hosts": "${zookeeper_hosts}",
+            "path": "/${sysname}/epum",
+            "enabled": "${zookeeper_enabled}"
           }
         },
         "dashi": {
@@ -64,6 +69,7 @@
         "epumanagement": {
           "default_user": "${epu_username}",
           "provisioner_vars": {
+            "bootmode":"${bootmode}",
             "broker_ip_address":"${rabbitmq_host}",
             "broker_host":"${rabbitmq_host}",
             "broker_username":"${rabbitmq_username}",
