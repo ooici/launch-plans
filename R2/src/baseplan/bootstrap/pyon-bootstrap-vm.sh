@@ -44,4 +44,4 @@ fi
 cp bootconf.json $pyon_path/res/config/pyon.local.yml
 
 cd $pyon_path
-su cc -c "./bin/store_interfaces $FORCE_CLEAN"
+su cc -c "./bin/store_interfaces $force_clean"
