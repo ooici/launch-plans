@@ -23,6 +23,7 @@
   },
   "recipes": [
     "sshkeys",
-    "rabbitmq"
+    "rabbitmq",
+    "rabbitmq::management"
   ]
 }
