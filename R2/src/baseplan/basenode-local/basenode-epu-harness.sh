@@ -65,14 +65,6 @@ else
     sysnamearg=""
 fi
 
-if [ -n "${persistence_dir}" ]; then
-    if [ "${ACTION}" = "start" ]; then
-        mkdir -p ${persistence_dir}
-    elif [ "${ACTION}" = "stop" ]; then
-        rm -Rf ${persistence_dir}
-    fi
-fi
-
 echo "${ACTION}ing epu-harness"
 echo epu-harness $exchangearg $sysnamearg -c $CONFIG $ACTION $EXTRA
 epu-harness $exchangearg $sysnamearg -c $CONFIG $ACTION $EXTRA
