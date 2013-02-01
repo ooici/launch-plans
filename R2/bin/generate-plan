@@ -330,6 +330,8 @@ class LocalProfile(object):
                     eeagent_cfg['agent'] = {'resource_id': eeagent_name}
                     eeagent_cfg['eeagent']['name'] = eeagent_name
                     eeagent_cfg['eeagent']['slots'] = engine['slots']
+                    eeagent_cfg['eeagent']['launch_type']['persistence_directory'] = "%s.%s.%s" % (
+                            eeagent_cfg['eeagent']['launch_type']['persistence_directory'], nodename, eeagent_name)
 
                     eeagents[eeagent_name] = eeagent
 
