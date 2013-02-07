@@ -28,9 +28,6 @@ contextualization:
               host: ${graylog_host}
           root:
             handlers: [gray, console, file]
-          loggers:
-            rpc:
-              level: DEBUG
 
         # only need very basic config. the rest is pulled from directory.
         config:
