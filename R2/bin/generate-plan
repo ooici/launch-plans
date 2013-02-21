@@ -165,6 +165,16 @@ def _set_deployment_pd_config(deployment, pd_config):
     pd_config['default_engine'] = deployment.default_execution_engine_id
 
 
+def _set_deployment_replicas(deployment, run_config, service, zookeeper_enabled=False):
+    try:
+        replicas = int(deployment.basenodes.values()[0][service]['replicas'])
+    except (IndexError, AttributeError, KeyError):
+        replicas = 1
+    if replicas > 1 and not zookeeper_enabled:
+        raise PlanError("You may only have a single instance of %s when zookeeper isn't enabled" % service)
+    run_config['replicas'] = replicas
+
+
 def _get_rabbitmq_global_vars(config, need_host=False):
     rabbitmq = _get_or_bail(config, "rabbitmq")
 
@@ -350,11 +360,14 @@ class BaseVMProfile(object):
         self.pathfinder = pathfinder
 
     def _write_engine_config(self, deployment, output_dir):
+        zookeeper_enabled = self.global_vars.get('zookeeper_enabled')
         pd_dict = json.loads(self.pathfinder.get_template_string("pd.json"))
 
         pd_cfg = pd_dict['pyon']['run_config']['config']['processdispatcher']
+        pd_runconfig = pd_dict['pyon']['run_config']
 
         _set_deployment_pd_config(deployment, pd_cfg)
+        _set_deployment_replicas(deployment, pd_runconfig, "process_dispatcher", zookeeper_enabled)
 
         pd_dir = os.path.join(output_dir, "pd")
         if not os.path.exists(pd_dir):
@@ -363,6 +376,34 @@ class BaseVMProfile(object):
 
         with open(pd_json_path, 'w') as f:
             json.dump(pd_dict, f, sort_keys=True, indent=2)
+
+    def _write_epum_config(self, deployment, output_dir):
+        zookeeper_enabled = self.global_vars.get('zookeeper_enabled')
+        epum_dict = json.loads(self.pathfinder.get_template_string("epum.json"))
+        epum_runconfig = epum_dict['epu']['run_config']
+        _set_deployment_replicas(deployment, epum_runconfig, "epum", zookeeper_enabled)
+
+        epum_dir = os.path.join(output_dir, "epum")
+        if not os.path.exists(epum_dir):
+            raise PlanError("Expected EPUM bootlevel directory does not exist: %s" % epum_dir)
+        epum_json_path = os.path.join(epum_dir, "epum.json")
+
+        with open(epum_json_path, 'w') as f:
+            json.dump(epum_dict, f, sort_keys=True, indent=2)
+
+    def _write_provisioner_config(self, deployment, output_dir):
+        zookeeper_enabled = self.global_vars.get('zookeeper_enabled')
+        provisioner_dict = json.loads(self.pathfinder.get_template_string("provisioner.json"))
+        provisioner_runconfig = provisioner_dict['epu']['run_config']
+        _set_deployment_replicas(deployment, provisioner_runconfig, "provisioner", zookeeper_enabled)
+
+        provisioner_dir = os.path.join(output_dir, "provisioner")
+        if not os.path.exists(provisioner_dir):
+            raise PlanError("Expected Provisioner bootlevel directory does not exist: %s" % provisioner_dir)
+        provisioner_json_path = os.path.join(provisioner_dir, "provisioner.json")
+
+        with open(provisioner_json_path, 'w') as f:
+            json.dump(provisioner_dict, f, sort_keys=True, indent=2)
 
     def _write_dtrs_bootstrap(self, output_dir, site, creds, base_image, allocation):
 
@@ -443,6 +484,8 @@ class BaseNimbusProfile(BaseVMProfile):
 
     def write_plan(self, deployment, output_dir, bootlevel_config_paths):
         self._write_engine_config(deployment, output_dir)
+        self._write_epum_config(deployment, output_dir)
+        self._write_provisioner_config(deployment, output_dir)
         self._write_dtrs_bootstrap(output_dir, self.site, self.creds,
             self.baseimage, self.baseallocation)
         template = self.pathfinder.get_template(self.PLAN_CONFIG_TEMPLATE)
@@ -627,11 +670,12 @@ class App(object):
 
 class Deployment(object):
     def __init__(self, bootlevels, execution_engines,
-        default_execution_engine_id, pyon_config):
+                 default_execution_engine_id, pyon_config, basenodes):
         self.bootlevels = bootlevels
         self.execution_engines = execution_engines
         self.default_execution_engine_id = default_execution_engine_id
         self.pyon_config = pyon_config
+        self.basenodes = basenodes
 
 
 def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
@@ -727,7 +771,17 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
     else:
         pyon_config = None
 
-    return Deployment(bootlevels, engines, default_engine_id, pyon_config)
+    # pick out basenode config from launch file
+    basenodes = launch.get('basenodes')
+    if basenodes:
+        if not isinstance(basenodes, collections.Mapping):
+            raise PlanError("Launch file has invalid basenodes value. Must be a dictionary.")
+        if len(basenodes) > 1:
+            raise PlanError("Launch file only supports one basenode. You have %s." %
+                    basenodes.keys())
+
+
+    return Deployment(bootlevels, engines, default_engine_id, pyon_config, basenodes)
 
 
 ##############################################################################
