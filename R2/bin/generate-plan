@@ -142,49 +142,6 @@ class Validator(object):
         config = ConfigParser.RawConfigParser()
         config.read(file)
 
-EEAGENT_CONFIG='src/dt/eeagent_pyon.yml'
-EEAGENT_CONFIG_ORIG='src/dt/eeagent_pyon.yml.orig'
-
-class LogMerger(object):
-    """ incorporates optional logging.local.yml config file into eeagent_pyon.yml
-        to simplify launching with user-defined log levels.
-
-        changes are incorporated into src/dt/eeagent_pyon.yml
-        but the unchanged original is copied into src/dt/eeagent_pyon.yml.orig
-    """
-    def __init__(self, config):
-        self.config = config
-    def make_changes(self):
-        self._read()
-        if self.user_data:
-            self._merge()
-            self._write()
-
-    def _read(self):
-        # read original config from launch-plans and logging overrides requested by user
-        if not os.path.isfile(EEAGENT_CONFIG_ORIG):
-            shutil.copyfile(EEAGENT_CONFIG,EEAGENT_CONFIG_ORIG)
-        with open(EEAGENT_CONFIG_ORIG, 'r') as f:
-            self.orig_data = yaml.load(f)
-        with open(self.config, 'r') as f:
-            self.user_data = yaml.load(f)
-
-    def _merge(self):
-        # can override root level, but not handlers
-        if 'root' in self.user_data:
-            self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['root']['level'] = self.user_data['root']['level']
-        # can add loggers...
-        if 'loggers' in self.user_data:
-            if 'loggers' not in self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']:
-                self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'] = {}
-            for key in self.user_data['loggers']:
-                self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'][key] = self.user_data['loggers'][key]
-
-    def _write(self):
-        with open(EEAGENT_CONFIG, 'w') as f:
-            yaml.dump(self.orig_data, f, default_flow_style=False)
-
-
 ##############################################################################
 # LAUNCH PROFILES
 ##############################################################################
@@ -372,8 +329,9 @@ class LocalProfile(object):
         }
     }
 
-    def __init__(self, pathfinder):
+    def __init__(self, pathfinder, logconfig):
         self.pathfinder = pathfinder
+        # ignore logconfig -- local launch already has logging.local.yml in place
 
     def load_config(self, config):
         global_vars = _get_common_global_vars(config)
@@ -454,8 +412,9 @@ class LocalProfile(object):
 
 class BaseVMProfile(object):
 
-    def __init__(self, pathfinder):
+    def __init__(self, pathfinder, logconfig):
         self.pathfinder = pathfinder
+        self.logconfig = logconfig
 
     def _write_engine_config(self, deployment, output_dir):
         zookeeper_enabled = self.global_vars.get('zookeeper_enabled')
@@ -521,16 +480,31 @@ class BaseVMProfile(object):
             if os.path.splitext(dt_file)[1].lower() == ".yml":
                 with open(os.path.join(dt_path, dt_file)) as f:
                     dt = yaml.load(f)
-
+                # incorporate logging.local.yml into levels for eeagent VMs
+                if dt_file == 'eeagent_pyon.yml' and self.logconfig:
+                    self._make_logging_changes(dt)
+                # other substitutions
                 mappings = {site_name: {'iaas_image': base_image, 'iaas_allocation': allocation}}
                 dt['mappings'] = mappings
-
+                # save results
                 with open(os.path.join(dt_bootstrap_dir, "dt", dt_file), 'w') as f:
                     yaml.dump(dt, f, default_flow_style=False)
 
         make_tarball_exe = os.path.join(output_dir, "dtrs-bootstrap",
             "prepare-tarball.sh")
         check_call(make_tarball_exe)
+
+    def _make_logging_changes(self, contents):
+        overrides = yaml.load(self.logconfig)
+        # can override root level, but not handlers
+        if 'root' in overrides:
+            contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['root']['level'] = overrides['root']['level']
+            # can add loggers...
+        if 'loggers' in overrides:
+            if 'loggers' not in contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']:
+                contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'] = {}
+            for key in overrides['loggers']:
+                contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'][key] = overrides['loggers'][key]
 
 
 class BaseNimbusProfile(BaseVMProfile):
@@ -1140,7 +1114,7 @@ def _inner_main(opts):
     profile_cls = LAUNCH_PROFILE_TYPES.get(profile_type)
     if not profile_cls:
         raise PlanError("profile has invalid type '%s'. See --help for valid types." % profile_type)
-    profile = profile_cls(pathfinder)
+    profile = profile_cls(pathfinder, opts.log_config)
     profile.load_config(profile_config)
 
     # parse the Deployment object from the rel and launch configs
@@ -1223,8 +1197,6 @@ def main():
     # validate files in ROOT_DIR and also those passed in options
     try:
         Validator(opts.profile.name, opts.relfile.name, opts.launchfile.name).validate()
-        if opts.log_config:
-            LogMerger(opts.log_config.name).make_changes()
         _inner_main(opts)
     except KeyboardInterrupt:
         pass
