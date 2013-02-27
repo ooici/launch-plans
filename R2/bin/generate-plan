@@ -10,6 +10,7 @@ import json
 import shutil
 import argparse
 import collections
+import ConfigParser
 from string import Template
 from collections import defaultdict
 from subprocess import check_call
@@ -86,6 +87,60 @@ class PathFinder(object):
             raise PlanError("Problem reading pyon config defaults '%s': %s" %
                 (path, str(e)))
 
+class Validator(object):
+    """ check that all yml, json and conf files are correctly formatted """
+    def __init__(self, *files):
+        self.files = files
+        self.found_error = False
+
+    def validate(self):
+        self._validate_args()
+        self._validate_root()
+        if self.found_error:
+            raise Exception('one or more configuration files were malformed')
+
+    def _validate_args(self):
+        for path in self.files:
+            self._validate_file(path)
+
+    def _validate_root(self):
+        for root, subFolders, files in os.walk(ROOT_DIR):
+            if not root.endswith('/templates'):
+                for file in files:
+                    path = os.path.join(root,file)
+                    self._validate_file(path)
+
+    def _validate_file(self, file):
+        parts = file.split('.')
+        extension = parts[-1]
+        # handle templates like: nimbus-static.yml.example
+        if extension == 'example':
+            extension = parts[-2]
+
+        try:
+            if extension == 'yml':
+                self._validate_yaml(file)
+            elif extension == 'json':
+                self._validate_json(file)
+            elif extension == 'conf':
+                self._validate_conf(file)
+            else:
+                # log.debug('not validating file: %s', file)
+                pass
+        except Exception,e:
+            print 'ERROR: malformed %s file: %s\n%s' % (extension, file, e)
+            self.found_error = True
+
+    def _validate_yaml(self, file):
+        with open(file, 'r') as f:
+            yaml.load(f)
+    def _validate_json(self, file):
+        with open(file, 'r') as f:
+            json.load(f)
+
+    def _validate_conf(self, file):
+        config = ConfigParser.RawConfigParser()
+        config.read(file)
 
 ##############################################################################
 # LAUNCH PROFILES
@@ -1120,15 +1175,14 @@ def main():
 
     opts = parser.parse_args()
 
+    # validate files in ROOT_DIR and also those passed in options
     try:
-
+        Validator(opts.profile.name, opts.relfile.name, opts.launchfile.name).validate()
         _inner_main(opts)
-
-    except PlanError, e:
-        error(str(e))
-
     except KeyboardInterrupt:
         pass
+    except Exception, e:
+        error(str(e))
 
 
 if __name__ == '__main__':
