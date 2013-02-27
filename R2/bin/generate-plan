@@ -10,6 +10,7 @@ import json
 import shutil
 import argparse
 import collections
+import ConfigParser
 from string import Template
 from collections import defaultdict
 from subprocess import check_call
@@ -86,6 +87,60 @@ class PathFinder(object):
             raise PlanError("Problem reading pyon config defaults '%s': %s" %
                 (path, str(e)))
 
+class Validator(object):
+    """ check that all yml, json and conf files are correctly formatted """
+    def __init__(self, *files):
+        self.files = files
+        self.found_error = False
+
+    def validate(self):
+        self._validate_args()
+        self._validate_root()
+        if self.found_error:
+            raise Exception('one or more configuration files were malformed')
+
+    def _validate_args(self):
+        for path in self.files:
+            self._validate_file(path)
+
+    def _validate_root(self):
+        for root, subFolders, files in os.walk(ROOT_DIR):
+            if not root.endswith('/templates'):
+                for file in files:
+                    path = os.path.join(root,file)
+                    self._validate_file(path)
+
+    def _validate_file(self, file):
+        parts = file.split('.')
+        extension = parts[-1]
+        # handle templates like: nimbus-static.yml.example
+        if extension == 'example':
+            extension = parts[-2]
+
+        try:
+            if extension == 'yml':
+                self._validate_yaml(file)
+            elif extension == 'json':
+                self._validate_json(file)
+            elif extension == 'conf':
+                self._validate_conf(file)
+            else:
+                # log.debug('not validating file: %s', file)
+                pass
+        except Exception,e:
+            print 'ERROR: malformed %s file: %s\n%s' % (extension, file, e)
+            self.found_error = True
+
+    def _validate_yaml(self, file):
+        with open(file, 'r') as f:
+            yaml.load(f)
+    def _validate_json(self, file):
+        with open(file, 'r') as f:
+            json.load(f)
+
+    def _validate_conf(self, file):
+        config = ConfigParser.RawConfigParser()
+        config.read(file)
 
 ##############################################################################
 # LAUNCH PROFILES
@@ -274,8 +329,9 @@ class LocalProfile(object):
         }
     }
 
-    def __init__(self, pathfinder):
+    def __init__(self, pathfinder, logconfig):
         self.pathfinder = pathfinder
+        # ignore logconfig -- local launch already has logging.local.yml in place
 
     def load_config(self, config):
         global_vars = _get_common_global_vars(config)
@@ -356,8 +412,9 @@ class LocalProfile(object):
 
 class BaseVMProfile(object):
 
-    def __init__(self, pathfinder):
+    def __init__(self, pathfinder, logconfig):
         self.pathfinder = pathfinder
+        self.logconfig = logconfig
 
     def _write_engine_config(self, deployment, output_dir):
         zookeeper_enabled = self.global_vars.get('zookeeper_enabled')
@@ -423,16 +480,31 @@ class BaseVMProfile(object):
             if os.path.splitext(dt_file)[1].lower() == ".yml":
                 with open(os.path.join(dt_path, dt_file)) as f:
                     dt = yaml.load(f)
-
+                # incorporate logging.local.yml into levels for eeagent VMs
+                if dt_file == 'eeagent_pyon.yml' and self.logconfig:
+                    self._make_logging_changes(dt)
+                # other substitutions
                 mappings = {site_name: {'iaas_image': base_image, 'iaas_allocation': allocation}}
                 dt['mappings'] = mappings
-
+                # save results
                 with open(os.path.join(dt_bootstrap_dir, "dt", dt_file), 'w') as f:
                     yaml.dump(dt, f, default_flow_style=False)
 
         make_tarball_exe = os.path.join(output_dir, "dtrs-bootstrap",
             "prepare-tarball.sh")
         check_call(make_tarball_exe)
+
+    def _make_logging_changes(self, contents):
+        overrides = yaml.load(self.logconfig)
+        # can override root level, but not handlers
+        if 'root' in overrides:
+            contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['root']['level'] = overrides['root']['level']
+            # can add loggers...
+        if 'loggers' in overrides:
+            if 'loggers' not in contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']:
+                contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'] = {}
+            for key in overrides['loggers']:
+                contents['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'][key] = overrides['loggers'][key]
 
 
 class BaseNimbusProfile(BaseVMProfile):
@@ -1042,7 +1114,7 @@ def _inner_main(opts):
     profile_cls = LAUNCH_PROFILE_TYPES.get(profile_type)
     if not profile_cls:
         raise PlanError("profile has invalid type '%s'. See --help for valid types." % profile_type)
-    profile = profile_cls(pathfinder)
+    profile = profile_cls(pathfinder, opts.log_config)
     profile.load_config(profile_config)
 
     # parse the Deployment object from the rel and launch configs
@@ -1099,6 +1171,8 @@ def main():
         dest="relfile", type=argparse.FileType('r'), required=True)
     required_group.add_argument('--launch', '-l', metavar='launch.yml',
         dest="launchfile", type=argparse.FileType('r'), required=True)
+    required_group.add_argument('--logconfig', '-L', metavar='logging.local.yml',
+        dest="log_config", type=argparse.FileType('r'), required=False)
     required_group.add_argument('plandir', metavar='output path',
         help="plan output directory")
 
@@ -1120,15 +1194,14 @@ def main():
 
     opts = parser.parse_args()
 
+    # validate files in ROOT_DIR and also those passed in options
     try:
-
+        Validator(opts.profile.name, opts.relfile.name, opts.launchfile.name).validate()
         _inner_main(opts)
-
-    except PlanError, e:
-        error(str(e))
-
     except KeyboardInterrupt:
         pass
+    except Exception, e:
+        error(str(e))
 
 
 if __name__ == '__main__':
