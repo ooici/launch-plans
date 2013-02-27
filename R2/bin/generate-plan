@@ -142,6 +142,49 @@ class Validator(object):
         config = ConfigParser.RawConfigParser()
         config.read(file)
 
+EEAGENT_CONFIG='src/dt/eeagent_pyon.yml'
+EEAGENT_CONFIG_ORIG='src/dt/eeagent_pyon.yml.orig'
+
+class LogMerger(object):
+    """ incorporates optional logging.local.yml config file into eeagent_pyon.yml
+        to simplify launching with user-defined log levels.
+
+        changes are incorporated into src/dt/eeagent_pyon.yml
+        but the unchanged original is copied into src/dt/eeagent_pyon.yml.orig
+    """
+    def __init__(self, config):
+        self.config = config
+    def make_changes(self):
+        self._read()
+        if self.user_data:
+            self._merge()
+            self._write()
+
+    def _read(self):
+        # read original config from launch-plans and logging overrides requested by user
+        if not os.path.isfile(EEAGENT_CONFIG_ORIG):
+            shutil.copyfile(EEAGENT_CONFIG,EEAGENT_CONFIG_ORIG)
+        with open(EEAGENT_CONFIG_ORIG, 'r') as f:
+            self.orig_data = yaml.load(f)
+        with open(self.config, 'r') as f:
+            self.user_data = yaml.load(f)
+
+    def _merge(self):
+        # can override root level, but not handlers
+        if 'root' in self.user_data:
+            self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['root']['level'] = self.user_data['root']['level']
+        # can add loggers...
+        if 'loggers' in self.user_data:
+            if 'loggers' not in self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']:
+                self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'] = {}
+            for key in self.user_data['loggers']:
+                self.orig_data['contextualization']['chef_config']['pyon']['configure_config']['logging_config']['loggers'][key] = self.user_data['loggers'][key]
+
+    def _write(self):
+        with open(EEAGENT_CONFIG, 'w') as f:
+            yaml.dump(self.orig_data, f, default_flow_style=False)
+
+
 ##############################################################################
 # LAUNCH PROFILES
 ##############################################################################
@@ -1154,6 +1197,8 @@ def main():
         dest="relfile", type=argparse.FileType('r'), required=True)
     required_group.add_argument('--launch', '-l', metavar='launch.yml',
         dest="launchfile", type=argparse.FileType('r'), required=True)
+    required_group.add_argument('--logconfig', '-L', metavar='logging.local.yml',
+        dest="log_config", type=argparse.FileType('r'), required=False)
     required_group.add_argument('plandir', metavar='output path',
         help="plan output directory")
 
@@ -1178,6 +1223,8 @@ def main():
     # validate files in ROOT_DIR and also those passed in options
     try:
         Validator(opts.profile.name, opts.relfile.name, opts.launchfile.name).validate()
+        if opts.log_config:
+            LogMerger(opts.log_config.name).make_changes()
         _inner_main(opts)
     except KeyboardInterrupt:
         pass
