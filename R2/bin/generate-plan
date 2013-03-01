@@ -7,6 +7,7 @@ import tempfile
 import errno
 import yaml
 import json
+import traceback
 import shutil
 import argparse
 import collections
@@ -87,6 +88,7 @@ class PathFinder(object):
             raise PlanError("Problem reading pyon config defaults '%s': %s" %
                 (path, str(e)))
 
+
 class Validator(object):
     """ check that all yml, json and conf files are correctly formatted """
     def __init__(self, *files):
@@ -97,7 +99,7 @@ class Validator(object):
         self._validate_args()
         self._validate_root()
         if self.found_error:
-            raise Exception('one or more configuration files were malformed')
+            raise PlanError('one or more configuration files were malformed')
 
     def _validate_args(self):
         for path in self.files:
@@ -107,7 +109,7 @@ class Validator(object):
         for root, subFolders, files in os.walk(ROOT_DIR):
             if not root.endswith('/templates'):
                 for file in files:
-                    path = os.path.join(root,file)
+                    path = os.path.join(root, file)
                     self._validate_file(path)
 
     def _validate_file(self, file):
@@ -127,13 +129,14 @@ class Validator(object):
             else:
                 # log.debug('not validating file: %s', file)
                 pass
-        except Exception,e:
+        except Exception, e:
             print 'ERROR: malformed %s file: %s\n%s' % (extension, file, e)
             self.found_error = True
 
     def _validate_yaml(self, file):
         with open(file, 'r') as f:
             yaml.load(f)
+
     def _validate_json(self, file):
         with open(file, 'r') as f:
             json.load(f)
@@ -141,6 +144,7 @@ class Validator(object):
     def _validate_conf(self, file):
         config = ConfigParser.RawConfigParser()
         config.read(file)
+
 
 ##############################################################################
 # LAUNCH PROFILES
@@ -852,7 +856,6 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
             raise PlanError("Launch file only supports one basenode. You have %s." %
                     basenodes.keys())
 
-
     return Deployment(bootlevels, engines, default_engine_id, pyon_config, basenodes)
 
 
@@ -1060,9 +1063,12 @@ def _tar_process_definitions(output_dir):
 # CLI-specific
 ##############################################################################
 
-def error(msg, exit_code=1):
+def error(msg, exit_code=1, exc_traceback=None):
     print >> sys.stderr, "\nFATAL ERROR:"
     print >> sys.stderr, msg
+    if exc_traceback:
+        print >> sys.stderr, "\nTraceback:"
+        traceback.print_tb(exc_traceback)
     sys.exit(exit_code)
 
 
@@ -1200,9 +1206,12 @@ def main():
         _inner_main(opts)
     except KeyboardInterrupt:
         pass
-    except Exception, e:
+    except PlanError, e:
         error(str(e))
-
+    except Exception, e:
+        # log unexpected errors with traceback
+        tb = sys.exc_info()[2]
+        error(str(e), exc_traceback=tb)
 
 if __name__ == '__main__':
     main()
