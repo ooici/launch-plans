@@ -1074,7 +1074,7 @@ def error(msg, exit_code=1, exc_traceback=None):
 
 def _inner_main(opts):
     pathfinder = PathFinder()
-    plandir = os.path.normpath(opts.plandir)
+    plandir = os.path.abspath(os.path.normpath(opts.plandir))
     plandir_parent = os.path.dirname(plandir)
 
     # bail out early if output dir exists and force=false
