@@ -594,7 +594,7 @@ class NimbusStaticProfile(BaseNimbusProfile):
         global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
         global_vars.update(_get_couchdb_global_vars(config, need_host=True))
-        global_vars.update(_get_zookeeper_global_vars(config, need_host=False))
+        global_vars.update(_get_zookeeper_global_vars(config, need_host=True))
         return global_vars
 
 
