@@ -269,7 +269,7 @@ def _get_zookeeper_global_vars(config, need_host=False):
         global_vars['zookeeper_enabled'] = magic_bool(zookeeper.get('enabled', True))
     else:
         global_vars['zookeeper_hosts'] = ""
-        global_vars['zookeeper_enabled'] = str(False)
+        global_vars['zookeeper_enabled'] = True
     return global_vars
 
 
