@@ -261,15 +261,20 @@ def _get_couchdb_global_vars(config, need_host=False):
 def _get_zookeeper_global_vars(config, need_host=False):
     global_vars = {}
 
+    if config['profile_type'] == 'local':
+        zookeeper_enabled_default = False
+    else:
+        zookeeper_enabled_default = True
+
     zookeeper = config.get('zookeeper')
     if zookeeper:
         if need_host:
             zookeeper_hosts = _get_or_bail(zookeeper, 'hosts', 'zookeeper')
             global_vars['zookeeper_hosts'] = _make_csv_list(zookeeper_hosts)
-        global_vars['zookeeper_enabled'] = magic_bool(zookeeper.get('enabled', True))
+        global_vars['zookeeper_enabled'] = magic_bool(zookeeper.get('enabled', zookeeper_enabled_default))
     else:
         global_vars['zookeeper_hosts'] = ""
-        global_vars['zookeeper_enabled'] = True
+        global_vars['zookeeper_enabled'] = zookeeper_enabled_default
     return global_vars
 
 
@@ -1128,7 +1133,7 @@ def _inner_main(opts):
 
     # parse profile and instantiate the appropriate profile object
     try:
-        profile_type = profile_config.pop('profile_type')
+        profile_type = profile_config['profile_type']
     except Exception, e:
         raise PlanError("profile is missing profile_type")
 
