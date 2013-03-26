@@ -40,6 +40,10 @@ contextualization:
           system:
             auto_bootstrap: False
             name: ${sysname}
+          container:
+            sflow:
+              enabled: True
+              hsflowd_port: 36343
 
       run_config:
         program: eeagent

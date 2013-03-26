@@ -20,11 +20,16 @@ server:
     host: ${couchdb_host}
     password: ${couchdb_password}
     username: ${couchdb_username}
+  trafficsentinel:
+    host: ${hsflow_collector_host}
+    password: ${hsflow_collector_password}
+    username: ${hsflow_collector_username}
 system:
   auto_bootstrap: false
   name: ${sysname}
 dashi:
   sysname: ${sysname}_cei
+  exchange: ${rabbitmq_exchange}
 device:
   sbe37:
     port_agent_data_port: 4011

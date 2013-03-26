@@ -287,11 +287,10 @@ def _get_common_global_vars(config):
     else:
         global_vars['pyon_config_output'] = ""
 
-    trafficsentinel = config.get('trafficsentinel')
-    if trafficsentinel:
-        trafficsentinel_host = trafficsentinel.get('host')
-        if trafficsentinel_host:
-            global_vars['hsflow_collector_host'] = trafficsentinel_host
+    trafficsentinel = config.get('trafficsentinel', {})
+    global_vars['hsflow_collector_host'] = trafficsentinel.get('host', '')
+    global_vars['hsflow_collector_username'] = trafficsentinel.get('username', '')
+    global_vars['hsflow_collector_password'] = trafficsentinel.get('password', '')
 
     global_vars.update(_get_zookeeper_global_vars(config))
 
