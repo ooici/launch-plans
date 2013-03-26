@@ -68,7 +68,7 @@ contextualization:
             launch_type:
               name: pyon
               pyon_directory: /home/cc/coi-services/
-              persistence_directory: /tmp/
+              persistence_directory: /home/cc/coi-services/
           pd:
             name: processdispatcher
     ddns:
