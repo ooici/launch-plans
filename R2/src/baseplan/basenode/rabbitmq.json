@@ -6,6 +6,7 @@
     "users": {
       "${rabbitmq_username}": {
         "password": "${rabbitmq_password}",
+        "tag": "administrator",
         "permissions": {
           "/": {
             "conf": ".*",

@@ -4,6 +4,11 @@ container:
   sflow:
     enabled: true
     hsflowd_port: 36343
+  exchange:
+    management:
+      host: ${rabbitmq_host}
+      password: ${rabbitmq_password}
+      username: ${rabbitmq_username}
 endpoint:
   receive:
     timeout: 60
