@@ -109,7 +109,7 @@ fi
 echo "process OK. polling HA"
 
 if [ -n "$haagent" ]; then
-    $CEICTL $CEICTL_ARGS -d $haagent ha wait
+    $CEICTL $CEICTL_ARGS ha wait $haagent
     if [ $? -ne 0 ]; then
         exit $ERROR
     fi
