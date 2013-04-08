@@ -64,7 +64,7 @@ contextualization:
           eeagent:
             name: eeagent_REPLACED_WITH_UUID
             node_id: ${node_id}
-            heartbeat: 10
+            heartbeat: ${heartbeat}
             heartbeat_queue: processdispatcher_heartbeats
             slots: ${slots}
             launch_type:
