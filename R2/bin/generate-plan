@@ -177,8 +177,9 @@ def _make_csv_list(value):
 
 
 def _write_plan_configs(template, output_dir, bootlevel_config_paths,
-    global_vars=None, extra_vars=None, initial_filename="launch.conf",
-    restart_filename="restart.conf"):
+                        global_vars=None, extra_vars=None,
+                        initial_filename="launch.conf",
+                        restart_filename="restart.conf"):
 
     last_level = get_last_level(template.template)
 
@@ -314,6 +315,7 @@ def _get_common_vm_global_vars(config):
 
     return global_vars
 
+
 def magic_bool(bool_as_string):
 
     if bool_as_string in (True, False):
@@ -325,6 +327,7 @@ def magic_bool(bool_as_string):
 
     return bool_as_string == "true"
 
+
 class LocalProfile(object):
     """Lightweight launch on local system (no VMs)
     """
@@ -334,7 +337,7 @@ class LocalProfile(object):
     _EEAGENT_PROTOTYPE = {
         "config": {
             "system": {
-              "name": "${sysname}"
+                "name": "${sysname}"
             },
             "eeagent": {
                 "heartbeat": 10,
@@ -416,7 +419,7 @@ class LocalProfile(object):
                     eeagent_cfg['eeagent']['name'] = eeagent_name
                     eeagent_cfg['eeagent']['slots'] = engine['slots']
                     eeagent_cfg['eeagent']['launch_type']['persistence_directory'] = "%s.%s.%s" % (
-                            eeagent_cfg['eeagent']['launch_type']['persistence_directory'], nodename, eeagent_name)
+                        eeagent_cfg['eeagent']['launch_type']['persistence_directory'], nodename, eeagent_name)
 
                     eeagents[eeagent_name] = eeagent
 
@@ -870,7 +873,7 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
 ##############################################################################
 
 def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
-    use_links=False, no_cleanup=False):
+                  use_links=False, no_cleanup=False):
     """Creates a launch plan from a deployment description, in a directory
     """
     output_dir = os.path.normpath(output_dir)
@@ -906,7 +909,7 @@ def generate_plan(pathfinder, profile, deployment, output_dir, force=False,
 
 
 def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
-    use_links):
+                         use_links):
 
     _write_base_files(pathfinder, profile, output_dir, use_links)
 
@@ -920,9 +923,9 @@ def _inner_generate_plan(pathfinder, profile, deployment, output_dir,
 
     # ha agent is special case added as a process definition
     _make_process_definition(
-            HAAGENT_DEFINITION_NAME,
-            "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
-            pd_json_template, process_definition_dir)
+        HAAGENT_DEFINITION_NAME,
+        "ion.agents.cei.high_availability_agent", "HighAvailabilityAgent",
+        pd_json_template, process_definition_dir)
 
     for level in deployment.bootlevels:
         for app in level:
