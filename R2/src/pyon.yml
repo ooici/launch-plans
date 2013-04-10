@@ -39,3 +39,5 @@ device:
   sbe37:
     port_agent_data_port: 4011
     port_agent_cmd_port: 4021
+create_workflow_timeout: 240
+terminate_workflow_timeout: 240
