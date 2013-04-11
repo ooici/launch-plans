@@ -550,9 +550,7 @@ class BaseNimbusProfile(BaseVMProfile):
         port = url_parts.port
 
         # build site object
-        self.site = {'name': site_name, 'description': '',
-            'driver_class': 'libcloud.compute.drivers.ec2.NimbusNodeDriver',
-            'driver_kwargs': {'host': host, 'port': port}}
+        self.site = {'name': site_name, 'type': 'nimbus', 'host': host, 'port': port}
 
         # build creds object
         self.creds = {'access_key': key, 'secret_key': secret, 'key_name': sshkey}
@@ -614,12 +612,6 @@ class NimbusStaticProfile(BaseNimbusProfile):
 
 class BaseEC2Profile(BaseVMProfile):
 
-    #TODO add others. Or better yet, lift this mapping into the provisioner/dtrs?
-    _LIBCLOUD_EC2_REGION_DRIVERS = {
-        "us-west-1": "libcloud.compute.drivers.ec2.EC2NodeDriver",
-        "us-east-1": "libcloud.compute.drivers.ec2.EC2USWestNodeDriver",
-    }
-
     def load_config(self, config):
 
         # validate and parse profile config. pull out top level plan variables
@@ -633,13 +625,8 @@ class BaseEC2Profile(BaseVMProfile):
         baseimage = _get_or_bail(iaas_config, 'base-image', 'iaas')
         baseallocation = _get_or_bail(iaas_config, 'base-allocation', 'iaas')
 
-        driver_class = self._LIBCLOUD_EC2_REGION_DRIVERS.get(region)
-        if not driver_class:
-            raise PlanError("EC2 region unknown! It may need to be added to the (hardcoded) mapping.")
-
         # build site object
-        self.site = {'name': site_name, 'description': 'EC2 %s region' % region,
-            'driver_class': driver_class}
+        self.site = {'name': site_name, 'type': 'ec2', 'region': region}
 
         # build creds object
         self.creds = {'access_key': key, 'secret_key': secret, 'key_name': sshkey}
