@@ -1,0 +1,4 @@
+---
+heartbeat_period: 30
+heartbeat_warning: 45
+heartbeat_missing: 60

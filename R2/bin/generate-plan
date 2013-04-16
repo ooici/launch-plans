@@ -79,6 +79,15 @@ class PathFinder(object):
             raise PlanError("Problem reading profile config defaults file '%s': %s" %
                 (path, str(e)))
 
+    def get_execution_engine_defaults(self):
+        path = os.path.join(ROOT_DIR, "src", "execution_engine_defaults.yml")
+        try:
+            with file(path) as f:
+                return yaml.load(f)
+        except Exception, e:
+            raise PlanError("Problem reading execution engine config defaults file '%s': %s" %
+                (path, str(e)))
+
     def get_pyon_config(self):
         path = os.path.join(ROOT_DIR, "src", "pyon.yml")
         try:
@@ -763,7 +772,8 @@ class Deployment(object):
         self.basenodes = basenodes
 
 
-def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
+def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False,
+                     execution_engine_defaults=None):
     """Load app and launch information to produce a deployment map
     """
 
@@ -834,7 +844,7 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
 
     # pick out execution engine definitions from launch file
     try:
-        engines = launch['execution_engines']
+        engines = deepcopy(launch['execution_engines'])
         default_engine_id = launch['default_execution_engine']
     except KeyError, e:
         raise PlanError("Launch file missing '%s' block" % str(e))
@@ -845,6 +855,10 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False):
     if not default_engine_id in engines:
         raise PlanError("default execution engine '%s' definition missing" %
             default_engine_id)
+
+    if execution_engine_defaults is not None:
+        for engine_id in engines:
+            engines[engine_id] = dict_merge(execution_engine_defaults, engines[engine_id])
 
     bootlevels = [bootlevel_apps[lvl] for lvl in sorted(bootlevel_apps.keys())]
 
@@ -1132,8 +1146,11 @@ def _inner_main(opts):
     profile = profile_cls(pathfinder, opts.log_config)
     profile.load_config(profile_config)
 
+    execution_engine_defaults = pathfinder.get_execution_engine_defaults()
+
     # parse the Deployment object from the rel and launch configs
-    deployment = parse_deployment(rel, launch, opts.ignore_bootlevels, opts.no_ha)
+    deployment = parse_deployment(rel, launch, opts.ignore_bootlevels, opts.no_ha,
+                                  execution_engine_defaults)
 
     # now generate the actual plan
     generate_plan(pathfinder, profile, deployment, plandir, force=opts.force,
