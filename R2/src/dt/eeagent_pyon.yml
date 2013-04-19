@@ -29,8 +29,12 @@ contextualization:
           root:
             handlers: [gray, console, file]
           loggers:
-            pyon.net:
-              level: TRACE
+            pyon.net.messaging:
+              level: DEBUG
+            pyon.container.procs:
+              level: DEBUG
+            pyon.ion.process:
+              level: DEBUG
         # only need very basic config. the rest is pulled from directory.
         config:
           bootmode: ${bootmode}
