@@ -28,9 +28,7 @@ contextualization:
               host: ${graylog_host}
           root:
             handlers: [gray, console, file]
-          loggers:
-            pyon.net:
-              level: TRACE
+
         # only need very basic config. the rest is pulled from directory.
         config:
           bootmode: ${bootmode}
