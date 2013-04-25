@@ -61,6 +61,8 @@
             }
           },
           "engines": {
+          },
+          "process_engines": {
           }
         }
       }

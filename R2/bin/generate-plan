@@ -15,7 +15,7 @@ import ConfigParser
 from string import Template
 from collections import defaultdict
 from subprocess import check_call
-from copy import deepcopy
+from copy import deepcopy, copy
 from urlparse import urlparse
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -117,12 +117,12 @@ class Validator(object):
     def _validate_root(self):
         for root, subFolders, files in os.walk(ROOT_DIR):
             if not root.endswith('/templates'):
-                for file in files:
-                    path = os.path.join(root, file)
+                for f in files:
+                    path = os.path.join(root, f)
                     self._validate_file(path)
 
-    def _validate_file(self, file):
-        parts = file.split('.')
+    def _validate_file(self, f):
+        parts = f.split('.')
         extension = parts[-1]
         # handle templates like: nimbus-static.yml.example
         if extension == 'example':
@@ -130,29 +130,29 @@ class Validator(object):
 
         try:
             if extension == 'yml':
-                self._validate_yaml(file)
+                self._validate_yaml(f)
             elif extension == 'json':
-                self._validate_json(file)
+                self._validate_json(f)
             elif extension == 'conf':
-                self._validate_conf(file)
+                self._validate_conf(f)
             else:
                 # log.debug('not validating file: %s', file)
                 pass
         except Exception, e:
-            print 'ERROR: malformed %s file: %s\n%s' % (extension, file, e)
+            print 'ERROR: malformed %s file: %s\n%s' % (extension, f, e)
             self.found_error = True
 
-    def _validate_yaml(self, file):
-        with open(file, 'r') as f:
+    def _validate_yaml(self, f):
+        with open(f, 'r') as f:
             yaml.load(f)
 
-    def _validate_json(self, file):
-        with open(file, 'r') as f:
+    def _validate_json(self, f):
+        with open(f, 'r') as f:
             json.load(f)
 
-    def _validate_conf(self, file):
+    def _validate_conf(self, f):
         config = ConfigParser.RawConfigParser()
-        config.read(file)
+        config.read(f)
 
 
 ##############################################################################
@@ -232,6 +232,7 @@ def _write_plan_configs(template, output_dir, bootlevel_config_paths,
 def _set_deployment_pd_config(deployment, pd_config):
     pd_config['engines'] = deepcopy(deployment.execution_engines)
     pd_config['default_engine'] = deployment.default_execution_engine_id
+    pd_config['process_engines'] = copy(deployment.process_engines)
 
 
 def _set_deployment_replicas(deployment, run_config, service, zookeeper_enabled=True):
@@ -764,12 +765,14 @@ class App(object):
 
 class Deployment(object):
     def __init__(self, bootlevels, execution_engines,
-                 default_execution_engine_id, pyon_config, basenodes):
+                 default_execution_engine_id, pyon_config, basenodes,
+                 process_engines):
         self.bootlevels = bootlevels
         self.execution_engines = execution_engines
         self.default_execution_engine_id = default_execution_engine_id
         self.pyon_config = pyon_config
         self.basenodes = basenodes
+        self.process_engines = process_engines
 
 
 def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False,
@@ -860,6 +863,15 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False,
         for engine_id in engines:
             engines[engine_id] = dict_merge(execution_engine_defaults, engines[engine_id])
 
+    process_engines = launch.get('process_engines')
+    if process_engines:
+        for process, engine_id in process_engines.iteritems():
+            if not engine_id in engines:
+                raise PlanError("Process engine mapping '%s' references unknown engine '%s'"
+                                % (process, engine_id))
+    else:
+        process_engines = {}
+
     bootlevels = [bootlevel_apps[lvl] for lvl in sorted(bootlevel_apps.keys())]
 
     # pick out pyon config block from launch file
@@ -879,7 +891,8 @@ def parse_deployment(rel, launch, ignore_bootlevels=False, no_ha=False,
             raise PlanError("Launch file only supports one basenode. You have %s." %
                     basenodes.keys())
 
-    return Deployment(bootlevels, engines, default_engine_id, pyon_config, basenodes)
+    return Deployment(bootlevels, engines, default_engine_id, pyon_config,
+                      basenodes, process_engines)
 
 
 ##############################################################################
