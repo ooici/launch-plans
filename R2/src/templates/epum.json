@@ -46,6 +46,10 @@
              }
            },
           "handlers": {
+            "gray":{
+              "class": "graypy.GELFHandler",
+               "host": "${graylog_host}"
+            },
             "syslog": {
               "address": [
                 "${syslog_host}",
@@ -62,6 +66,7 @@
             "handlers": [
               "console",
               "file",
+              "gray",
               "syslog"
             ]
           }
