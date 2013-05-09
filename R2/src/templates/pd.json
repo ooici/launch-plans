@@ -56,7 +56,7 @@
           "domain_config": {
             "engine_conf": {
                 "iaas_site": "${iaas_site}",
-                "iaas_allocation": "m1.small",
+                "iaas_allocation": "${iaas_allocation}",
                 "deployable_type": "${worker_deployable_type}"
             }
           },
