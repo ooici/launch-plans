@@ -581,8 +581,6 @@ class BaseNimbusProfile(BaseVMProfile):
         global_vars['ctxbroker_key'] = key
         global_vars['ctxbroker_secret'] = secret
         global_vars['iaas_site'] = site_name
-        # TODO
-        global_vars['iaas_allocation'] = baseallocation
 
         self.global_vars = global_vars
 
