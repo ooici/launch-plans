@@ -6,7 +6,7 @@ contextualization:
     dtdata:
       retrieve_method: archive
       archive_url: ${dtdata_archive_url}
-      chef_debug_level: debug
+      chef_debug_level: info
     pyon:
       virtualenv:
         path: /home/cc/app-venv
