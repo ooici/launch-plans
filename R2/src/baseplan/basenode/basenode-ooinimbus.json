@@ -33,7 +33,11 @@
       "archive_url": "${epu_archive_url}"
     }
   },
+  "graylog2": {
+    "server": "${graylog_host}"
+  },
   "recipes": [
+    "chef_handler::gelf",
     "sshkeys",
     "supervisord_shutdown",
     "epu"

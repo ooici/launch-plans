@@ -78,7 +78,10 @@ contextualization:
     hsflowd:
       collector_ip: ${hsflow_collector_host}
       json_port: 36343
+    graylog2:
+      server: ${graylog_host}
     recipes:
+    - chef_handler::gelf
     - hsflowd::config
     - sshkeys
     - supervisord_shutdown
