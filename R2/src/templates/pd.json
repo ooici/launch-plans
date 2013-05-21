@@ -47,6 +47,7 @@
           }
         },
         "processdispatcher": {
+          "monitor_resource_heartbeats": false,
           "heartbeat_queue" : "processdispatcher_heartbeats",
           "backend": "native",
           "dashi_uri": "amqp://${rabbitmq_username}:${rabbitmq_password}@${rabbitmq_host}/",
