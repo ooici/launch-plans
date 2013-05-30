@@ -1,2 +1,2 @@
 cloudinitd>=1.2
-ceiclient==0.1.3
+ceiclient==0.2.1
