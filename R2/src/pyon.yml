@@ -41,3 +41,4 @@ device:
     port_agent_cmd_port: 4021
 create_workflow_timeout: 240
 terminate_workflow_timeout: 240
+parseooi: true
