@@ -16,6 +16,9 @@
           }
         },
         "loggers":{
+          "kazoo":{
+            "level": "WARNING"
+          },
           "epu":{
             "level": "DEBUG"
           },
