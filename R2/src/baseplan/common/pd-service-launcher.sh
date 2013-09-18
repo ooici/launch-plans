@@ -81,8 +81,10 @@ if [ -z "$action" ]; then
     exit $ERROR
 fi
 
+CEICTL_ARGS="--pyon-gateway"
+
 if [ -n "$run_name" ]; then
-    CEICTL_ARGS="-n $run_name"
+    CEICTL_ARGS="$CEICTL_ARGS -n $run_name"
 
 else
     if [ -z "$host" -o -z "$username" -o -z "$password" ]; then
@@ -90,7 +92,7 @@ else
         echo $USAGE
         exit $ERROR
     else
-        CEICTL_ARGS="-b $host -u $username -p $password"
+        CEICTL_ARGS="$CEICTL_ARGS -b $host -u $username -p $password"
         if [ -n "$exchange" ]; then
             CEICTL_ARGS="$CEICTL_ARGS -x $exchange"
         fi

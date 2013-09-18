@@ -60,8 +60,10 @@ if [ -z "$processdispatcher" ]; then
     exit $ERROR
 fi
 
+CEICTL_ARGS="--pyon-gateway"
+
 if [ -n "$run_name" ]; then
-    CEICTL_ARGS="-n $run_name"
+    CEICTL_ARGS="$CEICTL_ARGS -n $run_name"
 
 else
     if [ -z "$host" -o -z "$username" -o -z "$password" ]; then
@@ -69,7 +71,7 @@ else
         echo $USAGE
         exit $ERROR
     else
-        CEICTL_ARGS="-b $host -u $username -p $password"
+        CEICTL_ARGS="$CEICTL_ARGS -b $host -u $username -p $password"
         if [ -n "$exchange" ]; then
             CEICTL_ARGS="$CEICTL_ARGS -x $exchange"
         fi
@@ -107,6 +109,9 @@ fi
 
 # also query HA Agent and wait for READY/STEADY state
 echo "process OK. polling HA"
+
+# TODO: temporarily disable http gateway for ha agent
+CEICTL_ARGS=$(sed 's|--pyon-gateway||g' <<< $CEICTL_ARGS)
 
 if [ -n "$haagent" ]; then
     $CEICTL $CEICTL_ARGS ha wait $haagent

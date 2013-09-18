@@ -35,6 +35,16 @@
       }
     }
   },
+  "pyon-http-gateways": {
+    "gateway": {
+      "config": {
+        "system":{
+          "name": "${sysname}"
+        },
+        "pyon_directory": "${pyon_path}"
+      }
+    }
+  },
   "pyon-nodes": {
   },
   "server": {
