@@ -1,0 +1,16 @@
+{
+  "dtdata": {
+    "retrieve_method": "archive",
+    "archive_url": "${dtdata_archive_url}",
+    "chef_debug_level": "debug"
+  },
+  "postgres":{
+    "password": "${postgres_password}",
+    "admin_username": "${postgres_admin_username}",
+    "admin_password": "${postgres_admin_password}"
+  },
+  "recipes": [
+    "sshkeys",
+    "postgres"
+  ]
+}

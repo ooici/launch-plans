@@ -14,10 +14,11 @@ rabbitmq:
   username: REPLACE_WITH_RABBITMQ_USERNAME
   password: REPLACE_WITH_RABBITMQ_PASSWORD
 
-couchdb:
-  host: REPLACE_WITH_COUCHDB_HOSTNAME
-  username: REPLACE_WITH_COUCHDB_USERNAME
-  password: REPLACE_WITH_COUCHDB_PASSWORD
+postgres:
+  host: REPLACE_WITH_POSTGRES_HOSTNAME
+  password: REPLACE_WITH_POSTGRES_PASSWORD
+  admin_username: REPLACE_WITH_POSTGRES_ADMIN_USERNAME
+  admin_password: REPLACE_WITH_POSTGRES_ADMIN_PASSWORD
 
 graylog:
   host: logging-dev.oceanobservatories.org

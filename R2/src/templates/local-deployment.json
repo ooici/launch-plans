@@ -49,7 +49,8 @@
   "persistence_dir": "${persistence_dir}",
   "rabbitmq_exchange": "${rabbitmq_exchange}",
   "dashi_sysname": "${sysname}_cei",
-  "couchdb_username": "${couchdb_username}",
-  "couchdb_password": "${couchdb_password}",
-  "couchdb_host": "${couchdb_host}"
+  "postgres_admin_username": "${postgres_admin_username}",
+  "postgres_admin_password": "${postgres_admin_password}",
+  "postgres_password": "${postgres_password}",
+  "postgres_host": "${postgres_host}"
 }

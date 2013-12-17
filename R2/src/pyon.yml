@@ -21,10 +21,11 @@ server:
     host: ${rabbitmq_host}
     password: ${rabbitmq_password}
     username: ${rabbitmq_username}
-  couchdb:
-    host: ${couchdb_host}
-    password: ${couchdb_password}
-    username: ${couchdb_username}
+  postgresql:
+    host: ${postgres_host}
+    password: ${postgres_password}
+    admin_username: ${postgres_admin_username}
+    admin_password: ${postgres_admin_password}
   trafficsentinel:
     host: ${hsflow_collector_host}
     password: ${hsflow_collector_password}

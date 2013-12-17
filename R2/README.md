@@ -54,10 +54,10 @@ the available examples are:
 * ``local.yml.example`` - lightweight launch run on your machine only
 * ``nimbus-dynamic.yml.example`` - self-contained launch on OOI Nimbus cloud
 * ``nimbus-static.yml.example`` - Nimbus cloud with external RabbitMQ and
-  CouchDB services.
+  Postgres services.
 * ``ec2-dynamic.yml.example`` - self-contained launch on Amazon EC2
 * ``ec2-static.yml.example`` - EC2 launch with external RabbitMQ and
-  CouchDB services.
+  Postgres services.
 
 So for example the nimbus-dynamic example looks something like:
 
@@ -73,9 +73,10 @@ So for example the nimbus-dynamic example looks something like:
     rabbitmq:
       username: REPLACE_WITH_RABBITMQ_USERNAME
       password: REPLACE_WITH_RABBITMQ_PASSWORD
-    couchdb:
-      username: REPLACE_WITH_COUCHDB_USERNAME
-      password: REPLACE_WITH_COUCHDB_PASSWORD
+    postgres:
+      password: REPLACE_WITH_POSTGRES_PASSWORD
+      admin_username: REPLACE_WITH_POSTGRES_ADMIN_USERNAME
+      admin_password: REPLACE_WITH_POSTGRES_ADMIN_PASSWORD
     graylog:
       host: logging-dev.oceanobservatories.org
 

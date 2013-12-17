@@ -256,18 +256,17 @@ def _get_rabbitmq_global_vars(config, need_host=False):
 
     return global_vars
 
-
-def _get_couchdb_global_vars(config, need_host=False):
-    couchdb = _get_or_bail(config, "couchdb")
+def _get_postgres_global_vars(config, need_host=False):
+    postgres = _get_or_bail(config, "postgres")
 
     global_vars = {}
-    global_vars['couchdb_username'] = _get_or_bail(couchdb, "username", "couchdb", empty_ok=True)
-    global_vars['couchdb_password'] = _get_or_bail(couchdb, "password", "couchdb", empty_ok=True)
+    global_vars['postgres_password'] = _get_or_bail(postgres, "password", "postgres", empty_ok=True)
+    global_vars['postgres_admin_username'] = _get_or_bail(postgres, "admin_username", "postgres", empty_ok=True)
+    global_vars['postgres_admin_password'] = _get_or_bail(postgres, "admin_password", "postgres", empty_ok=True)
     if need_host:
-        global_vars['couchdb_host'] = _get_or_bail(couchdb, "host", "couchdb")
+        global_vars['postgres_host'] = _get_or_bail(postgres, "host", "postgres")
 
     return global_vars
-
 
 def _get_zookeeper_global_vars(config, need_host=False):
     global_vars = {}
@@ -368,7 +367,7 @@ class LocalProfile(object):
     def load_config(self, config):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
-        global_vars.update(_get_couchdb_global_vars(config, need_host=True))
+        global_vars.update(_get_postgres_global_vars(config, need_host=True))
         pyon_path = _get_or_bail(config, 'pyon_path')
         global_vars['pyon_path'] = os.path.expanduser(pyon_path)
 
@@ -604,7 +603,7 @@ class NimbusDynamicProfile(BaseNimbusProfile):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
-        global_vars.update(_get_couchdb_global_vars(config, need_host=False))
+        global_vars.update(_get_postgres_global_vars(config, need_host=False))
         global_vars.update(_get_zookeeper_global_vars(config, need_host=False))
         return global_vars
 
@@ -618,7 +617,7 @@ class NimbusStaticProfile(BaseNimbusProfile):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
-        global_vars.update(_get_couchdb_global_vars(config, need_host=True))
+        global_vars.update(_get_postgres_global_vars(config, need_host=True))
         global_vars.update(_get_zookeeper_global_vars(config, need_host=True))
         return global_vars
 
@@ -677,7 +676,7 @@ class EC2DynamicProfile(BaseEC2Profile):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=False))
-        global_vars.update(_get_couchdb_global_vars(config, need_host=False))
+        global_vars.update(_get_postgres_global_vars(config, need_host=False))
         global_vars.update(_get_zookeeper_global_vars(config, need_host=False))
         return global_vars
 
@@ -691,7 +690,7 @@ class EC2StaticProfile(BaseEC2Profile):
         global_vars = _get_common_global_vars(config)
         global_vars.update(_get_common_vm_global_vars(config))
         global_vars.update(_get_rabbitmq_global_vars(config, need_host=True))
-        global_vars.update(_get_couchdb_global_vars(config, need_host=True))
+        global_vars.update(_get_postgres_global_vars(config, need_host=True))
         global_vars.update(_get_zookeeper_global_vars(config, need_host=True))
         return global_vars
 

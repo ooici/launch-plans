@@ -33,10 +33,11 @@ contextualization:
         config:
           bootmode: ${bootmode}
           server:
-            couchdb:
-              host:  ${couchdb_host}
-              username: ${couchdb_username}
-              password: ${couchdb_password}
+            postgresql:
+              host:  ${postgres_host}
+              admin_username: ${postgres_admin_username}
+              admin_password: ${postgres_admin_password}
+              password: ${postgres_password}
           system:
             auto_bootstrap: False
             name: ${sysname}
