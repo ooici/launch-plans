@@ -28,6 +28,9 @@ contextualization:
               host: ${graylog_host}
           root:
             handlers: [gray, console, file]
+          loggers:
+            ndg:
+              level: WARN
 
         # only need very basic config. the rest is pulled from directory.
         config:
