@@ -25,6 +25,9 @@
           "ion.services.cei":{
             "level": "DEBUG"
           },
+          "ion.processes.bootstrap.ion_loader":{
+            "level": "DEBUG"
+          },
           "ion.agents.agentctrl":{
             "level": "DEBUG"
           }
